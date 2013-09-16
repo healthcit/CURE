@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<project name="caCureCommon" default="all">
+
+    <target name="set-properties" unless="lib.dir">
+
+        <!-- final jar name -->
+        <property name="dist.jar.name" value="${ant.project.name}.jar" />
+
+    	<!-- lib names -->
+        <property name="log4j.name" value="log4j-1.2.14.jar" />
+
+    	<!-- general directories -->
+        <property name="build.dir" value="${basedir}/build" />
+        <property name="classes.dir" value="${build.dir}/bin" />
+        <property name="dist.dir" value="${basedir}/dist" />
+    	<property name="tmp.dir" value="${build.dir}/tmp" />
+
+    	<property name="src.dir" value="${basedir}/src/main" />
+    	<property name="java.src.dir" value="${src.dir}/java" />
+    	<property name="resources.src.dir" value="${src.dir}/resources" />
+        <property name="manifest.dest"  value="${tmp.dir}/manifest" />
+
+
+    	<property name="test.src.dir" value="${basedir}/src/test" />
+    	<property name="test.java.src.dir" value="${test.src.dir}/java" />
+    	<property name="test.resources.src.dir" value="${test.src.dir}/resources" />
+
+    	<property name="lib.dir" value="${basedir}/lib" />
+
+
+        <path id="build.class.path">
+            <fileset dir="${lib.dir}" includes="**/*.jar" />
+        </path>
+
+    </target>
+
+
+    <!-- configuration directories -->
+    <property name="conf.dir"       value="${basedir}/configuration" />
+
+    <path id="class.path">
+        <path refid="build.class.path" />
+        <!-- fileset dir="${build.lib}" includes="**/*.jar" / -->
+    </path>
+
+    <target name="all" depends="clean,compile"
+        description="Full build locally"/>
+
+    <!-- clean targets -->
+    <target name="clean" depends="set-properties" description="remove all generated project files">
+        <echo level="info">Deleting all from the ${build.dir} directory.</echo>
+        <delete failonerror="false" dir="${build.dir}/*" />
+      </target>
+
+    <target name="mkdirs" depends="set-properties"
+        description="Creating all necessary directories for deployment">
+
+        <mkdir dir="${build.dir}" />
+    	<mkdir dir="${classes.dir}"/>
+    	<mkdir dir="${tmp.dir}"/>
+    	<mkdir dir="${dist.dir}" />
+    </target>
+
+    <!-- build the application -->
+    <target name="compile" depends="clean, mkdirs"
+        description="Compiles all .java files in the ${src.java} dir.">
+
+    	<javac srcdir="${java.src.dir}" destdir="${classes.dir}"
+               debug="on" deprecation="yes">
+            <classpath refid="class.path" />
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.src.dir}">
+            	<include name="*/**"/>
+            </fileset>
+
+        	<!-- add sources to jar -->
+            <fileset dir="${java.src.dir}" />
+        </copy>
+
+    </target>
+
+    <target name="jar" depends="compile, manifest"
+        description="Creates a .jar file named ${dist.jar.name}">
+        <jar jarfile="${dist.dir}/${dist.jar.name}"
+            manifest="${manifest.dest}" >
+            <fileset dir="${classes.dir}" >
+            	<exclude name="**/MergeProperties.class" />
+            	<exclude name="**/*.java" />
+            	</fileset>
+        </jar>
+    	 <jar jarfile="${dist.dir}/hcit-ant.jar"
+    	            manifest="${manifest.dest}" >
+    	            <fileset dir="${classes.dir}" >
+    	            	<include name="**/MergeProperties.class"/>
+    	            </fileset>
+    	 </jar>
+    </target>
+
+    <target name="manifest">
+        <tstamp />
+        <manifest file="${manifest.dest}" >
+            <attribute name="Specification-Title"
+                value="${ant.project.name}" />
+            <attribute name="Specification-Vendor"
+                value="HealthCare IT, Inc." />
+            <attribute name="Implementation-Title"
+                value="com.healthcit" />
+            <attribute name="Implementation-Vendor"
+                value="HealthCare IT, Inc." />
+            <attribute name="Implementation-Version"
+                value="v1 ${DSTAMP}.${TSTAMP} $Name:  $" />
+        </manifest>
+    </target>
+
+</project>

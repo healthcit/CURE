@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="cure">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="form" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string"/>
+							<xs:element name="cadsrPublicId" type="xs:int" minOccurs="0"/>
+							<xs:element name="cadsrVersion" type="xs:decimal" minOccurs="0"/>
+							<xs:element name="cadsrCategory" type="xs:string" minOccurs="0"/>
+							<xs:element name="createdBy" type="xs:string" minOccurs="0"/>
+							<xs:element name="modifiedBy" type="xs:string" minOccurs="0"/>
+							<xs:element name="multipleInstances" type="xs:boolean" minOccurs="0"/>
+							<xs:element name="questionElement" type="questionElementType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="tableElement" type="tableElementType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="linkElement" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="sourceElement" block="restriction">
+											<xs:complexType>
+												<xs:choice>
+													<xs:element name="questionElement" type="questionElementType"/>
+													<xs:element name="tableElement" type="tableElementType"/>
+												</xs:choice>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="learnMore" type="xs:string" minOccurs="0"/>
+										<xs:element name="skipRule" type="skipRuleType" minOccurs="0"/>
+										<xs:element name="description" type="xs:string"/>
+									</xs:sequence>
+									<xs:attribute name="uuid" type="xs:ID" use="required"/>
+									<xs:attribute name="order" type="xs:int" use="required"/>
+									<xs:attribute name="isRequired" type="xs:boolean" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="externalQuestionElement" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="questionElementType">
+											<xs:attribute name="externalLinkId" type="xs:string" use="required"/>
+											<xs:attribute name="externalSource" type="xs:string" use="required"/>
+											<xs:attribute name="externalUuid" type="xs:string" use="required"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="content" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="skipRule" type="skipRuleType" minOccurs="0"/>
+										<xs:element name="description" type="xs:string"/>
+									</xs:sequence>
+									<xs:attribute name="displayStyle" use="optional" default="HEADING">
+										<!-- this is a comment -->
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="CUSTOM"/>
+												<xs:enumeration value="REGULAR"/>
+												<xs:enumeration value="SUBHEADING"/>
+												<xs:enumeration value="HEADING"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="uuid" type="xs:ID" use="required"/>
+									<xs:attribute name="order" type="xs:int" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:ID" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="module" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="section" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="parentId" type="xs:string" minOccurs="0"/>
+										<xs:element name="relationshipName" type="xs:string" minOccurs="0"/>
+										<xs:element name="skipRule" type="skipRuleType"/>
+									</xs:sequence>
+									<xs:attribute name="order" type="xs:int" use="required"/>
+									<xs:attribute name="ref" type="xs:IDREF" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="description" type="xs:string"/>
+							<xs:element name="moduleName" type="xs:string"/>
+							<xs:element name="completionTime" type="xs:string"/>
+							<xs:element name="showPleaseSelectOptionInDropDown" type="xs:boolean"/>
+							<xs:element name="insertCheckAllThatApplyForMultiSelectAnswers" type="xs:boolean"/>
+						</xs:sequence>
+						<xs:attribute name="uuid" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Description">
+		<xs:sequence>
+			<xs:element name="mainDescription" type="xs:string"/>
+			<xs:sequence minOccurs="0">
+				<xs:element name="alternateDescription" type="xs:string" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FormElementType">
+		<xs:sequence>
+			<xs:element name="skipRule" type="skipRuleType" minOccurs="0"/>
+			<xs:element name="learnMore" type="xs:string" minOccurs="0"/>
+			<xs:element name="descriptions" type="Description">
+				<xs:annotation>
+					<xs:documentation>Question or table text</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="categories" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A list of names for categories</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="category" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="name" type="xs:string"/>
+									<xs:element name="description" type="xs:string" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="uuid" type="xs:ID" use="required"/>
+		<xs:attribute name="order" type="xs:int" use="required"/>
+		<xs:attribute name="isRequired" type="xs:boolean" use="required"/>
+		<xs:attribute name="isReadonly" type="xs:boolean" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="questionElementType">
+		<xs:complexContent>
+			<xs:extension base="FormElementType">
+				<xs:sequence>
+					<xs:element name="question" type="questionType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="questionType">
+		<xs:sequence>
+			<xs:element name="shortName" type="xs:string"/>
+			<xs:element name="answer">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="description" type="xs:string"/>
+						<xs:element name="answerValue" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="description" type="xs:string"/>
+									<xs:element name="value" type="xs:string"/>
+									<xs:element name="name" type="xs:string"/>
+									<xs:element name="learnMore" type="xs:string" minOccurs="0"/>
+								</xs:all>
+								<xs:attribute name="uuid" type="xs:ID" use="required"/>
+								<xs:attribute name="order" type="xs:int" use="required"/>
+								<xs:attribute name="isDefault" type="xs:boolean"/>
+								<xs:attribute name="cadsrPublicId" type="xs:int"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="displayStyle" minOccurs="0">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="Medium"/>
+									<xs:enumeration value="Long"/>
+									<xs:enumeration value="Short"/>
+									<xs:enumeration value="Horizontal"/>
+									<xs:enumeration value="Vertical"/>
+									<xs:enumeration value=""/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="valueConstraint" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="POSITIVE_FLOAT"/>
+								<xs:enumeration value="POSITIVE_INTEGER"/>
+								<xs:enumeration value="INTEGER"/>
+								<xs:enumeration value="RADIO"/>
+								<xs:enumeration value="NUMBER"/>
+								<xs:enumeration value="TEXT"/>
+								<xs:enumeration value="DROPDOWN"/>
+								<xs:enumeration value="CHECKBOX"/>
+								<xs:enumeration value="YEAR"/>
+								<xs:enumeration value="MONTHYEAR"/>
+								<xs:enumeration value="DATE"/>
+								<xs:enumeration value="TEXTAREA"/>
+								<xs:enumeration value="CHECKMARK"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="uuid" type="xs:ID" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="uuid" type="xs:ID" use="required"/>
+		<xs:attribute name="order" type="xs:int" use="required"/>
+		<xs:attribute name="questionType">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="tableQuestion"/>
+					<xs:enumeration value="question"/>
+					<xs:enumeration value=""/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="answerType" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="SINGLE_ANSWER"/>
+					<xs:enumeration value="MULTI_ANSWER"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="skipLogicalOpType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AND"/>
+			<xs:enumeration value="OR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="skipRuleType">
+		<xs:sequence>
+			<xs:element name="questionSkipRule" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="answerSkipRule" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="answerValueUUID" type="xs:string" use="required"/>
+								<xs:attribute name="formUUID" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="ruleValue"/>
+					<xs:attribute name="logicalOp" type="skipLogicalOpType" use="required"/>
+					<xs:attribute name="identifyingAnswerValueUUID" type="xs:string"/>
+					<xs:attribute name="triggerQuestionUUID" type="xs:string" use="required"/>
+					<xs:attribute name="triggerFormUUID" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="parentId" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="skipTypeType"/>
+		<xs:attribute name="logicalOp" type="skipLogicalOpType"/>
+	</xs:complexType>
+	<xs:complexType name="skipsType">
+		<xs:sequence/>
+	</xs:complexType>
+	<xs:simpleType name="skipTypeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="formSkip"/>
+			<xs:enumeration value="formElementSkip"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="tableElementType">
+		<xs:complexContent>
+			<xs:extension base="FormElementType">
+				<xs:sequence>
+					<xs:element name="tableShortName" type="xs:string"/>
+					<xs:element name="question" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="questionType">
+									<xs:sequence>
+										<xs:element name="descriptions" type="Description">
+											<xs:annotation>
+												<xs:documentation>Text for question that represents a row or a column in the table </xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="isIdentifying" type="xs:boolean"/>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="tableType" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="SIMPLE"/>
+							<xs:enumeration value="DYNAMIC"/>
+							<xs:enumeration value="STATIC"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

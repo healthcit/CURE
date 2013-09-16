@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<schema targetNamespace="http://www.healthcit.com/CollectorSecurity" elementFormDefault="qualified"
+	xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:hcit="http://www.healthcit.com/CollectorSecurity">
+    <complexType name="sharingGroups" >
+    	<sequence>
+    		<element name="group" type="hcit:group" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+     <complexType name="group">
+        <sequence>
+	        <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+        <attribute name="id" type="ID" use="required"/>
+    </complexType>
+    
+    <complexType name="GroupRef">
+     <attribute name="ref" type="IDREF" />
+    </complexType>
+    <complexType name="entities">
+    <sequence>
+    		<element name="entity" type="hcit:entity" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="entity" >
+    	<sequence>
+    		<element name="sharing-group" type="hcit:GroupRef" minOccurs="1" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="id" type="ID" use="required"/>
+    </complexType>
+    
+    <complexType name="permissions">
+    <sequence>
+    		<element name="entityTagPermissions" type="hcit:entityTagPermissions" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    <complexType name="tags">
+    	<sequence>
+    		<element name="tag" type="hcit:Tag" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    <complexType name="Tag">
+    	<attribute name="type" type="hcit:TagType" use="required">	</attribute>
+    	<attribute name="id" type="ID" use="required"/>
+    </complexType>
+    <simpleType name="TagType">
+    <restriction base="string">
+    		<enumeration value="formTag"></enumeration>
+    		<enumeration value="moduleTag"></enumeration>
+    	</restriction>
+    </simpleType>
+    <complexType name="entityTagPermissions">
+    	<sequence>
+    		<element name="formTagPermissions" type="hcit:formTagPermissions" minOccurs="0" maxOccurs="1"></element>
+    		<element name="moduleTagPermissions" type="hcit:moduleTagPermissions" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="entityId" type="ID" use="required"/>
+    </complexType>
+    
+    <complexType name="formTagPermissions">
+    	<sequence>
+    		<element name="tag" type="hcit:formTag" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="moduleTagPermissions">
+    	<sequence>
+    		<element name="tag" type="hcit:moduleTag" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="formTag" >
+    	<sequence>
+    		<element name="formTagPermission" type="hcit:formTagPermission" minOccurs="0" maxOccurs="4"></element>
+    	</sequence>
+    	<attribute name="id" type="ID" use="required"/>
+    </complexType>
+    
+    <complexType name="moduleTag" >
+    	<sequence>
+    		<element name="moduleTagPermission" type="hcit:moduleTagPermission" minOccurs="0" maxOccurs="4"></element>
+    	</sequence>
+    	<attribute name="id" type="ID" use="required"/>
+    </complexType>
+    
+    <simpleType name="moduleTagPermission">
+    	<restriction base="string">
+    		<enumeration value="approve"></enumeration>
+    	</restriction>
+    </simpleType>
+    
+    <simpleType name="formTagPermission">
+    	<restriction base="string">
+    		<enumeration value="read"></enumeration>
+    		<enumeration value="write"></enumeration>
+    		<enumeration value="submit"></enumeration>
+    		<enumeration value="approve"></enumeration>
+    	</restriction>
+    </simpleType>
+   <complexType name="Security">
+    	<annotation>
+    		<documentation>root element</documentation>
+    	</annotation>
+    	<sequence>
+    	  <element name="sharingGroups" type="hcit:sharingGroups" minOccurs="0" maxOccurs="1" />
+    	  <element name="entities" type="hcit:entities" minOccurs="0" maxOccurs="1"/>
+    	  <element name="permissions" type="hcit:permissions" minOccurs="0" maxOccurs="1"/>
+    	  <element name="tags" type="hcit:tags" minOccurs="0" maxOccurs="1"/>
+    	</sequence>
+    </complexType>
+    
+    <element name="security" type="hcit:Security">
+    <annotation>
+    		<documentation>root element</documentation>
+    	</annotation>
+    </element>
+</schema>

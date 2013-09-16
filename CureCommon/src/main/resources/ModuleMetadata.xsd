@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hcit="http://www.healthcit.com/ModuleMetadata" targetNamespace="http://www.healthcit.com/ModuleMetadata" elementFormDefault="qualified">
+	<simpleType name="FormStatusType">
+		<restriction base="string">
+			<enumeration value="new"/>
+			<enumeration value="in-progress"/>
+			<enumeration value="submitted"/>
+			<enumeration value="completed"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ModuleStatusType">
+		<restriction base="string">
+			<enumeration value="new"/>
+			<enumeration value="in-progress"/>
+			<enumeration value="submitted"/>
+		</restriction>
+	</simpleType>
+	<complexType name="FormType">
+		<sequence>
+			<element name="form" type="hcit:FormType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="description" type="string" minOccurs="0" maxOccurs="1"/>
+			<element name="skip-rule" type="hcit:SkipRuleType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="formInstances" type="hcit:FormInstanceCollectionType" minOccurs="1" maxOccurs="1"/>
+		</sequence>
+		<attribute name="id" type="ID" use="required"/>
+		<attribute name="name" type="string" use="required"/>
+		<attribute name="author" type="string"/>
+		<attribute name="lastUpdatedBy" type="string"/>
+		<attribute name="dateModified" type="dateTime"/>
+		<attribute name="status" type="hcit:FormStatusType"/>
+		<attribute name="question-count" type="integer" use="required"/>
+	</complexType>
+	<complexType name="ModuleType">
+		<sequence>
+			<sequence>
+				<element name="form" type="hcit:FormType" minOccurs="1"
+					maxOccurs="unbounded" />
+			</sequence>
+			<sequence>
+				<element name="description" type="string" minOccurs="0"
+					maxOccurs="1" />
+			</sequence>
+		</sequence>
+		<attribute name="id" type="ID" use="required" />
+		<attribute name="name" type="string" use="required" />
+		<attribute name="isFlat" type="boolean"></attribute>
+		<attribute name="availableActions" type="string"></attribute>
+		<attribute name="isEditable" type="boolean" use="required" />
+		<attribute name="status" type="hcit:ModuleStatusType" />
+		<attribute name="owner" type="string" />
+		<attribute name="updatedBy" type="string" />
+		<attribute name="dateModified" type="dateTime" />
+		<attribute name="estimatedCompletionTime" type="string" />
+	</complexType>
+	<element name="modules" type="hcit:ModuleCollectionType"/>
+	<complexType name="ModuleCollectionType">
+		<sequence>
+			<element name="module" type="hcit:ModuleType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="SkipRuleType">
+		<sequence minOccurs="1" maxOccurs="unbounded">
+			<element name="value" type="string"/>
+		</sequence>
+		<attribute name="question_id" type="string"/>
+		<attribute name="logicalOp" type="string"/>
+		<attribute name="row_id" type="string"/>
+		<attribute name="form_id" type="string"/>
+		<attribute name="rule">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="show"/>
+					<enumeration value="hide"/>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+	<complexType name="FormInstanceCollectionType">
+		<sequence>
+			<element name="instance" type="hcit:FormInstanceType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="availableParentInstances" type="hcit:AvailableParentInstanceCollectionType" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+		<attribute name="maxInstances" type="long" use="required"/>
+		<attribute name="existingInstances" type="long"/>
+		<attribute name="instanceGroup" type="string"/>
+	</complexType>
+	<complexType name="FormInstanceType">
+		<attribute name="instanceId" type="long" use="required"/>
+		<attribute name="parentInstanceId" type="long" use="optional"/>
+		<attribute name="status" type="hcit:FormStatusType" use="required"/>
+		<attribute name="creationDate" type="dateTime"/>
+		<attribute name="visible" type="boolean" default="true"/>
+	</complexType>
+	<complexType name="AvailableParentInstanceCollectionType">
+		<sequence>
+			<element name="parentInstance" type="hcit:AvailableParentInstanceType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="AvailableParentInstanceType">
+		<attribute name="instanceId" type="long" use="required"/>
+	</complexType>
+</schema>
