@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<?xml-stylesheet href="xsltforms/xsltforms.xsl" type="text/xsl"?>
+    <!--  DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xform="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      xmlns:ajx="http://www.ajaxforms.net/2006/ajx">
+
+<head>
+	<title>Main Page</title>
+	<xform:model>
+      <xsd:schema xmlns:hcitT="http://www.healthcit.com/2010/formbuilder" targetNamespace="http://www.healthcit.com/2010/formbuilder"/>
+      <xform:instance id="FormDataInstance">
+        <form xmlns="" name="lktest" id="8ee628b3-75ab-4a1c-bdaf-d7faf8b98147">
+
+          <question id="06F397CB-47A3-08F1-E044-0003BA3F9857" sn="Infertility Treatment Indicator">
+            <text>Have you ever been treated for infertility?</text>
+            <answer id="10485"/>
+          </question>
+        </form>
+      </xform:instance>
+      <xform:instance id="PureContentInstance">
+        <data xmlns=""/>
+
+      </xform:instance>
+      <xform:instance id="DataGroupInstance">
+        <data xmlns="">
+          <data-group id="Q.GRP-06F397CB-47A3-08F1-E044-0003BA3F9857" visible="true()"/>
+        </data>
+      </xform:instance>
+      <xform:instance id="CrossFormSkipInstance">
+        <data xmlns=""/>
+      </xform:instance>
+
+      <xform:instance id="URLInstance">
+        <data xmlns="">
+          <base-url>xform.view</base-url>
+          <full-url>xform.view</full-url>
+        </data>
+      </xform:instance>
+      <xform:instance id="Q-ANSWER_SET-06F397CB-47A3-08F1-E044-0003BA3F9857">
+        <options xmlns="">
+
+          <answer sn="No" text="No">No</answer>
+          <answer sn="Yes" text="Yes">Yes</answer>
+        </options>
+      </xform:instance>
+      <xform:bind nodeset="instance('DataGroupInstance')//data-group[@id='Q.GRP-06F397CB-47A3-08F1-E044-0003BA3F9857']" id="Q.GRP-06F397CB-47A3-08F1-E044-0003BA3F9857" relevant="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='06F397CB-47A3-08F1-E044-0003BA3F9857']/answer[@id='10485']" id="Q-06F397CB-47A3-08F1-E044-0003BA3F9857" type="xsd:string" required="false()"/>
+      <xform:submission id="SendDataElement" method="post" includenamespaceprefixes="">
+        <xform:resource value="instance('URLInstance')//full-url"/>
+
+        <xform:message ev:event="xforms-submit-error">Unable to submit</xform:message>
+      </xform:submission>
+      <xform:submission id="PartialSendDataElement" method="post" includenamespaceprefixes="" validate="false">
+        <xform:message event="xforms-submit-error">Unable to submit</xform:message>
+        <xform:resource value="instance('URLInstance')//full-url"/>
+      </xform:submission>
+    </xform:model></head>
+
+<body class="twoColFixLtHdr">
+<div id="container">
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="header">
+  	<div id="primDivContainer">
+    	<div id="primDiv">
+			<!-- Begin Module Navigation -->
+			<!-- End Module Navigation -->	
+		</div>
+    <!-- end #primDivContainer --></div>
+		<div id="utilDiv">
+
+		</div>
+  		<div id="spaceDiv"><p> <!-- --></p></div>
+  </div><!-- end #header -->
+
+<!-- Header End -->
+
+<div id="xfContentDiv">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<p><!--  Here goes the XForms body -->
+	
+    <xform:output ref="instance('FormDataInstance')/@name" class="hcit-form-title"/>
+    <xform:group ref="instance('DataGroupInstance')//data-group[@id='Q.GRP-06F397CB-47A3-08F1-E044-0003BA3F9857']" class="hcit-group-input-radio">
+
+      <xform:output ref="instance('FormDataInstance')//question[@id='06F397CB-47A3-08F1-E044-0003BA3F9857']/text" class="hcitQuestionText hcitHasLearnMore"/>
+      <span class="learnmore">
+        <a href="javascript:showDialog('Help','Text indicator to represent an action or administration of therapeutic agents to produce an effect that is intended to alter a woman&amp;apos;s inability to produce children.','warning')">Need help?</a>
+      </span>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='06F397CB-47A3-08F1-E044-0003BA3F9857']/answer" appearance="full" class="hcitAnswerRadio">
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-06F397CB-47A3-08F1-E044-0003BA3F9857')/answer">
+          <xform:label ref="@text" class="hcit-label-input-radio"/>
+          <xform:value ref="."/>
+
+        </xform:itemset>
+        <xform:alert>
+          <xform:output value="'Incorrect format.'"/>
+        </xform:alert>
+      </xform:select1>
+    </xform:group>
+  
+	</p>
+</div>
+
+		<div id="xfFooter">
+
+		
+<!-- Footer Begin -->
+<div id="footer"> 
+	<!-- <div id="disclamer"><a href="javascript:alert('caCURE Form Builder version 0.2')">About caCURE Form Builder</a></div> -->
+    <div id="powered"><a href="javascript:alert('caCURE Form Builder version 0.9.7')">About caCURE Form Builder</a>  <a href="https://cabig.nci.nih.gov/"><img src="/FormBuilder/images/pb_cabig.gif" alt="Powered by caBIG&#174;" width="72" height="29" border="0" title="Powered by caBIG&#174;" /></a></div>
+	<br class="clearfloat" />
+	<div id="bot-bg"></div>
+</div><!-- end #footer -->
+<!-- Footer End -->
+<!-- end #container -->
+	</div>
+
+</div>
+</body>
+</html>

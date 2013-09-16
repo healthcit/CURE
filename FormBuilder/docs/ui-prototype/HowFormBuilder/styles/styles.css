@@ -1,0 +1,526 @@
+@charset "utf-8";
+
+/* layout styles */
+
+body  {
+	font: 12px Helvetica, Arial, san-serif;
+	color: #000000;
+	line-height: 1.5em;
+	background: #f1f1f1;
+	margin: 0; /* zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* centers the container in IE 5* browsers. */
+}
+.twoColFixLtHdr #container { 
+	width: 872px;  /* using 20px less than a full 800px width allows for browser chrome and avoids a horizontal scroll bar */
+	background: none;
+	margin: 15px auto; /* the auto margins (in conjunction with a width) center the page */
+	border: 0;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+} 
+.twoColFixLtHdr #header { 
+	background: none; 
+	padding: 0;  /* this padding matches the left alignment of the elements in the divs that appear beneath it. If an image is used in the #header instead of text, you may want to remove the padding. */
+} 
+.twoColFixLtHdr #header h1 {
+	margin: 0; /* zeroing the margin of the last element in the #header div will avoid margin collapse - an unexplainable space between divs. If the div has a border around it, this is not necessary as that also avoids the margin collapse */
+	padding: 10px 0; /* using padding instead of margin will allow you to keep the element away from the edges of the div */
+}
+
+.twoColFixLtHdr #content {
+	background: url(../images/07.jpg) repeat-y scroll left top;
+	width: 800px;
+	text-align:left;
+	padding: 5px 45px 10px;
+}
+
+.twoColFixLtHdr #sidebar1 {
+	float: left; /* since this element is floated, a width must be given */
+	width: 170px; /* the actual width of this div, in standards-compliant browsers, or standards mode in Internet Explorer will include the padding and border in addition to the width */
+	background:#F5F5F5; /* the background color will be displayed for the length of the content in the column, but no further */
+	padding: 15px 10px 15px 20px;
+	margin-left:18px;
+}
+.twoColFixLtHdr #mainContent { 
+	margin: 0 0 0 250px; /* the left margin on this div element creates the column down the left side of the page - no matter how much content the sidebar1 div contains, the column space will remain. You can remove this margin if you want the #mainContent div's text to fill the #sidebar1 space when the content in #sidebar1 ends. */
+	padding: 10px 40px 10px 10px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+	
+} 
+.fltrt { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+
+/* header styles */
+
+#testcontent {
+position:fixed;
+top:200px;
+left:350px;
+}
+
+#primDivContainer {
+background: url(../images/01.jpg) no-repeat 0 100%;
+height: 15px;
+width: 890px;
+}
+
+#primDiv {
+height:1em;
+margin-left:18px;
+padding-bottom:0;
+padding-right:25px;
+padding-top:5px;
+position:relative;
+}
+
+/* tabs nav */
+
+ol#prim {
+font: normal 100% helvetica,Geneva,sans-serif;
+height:2em;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0;
+margin-top: -14px;
+}
+ol#prim li {
+float:right;
+margin:0 1px 0 0;
+}
+ol#prim a {
+background:#BBDDFF url(../images/alatabs.gif) repeat scroll 0 0;
+color:#000000;
+display:block;
+float:left;
+height:2em;
+padding-left:10px;
+text-decoration:none;
+}
+ol#prim a:hover {
+background-color:#33AAFF;
+background-position:0 -120px;
+color:#FFFFFF;
+}
+ol#prim a:hover span {
+background-position:100% -120px;
+}
+ol#prim li.current a {
+background-color:#4488FF;
+background-position:0 -60px;
+font-weight:bold;
+}
+ol#prim li.current span {
+background-position:100% -60px;
+}
+ol#prim span {
+background:transparent url(../images/alatabs.gif) repeat scroll 100% 0;
+display:block;
+line-height:2em;
+padding-right:10px;
+}
+
+
+/* secondary tabs nav */
+
+#tocDiv{
+	background-color: #CCCCCC;
+	width: 800px;
+	height: 25px;
+	
+	
+}
+
+
+
+#tocDiv a:link, #tocDiv a:visited {
+	color: #66C;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 0.8em;
+	padding-left: 5px;
+}
+
+#tocDiv a:hover {
+	color: #000;	
+}
+
+#titlebar {
+	background-color: #4f81bd;
+	height: 40px;
+	width: 800px;
+}
+
+#pageTabHeader {
+	color: #FFF;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 1em;
+	padding: 10px 0px 5px 20px;
+	margin: 0;
+	padding: 10px 10px 0px 10px;
+	height:30px;
+	width:150px;
+	float: left;
+}
+
+
+
+
+#header_link ul {
+	
+	list-style-type: none; 	
+	margin: 0;
+	padding: 0;	
+		
+}
+
+#header_link li {
+	float: right;	
+
+	line-height: 3.1em;
+}
+
+#header_link li a:link, #header_link li a:visited {
+	text-decoration: none;	
+	padding: 0 10px;
+	margin: 0;
+	text-transform:uppercase;
+	color: #000;
+	display: block;
+	text-align: center;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 0.9em;
+		
+}
+
+#header_link li a:hover {
+	color: #FFF;
+	background-color: #69C;	
+	
+}
+
+
+
+.border {
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-right-color: #4f81bd;
+	border-bottom-color: #4f81bd;
+	border-left-color: #4f81bd;
+	padding: 0;
+}
+
+/* nav */
+
+
+
+
+ol#toc {
+font: normal 90% helvetica,Geneva,sans-serif;
+height:2em;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+margin:0;
+padding:0;
+border-bottom: 1px solid #e5a5ca;
+}
+ol#toc li {
+float:right;
+margin:0 1px 0 0;
+}
+ol#toc a {
+background: url(../images/alatabs.gif) repeat scroll 0 0;
+color:#000000;
+display:block;
+float:left;
+height:2em;
+padding-left:10px;
+text-decoration:none;
+}
+ol#toc a:hover {
+background-color:#33AAFF;
+background-position:0 -120px;
+color:#FFFFFF;
+}
+ol#toc a:hover span {
+background-position:100% -120px;
+}
+ol#toc li.current a {
+background-color:#4488FF;
+background-position:0 -60px;
+font-weight:bold;
+}
+ol#toc li.current span {
+background-position:100% -60px;
+}
+ol#toc span {
+background:transparent url(../images/alatabs.gif) repeat scroll 100% 0;
+display:block;
+line-height:2em;
+padding-right:10px;
+}
+
+
+
+
+/* util nav */
+
+#utilDiv {
+font: 100% normal helvetica,Geneva,sans-serif;
+background: url(../images/banner_3.png) no-repeat 0 0;
+width:890px;
+height:80px;
+}
+
+#bannerLinks {
+color:#4f81bd;
+padding-right:27px;
+position:relative;
+text-align:right;
+top: 10px;
+}
+
+#bannerLinks a, #bannerLinks a:active, #bannerLinks a:visited, #bannerLinks a:hover {
+	font-size:80%;
+	color:#4f81bd;
+	text-decoration:underline;
+}
+
+#spaceDiv {padding-left: 18px; background: url(../images/07.jpg); width: 880px;}
+#spaceDiv p {
+background: #CCC;
+height:3px;
+width:853px;
+padding: 0;
+margin: 0;
+}
+
+
+
+
+/* main content column */
+
+h1 {
+	color: #555252;
+	font: bold 22px Arial Narrow, Arial, Helvetica, sans-serif;
+	padding: 0 0 0 20px;
+	text-align: left;
+	vertical-align: middle;
+	text-indent: 15px;	
+	background: url(../../HowFormBuilder_/images/icon_h1.gif) no-repeat 0 0;
+	height: 35px;
+	margin: 0;
+	margin-top: 15px;
+}
+
+h2 { font-size: 16px; color:#666; }
+
+h4 {
+	padding: 10;
+	margin: 0;
+	color: #4f81bd;
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+b {
+	color: #4f81bd;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+.padding {
+	padding: 10;	
+}
+
+.d0 td {
+	margin: 0;
+	padding: 0;
+}
+.c0 {
+		
+}
+.c0 td {
+	padding-left: 10px;
+}
+
+#q td {
+	padding: 0 0 0 10;	
+}
+
+
+.d1 td {
+	margin: 0;
+	padding: 5px 0px 5px 10px;
+}
+
+.d2 td {
+	margin: 0;
+	padding: 5px 0px 5px 10px;
+}
+
+a:link, a:visited {
+	color: #069;	
+}
+
+td img {
+	width: 12px;
+	height: 12px;
+}
+
+
+
+.button {
+	padding: 10;	
+}
+
+
+#mainContent p {
+	color: #555252}
+	
+#mainContent p a{font-weight:bold;}
+
+#mainContent table td{
+	vertical-align: bottom;
+}
+
+/* size changer */
+
+#utilities {
+color:#666666;
+font-family: Helvetica,Geneva,sans-serif;
+font-size:10px;
+line-height:1.33em;
+position:relative;
+padding-right:15px;
+top:0;
+float: right;
+width: 30%;}
+
+#utilities .font-label {
+float:left;
+margin:2px 5px 0 0;
+padding:2px 0 0;
+}
+
+#u-fonts a {
+float:left;
+height:17px;
+margin-left:2px;
+width:17px;
+text-decoration: none;
+}
+
+#u-fonts a.font-sm {background:transparent url(../images/font_sm.html) no-repeat scroll 0 -18px;}
+#u-fonts a.font-med {background:transparent url(../images/font_m.html) no-repeat scroll 0 0;}
+#u-fonts a.font-lg {background:transparent url(../images/font_lg.html) no-repeat scroll 0 0;}
+
+#u-fonts a:hover {background-position:0 -18px;}
+#u-fonts a.font-sm:hover {background-position:0 0;}
+
+#u-icons {
+float: right;
+right:15px;
+font-size:10px;
+}
+
+a.print {
+background: transparent url(../images/print.html) no-repeat scroll 0 0;
+line-height: 20px;
+padding:4px 5px 6px 20px;
+}
+
+/* left sidebar styles */
+
+#sidebar1{
+font-size: 11px;}
+
+#sidebar1 h3{
+margin: 10px 0 5px 0;
+padding:  10px 0 5px 0;
+font: bold 13px Arial, Helvetica, sans-serif;}
+
+/* left menu styles */
+
+#sidebar1 .lh_menu{
+border: 0;
+padding: 15px 5px;
+font: normal 14px Arial, Helvetica, sans-serif;
+color:  #4686c6;}
+
+#sidebar1 .lh_menu .lh_menu_element{ padding: 5px 0; }
+#sidebar1 .lh_menu .lh_menu_element#current { font-weight: bold; }
+
+#sidebar1 .lh_menu .lh_menu_element a {text-decoration: none; color: #4686c6; }
+#sidebar1 .lh_menu .lh_menu_element a:hover {text-decoration: none; color: #e867b2; }
+
+/* login form styles */
+
+#sidebar1 input {
+margin: 0;
+padding: 0 2px;
+font-size:12px;
+width: 130px;
+}
+
+#sidebar1 #login {
+background:url(../images/btn_login.html) no-repeat 0 0;
+border: 0;
+height: 30px;
+width: 85px;
+margin: 10px 0 5px 0;}
+
+
+#sidebar1 .form-field {
+text-align:left;
+padding: 5px 0;}
+
+#button_container {
+	padding: 0 0 40 0;
+	position:relative
+}
+#button_container .button {
+	right: 10px;	
+	position: absolute;
+}
+
+
+/* footer styles */
+#footer {
+	width: 884px;
+	height: 70px;
+	background-image: url(../images/footer.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	margin-top: -10px;
+}
+#footer #disclamer { 
+	float: left; 
+	padding-left: 50px; 
+	font-size: 10px;
+	padding-top: 15px;
+	color:#333;
+}
+#footer #disclamer a {
+	color: #4f81bd;
+}
+#footer #powered { 
+	float: right; 
+	padding-right: 50px;
+	padding-top: 10px;
+}

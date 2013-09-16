@@ -1,0 +1,54 @@
+HTTrack3.43-9+htsswf+htsjava launched on Mon, 19 Apr 2010 17:37:22 at http://localhost:8080/HowFormBuilder/moduleList.view +*.png +*.gif +*.jpg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar -*del=1* -*javascript*
+(winhttrack -qiC2%Ps2u1%s%uN0%I0p3DaK0H0%kf2A25000%f#f -F "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.1) Gecko/20020826" -%F "<!-- Mirrored from %s%s by HTTrack Website Copier/3.x [XR&CO'2010], %s -->" -%l "en, en, *" http://localhost:8080/HowFormBuilder/moduleList.view -O1 C:\dev\Workspaces\HCIT\FormBuilder\trunk\docs\AppHtml\caCureFormBuilder +*.png +*.gif +*.jpg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar -*del=1* -*javascript* )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+17:37:22	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/moduleList.view -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/moduleList.html
+17:37:23	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/images/edit.png -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/images/edit.png
+17:37:24	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//formList.view?moduleId=50551 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/formList235b.html
+17:37:24	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//formList.view?moduleId=53450 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/formList7561.html
+17:37:27	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//module.edit?id=53450 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/module2ea7.html
+17:37:27	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//module.edit -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/module.html
+17:37:27	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//module.edit?id=50551 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/module7b60.html
+17:37:29	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//form.edit?moduleId=50551 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/form235b.html
+17:37:30	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=50501&dir=-1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formList9868.html
+17:37:30	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//form.edit?moduleId=50551&id= -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/form47b5.html
+17:37:30	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//questionList.view?formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionListb73e.html
+17:37:30	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=53500&dir=1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formList4c81.html
+17:37:31	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=53500&dir=-1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formListe1ea.html
+17:37:31	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//questionList.view?formId=53500 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionListaaca.html
+17:37:31	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=53501&dir=1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formList2d8f.html
+17:37:32	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//questionList.view?formId=53501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionList8551.html
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/font_sm.gif (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/font_m.gif (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/font_lg.gif (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/print.jpg (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/btn_login.gif (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder/images/foot.jpg (from localhost:8080/HowFormBuilder/styles/styles.css)
+17:37:33	Error: 	"Not Found" (404) at link localhost:8080/HowFormBuilder//includes/images/icon_h1.gif (from localhost:8080/HowFormBuilder//module.edit)
+17:37:33	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//module.edit?moduleId=50551 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/module235b.html
+17:37:34	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=50501&dir=1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formList8a2f.html
+17:37:34	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//images/delete.jpg -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/images/delete.jpg
+17:37:36	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//content.edit?formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/contentb73e.html
+17:37:46	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionb73e.html
+17:37:52	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=50600&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question9a46.html
+17:37:52	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=50601&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionada6.html
+17:37:53	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=50602&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questiondd35.html
+17:38:02	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=50603&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questiona7ec.html
+17:38:10	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=52200&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question8870.html
+17:38:10	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=52350&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question2bd4.html
+17:38:11	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=52650&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question2260.html
+17:38:17	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//content.edit?formId=53500 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/contentaaca.html
+17:38:19	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=52750&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question8501.html
+17:38:20	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder/formList.view?moduleId=50551&formId=53501&dir=-1 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/formListaa2a.html
+17:38:24	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//content.edit?formId=53501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/content8551.html
+17:38:24	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?id=52900&formId=50501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questioned5c.html
+17:38:24	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?formId=53500 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/questionaaca.html
+17:38:27	Info: 	engine: transfer-status: link added: localhost:8080/HowFormBuilder//question.edit?formId=53501 -> C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder_/question8551.html
+17:38:27	Info: 	Purging C:/dev/Workspaces/HCIT/FormBuilder/trunk/docs/AppHtml/caCureFormBuilder/localhost_8080/HowFormBuilder/login.html
+
+HTTrack Website Copier/3.43-9 mirror complete in 1 minutes 5 seconds : 51 links scanned, 43 files written (1653728 bytes overall), 35 files updated [1621172 bytes received at 24941 bytes/sec]
+(7 errors, 0 warnings, 36 messages)

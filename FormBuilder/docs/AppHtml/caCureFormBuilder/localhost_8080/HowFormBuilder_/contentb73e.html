@@ -1,0 +1,194 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+<!-- Mirrored from localhost:8080/HowFormBuilder//content.edit?formId=50501 by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 19 Apr 2010 21:38:24 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><!-- /Added by HTTrack -->
+<head>
+	<title>Main Page</title>
+	<link href="../HowFormBuilder/styles/styles.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body class="twoColFixLtHdr">
+<div id="container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="header">
+  	<div id="primDivContainer">
+    	<div id="primDiv">
+			<!-- Begin Module Navigation -->
+			<!-- End Module Navigation -->	
+		</div>
+    <!-- end #primDivContainer --></div>
+		<div id="utilDiv">
+        	<div id="bannerLinks">
+            	<a href="../HowFormBuilder/moduleList.html">Home</a> |
+            	<a href="../HowFormBuilder/moduleList.html">Logout</a> | 
+                <a href="javascript:alert('Not yet available')" >Help</a> 
+			</div>
+		</div>
+  		<div id="spaceDiv"><p> <!-- --></p></div>
+  </div><!-- end #header -->
+
+<!-- Header End -->
+<div id="content">
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+	<script language="javascript">
+	// need to keep count of actual answers for dynamic additions/deletions
+	// initializing value to actual count
+	var totalAnswers = 0;
+	function findNextAvailableAnswerBlock()
+	{
+		for (i = 0; i< 100; i++)
+		{
+			var divBlock = document.getElementById("answerDiv." + i);
+			if (divBlock != null && divBlock.style.display == "none")
+				return i;
+		}		
+		return -1;
+	}
+	function addAnswerBlock(cnt)
+	{
+		// find next available block
+		var divIdx = findNextAvailableAnswerBlock();
+		var divId = "answerDiv." + divIdx;
+		var divToFill = document.getElementById(divId);
+		var validAnswerCtrl = document.getElementById("answers" + divIdx + ".valid");
+		validAnswerCtrl.value="true";
+		divToFill.style.display="block";
+
+	}
+	
+	</script>
+	
+<script language="javascript">
+		function ReverseContentDisplay(d) {		
+				if(d.length < 1) {
+					return;
+				}
+				if(document.getElementById(d).style.display == "none") {
+					document.getElementById(d).style.display = "block";
+				} else {
+					document.getElementById(d).style.display = "none";
+				}
+		}
+		function HideContent(d) {
+			if(d.length < 1) {
+				return;
+			}
+			document.getElementById(d).style.display = "none";
+		}
+		function ShowContent(d) {
+			if(d.length < 1) {
+				return;
+			}
+			document.getElementById(d).style.display = "block";
+		}	
+		function showControls(){
+			if(document.getElementById('type').value == "checkbox" || document.getElementById('type').value == "radio"){
+				ShowContent('radiocheck');
+			} else if(document.getElementById('type').value == "input" || document.getElementById('type').value == "date"){
+				HideContent('radiocheck');			
+			}
+		}
+		
+		function cadsrLookup(){
+			window.open("/HowBuilder/LoadCadsrLookupAction.do","Ratting","width=850,height=570,0,status=0,scrollbars=1,top=50,left=300");			
+		}
+		//questionCmd.form.id
+		function addSkipQuestion(){
+			window.open("/HowFormBuilder//questionListSkip.view?formId=50501&skipId=0","Ratting","width=850,height=570,0,status=0,scrollbars=1,top=50,left=300");			
+		}		
+		
+		function removeSkipQuestion(){
+			HideContent("removeSkip");
+			document.getElementById("skipCondition").innerHTML = "None";
+			document.getElementById("skipPatterns0.skipRule").value = 'none';
+			ShowContent("addSkip");	
+		}
+					
+		function onLoadItems(){
+			HideContent("removeSkip");
+			document.getElementById("skipPatterns0.valid").value = 'false';
+		}
+		
+		window.onload=onLoadItems;
+	</script>
+	
+<div>
+	
+	<div id="tocDiv">
+		<!-- Section Tabs -->
+		<ol id="toc">
+			<li><a href="questionListb73e.html?formId=50501"><span>Cancel</span></a></li>
+			<li class="current"><a href="#" onclick="return false"><span>Add Content</span></a></li>
+			<li ><a href="#" onClick="history.go(-1);return false;"><span>Back</span></a></li>
+		</ol>
+		<!-- Section Tabs -->
+	</div>
+
+   <form id="questionCmd" action="http://localhost:8080/HowFormBuilder//content.edit?formId=50501" method="post">
+   <table>
+   	<tr>
+   		<td>Question Text:</td><td><input id="description" name="description" type="text" value="" size="75" maxlength="200"/></td>
+   	</tr> 	
+   	<tr>
+   		<td>Short Name:</td>
+   		<td><input id="shortName" name="shortName" type="text" value="" size="75" maxlength="200"/></td>
+   	</tr>   	
+    <tr>
+    	<td><input name="submit" type="submit" value="Save" /></td>
+    </tr>	
+	</table>	
+	</form>
+	
+</div><br class="clearfloat" />
+</div><!-- end #content -->
+
+<!-- end #container --> 
+
+<!-- Footer Begin -->
+<div id="footer">
+  
+	<div id="disclamer">&#169;2009-2010 Dr. Susan Love Research Foundation. All rights reserved | <a href="http://localhost:8080/HOW/Home/TermsofUse.do">Terms of Use</a> | <a href="http://localhost:8080/HOW/Home/Privacy.do">Privacy Policy</a> | <a href="http://localhost:8080/HOW/Home/Contact.do">Contact Us</a></div>
+	<div id="powered"><a href="https://cabig.nci.nih.gov/"><img src="../HowFormBuilder/images/pb_cabig.gif" alt="Powered by caBIG&#174;" width="72" height="29" border="0" title="Powered by caBIG&#174;" /></a></div>
+	<br class="clearfloat" />
+	<div id="bot-bg"></div>
+</div><!-- end #footer -->
+<!-- Footer End -->
+</div></body>
+
+<!-- Mirrored from localhost:8080/HowFormBuilder//content.edit?formId=50501 by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 19 Apr 2010 21:38:24 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><!-- /Added by HTTrack -->
+</html>
+

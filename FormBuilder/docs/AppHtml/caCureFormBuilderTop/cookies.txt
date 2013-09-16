@@ -1,0 +1,4 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+localhost:8080	TRUE	/HowFormBuilder	FALSE	1999999999	JSESSIONID	E77251EF5CE7141639B8659DB1C367ED
+

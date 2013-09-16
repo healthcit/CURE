@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For assistance related to logback-translator or configuration  -->
+<!-- files in general, please contact the logback user mailing list -->
+<!-- at http://www.qos.ch/mailman/listinfo/logback-user             -->
+<!--                                                                -->
+<!-- For professional support please see                            -->
+<!--    http://www.qos.ch/shop/products/professionalSupport         -->
+<!--                                                                -->
+<configuration>
+
+ <property resource="caCURE-FB.properties" />
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+ <!-- "application-name" is a variable --> 
+ <!--  <File>c:/logs/${application-name}.log</File> -->
+ <layout class="ch.qos.logback.classic.PatternLayout"> <Pattern>%d %p %t %c - %m%n</Pattern> 
+</layout> 
+</appender>
+  
+
+ <logger name="org.springframework" level="OFF"/>
+ <logger name="org.hibernate" level="OFF"/>
+ <logger name="org.directwebremoting" level="OFF"/>
+ <logger name="org.apache" level="OFF"/>
+ 
+ <if condition='property("environment").equals("dev")'>
+ <then>
+ <logger name="com.healthcit" level="debug"/>
+ </then>
+ </if>
+  <root>
+	<priority value="info" />
+	<appender-ref ref="console" />
+  </root>
+</configuration>
+	

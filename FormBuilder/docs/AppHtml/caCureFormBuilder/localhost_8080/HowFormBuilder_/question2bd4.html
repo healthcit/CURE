@@ -1,0 +1,2591 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xf="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+<!-- Mirrored from localhost:8080/HowFormBuilder//question.edit?id=52350&formId=50501 by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 19 Apr 2010 21:38:24 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><!-- /Added by HTTrack -->
+<head>
+	<title>Main Page</title>
+	<link href="../HowFormBuilder/styles/styles.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body class="twoColFixLtHdr">
+<div id="container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="header">
+  	<div id="primDivContainer">
+    	<div id="primDiv">
+			<!-- Begin Module Navigation -->
+			<!-- End Module Navigation -->	
+		</div>
+    <!-- end #primDivContainer --></div>
+		<div id="utilDiv">
+        	<div id="bannerLinks">
+            	<a href="../HowFormBuilder/moduleList.html">Home</a> |
+            	<a href="../HowFormBuilder/moduleList.html">Logout</a> | 
+                <a href="javascript:alert('Not yet available')" >Help</a> 
+			</div>
+		</div>
+  		<div id="spaceDiv"><p> <!-- --></p></div>
+  </div><!-- end #header -->
+
+<!-- Header End -->
+<div id="content">
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+	<script language="javascript">
+	// need to keep count of actual answers for dynamic additions/deletions
+	// initializing value to actual count
+	var totalAnswers = 100;
+	var totalSkips = 25;
+	
+	function findNextAvailableAnswerBlock()
+	{
+		for (i = 0; i< 100; i++)
+		{
+			var divBlock = document.getElementById("answerDiv." + i);
+			if (divBlock != null && divBlock.style.display == "none")
+				return i;
+		}		
+		return -1;
+	}
+	function addAnswerBlock(cnt)
+	{
+		// find next available block
+		var divIdx = findNextAvailableAnswerBlock();
+		var divId = "answerDiv." + divIdx;
+		var divToFill = document.getElementById(divId);
+		var validAnswerCtrl = document.getElementById("answers" + divIdx + ".valid");
+		validAnswerCtrl.value="true";
+		divToFill.style.display="block";
+	}
+
+	function deleteAnswer(divIdNum){
+		//alert("in deleteSkip");
+		document.getElementById("answers" + divIdNum + ".valid").value = false;
+		document.getElementById("answerDiv." + divIdNum).style.display = "none";
+		
+		//alert(document.getElementById("answers" + divIdNum + ".valid").value);
+		//alert(document.getElementById("answerDiv." + divIdNum).style.display);
+	}
+		
+	function deleteSkip(divIdNum){
+		//alert("in deleteSkip");
+		document.getElementById("skipPatterns" + divIdNum + ".valid").value = false;
+		document.getElementById("skipDiv" + divIdNum).style.display = "none";
+		
+		//alert(document.getElementById("skipPatterns" + divIdNum + ".valid").value);
+		//alert(document.getElementById("skipDiv" + divIdNum).style.display);
+	}
+	
+	</script>
+	
+<script language="javascript">
+		
+		function ReverseContentDisplay(d) {		
+				if(d.length < 1) {
+					return;
+				}
+				if(document.getElementById(d).style.display == "none") {
+					document.getElementById(d).style.display = "block";
+				} else {
+					document.getElementById(d).style.display = "none";
+				}
+		}
+		function HideContent(d) {
+			if(d.length < 1) {
+				return;
+			}
+			document.getElementById(d).style.display = "none";
+		}
+		function ShowContent(d) {
+			if(d.length < 1) {
+				return;
+			}
+			document.getElementById(d).style.display = "block";
+		}	
+		function showControls(){
+			if(document.getElementById('type').value == "checkbox" || document.getElementById('type').value == "radio"){
+				ShowContent('radiocheck');
+			} else if(document.getElementById('type').value == "input" || document.getElementById('type').value == "date"){
+				HideContent('radiocheck');			
+			}
+		}
+		
+		function cadsrLookup(){
+			window.open("/HowBuilder/LoadCadsrLookupAction.do","Ratting","width=850,height=570,0,status=0,scrollbars=1,top=50,left=300");			
+		}
+		//questionCmd.form.id
+		function addSkipQuestion(){
+			window.open("/HowFormBuilder//questionListSkip.view?formId=50501&skipId=0","Ratting","width=850,height=570,0,status=0,scrollbars=1,top=50,left=300");			
+		}		
+		
+		function removeSkipQuestion(){
+			var skipCtr = document.getElementById("skipCtr").value * 1 - 1*1;
+			alert("skipCtr: " + skipCtr);
+			
+			document.getElementById("skipPatterns" + skipCtr + ".answerId").value = "";
+			document.getElementById("skipCondition" + skipCtr).innerHTML = "";
+			document.getElementById("skipCondition" + skipCtr).style.display="none";
+			document.getElementById("skipPatterns" + skipCtr + ".ruleValue").value = "";
+			document.getElementById("skipPatterns" + skipCtr + ".valid").value = 'false';
+			
+			document.getElementById("skipCtr").value = skipCtr;
+		
+		}
+					
+		function onLoadItems(){
+			HideContent("removeSkip");
+			
+			var skipCtr = 0*1;
+			
+			for(i=0; i<=2; i++) {
+			    var elementName = "skipPatterns[" + i + "].valid";
+				if(	document.getElementById(elementName) == "true" ) {
+					skipCtr = skipCtr*1 + 1*1;
+				}
+			}
+			
+			document.getElementById("skipCtr").value = skipCtr;	
+		}
+		
+		window.onload=onLoadItems;
+	</script>
+	
+<div>
+	
+	<div id="tocDiv">
+		<!-- Section Tabs -->
+		<ol id="toc">
+			<li><a href="questionListb73e.html?formId=50501"><span>Cancel</span></a></li>
+			<li class="current"><a href="#" onclick="return false"><span>Add Question</span></a></li>
+			<li ><a href="#" onClick="history.go(-1);return false;"><span>Back</span></a></li>
+		</ol>
+		<!-- Section Tabs -->
+	</div>
+
+    <form id="questionCmd" action="http://localhost:8080/HowFormBuilder//question.edit?id=52350&amp;formId=50501" method="post">
+    	
+    	<input id="skipCtr" type="hidden" value="0"/>
+    	    	    	
+         <div>
+		  	Question Text:  <input id="description" name="description" type="text" value="Test Question 20" size="75" maxlength="200"/>
+			<br/><br/>
+			Short Name: <input id="shortName" name="shortName" type="text" value="" size="75" maxlength="200"/>
+			<br/><br/>
+        	
+        	<input id="addSkip" name="addSkip" value="Add Skip" type="button" onClick="javascript:addSkipQuestion();"/>
+        	<br/><br/>
+        	
+        	
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns0.answerId" name="skipPatterns[0].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns0.ruleValue" name="skipPatterns[0].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns0.valid" name="skipPatterns[0].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns0.description" name="skipPatterns[0].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv0" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(0);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns1.answerId" name="skipPatterns[1].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns1.ruleValue" name="skipPatterns[1].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns1.valid" name="skipPatterns[1].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns1.description" name="skipPatterns[1].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv1" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(1);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns2.answerId" name="skipPatterns[2].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns2.ruleValue" name="skipPatterns[2].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns2.valid" name="skipPatterns[2].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns2.description" name="skipPatterns[2].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv2" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(2);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns3.answerId" name="skipPatterns[3].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns3.ruleValue" name="skipPatterns[3].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns3.valid" name="skipPatterns[3].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns3.description" name="skipPatterns[3].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv3" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(3);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns4.answerId" name="skipPatterns[4].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns4.ruleValue" name="skipPatterns[4].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns4.valid" name="skipPatterns[4].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns4.description" name="skipPatterns[4].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv4" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(4);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns5.answerId" name="skipPatterns[5].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns5.ruleValue" name="skipPatterns[5].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns5.valid" name="skipPatterns[5].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns5.description" name="skipPatterns[5].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv5" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(5);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns6.answerId" name="skipPatterns[6].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns6.ruleValue" name="skipPatterns[6].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns6.valid" name="skipPatterns[6].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns6.description" name="skipPatterns[6].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv6" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(6);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns7.answerId" name="skipPatterns[7].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns7.ruleValue" name="skipPatterns[7].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns7.valid" name="skipPatterns[7].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns7.description" name="skipPatterns[7].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv7" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(7);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns8.answerId" name="skipPatterns[8].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns8.ruleValue" name="skipPatterns[8].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns8.valid" name="skipPatterns[8].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns8.description" name="skipPatterns[8].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv8" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(8);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns9.answerId" name="skipPatterns[9].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns9.ruleValue" name="skipPatterns[9].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns9.valid" name="skipPatterns[9].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns9.description" name="skipPatterns[9].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv9" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(9);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns10.answerId" name="skipPatterns[10].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns10.ruleValue" name="skipPatterns[10].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns10.valid" name="skipPatterns[10].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns10.description" name="skipPatterns[10].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv10" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(10);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns11.answerId" name="skipPatterns[11].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns11.ruleValue" name="skipPatterns[11].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns11.valid" name="skipPatterns[11].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns11.description" name="skipPatterns[11].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv11" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(11);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns12.answerId" name="skipPatterns[12].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns12.ruleValue" name="skipPatterns[12].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns12.valid" name="skipPatterns[12].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns12.description" name="skipPatterns[12].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv12" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(12);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns13.answerId" name="skipPatterns[13].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns13.ruleValue" name="skipPatterns[13].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns13.valid" name="skipPatterns[13].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns13.description" name="skipPatterns[13].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv13" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(13);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns14.answerId" name="skipPatterns[14].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns14.ruleValue" name="skipPatterns[14].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns14.valid" name="skipPatterns[14].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns14.description" name="skipPatterns[14].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv14" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(14);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns15.answerId" name="skipPatterns[15].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns15.ruleValue" name="skipPatterns[15].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns15.valid" name="skipPatterns[15].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns15.description" name="skipPatterns[15].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv15" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(15);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns16.answerId" name="skipPatterns[16].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns16.ruleValue" name="skipPatterns[16].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns16.valid" name="skipPatterns[16].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns16.description" name="skipPatterns[16].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv16" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(16);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns17.answerId" name="skipPatterns[17].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns17.ruleValue" name="skipPatterns[17].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns17.valid" name="skipPatterns[17].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns17.description" name="skipPatterns[17].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv17" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(17);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns18.answerId" name="skipPatterns[18].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns18.ruleValue" name="skipPatterns[18].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns18.valid" name="skipPatterns[18].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns18.description" name="skipPatterns[18].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv18" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(18);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns19.answerId" name="skipPatterns[19].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns19.ruleValue" name="skipPatterns[19].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns19.valid" name="skipPatterns[19].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns19.description" name="skipPatterns[19].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv19" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(19);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns20.answerId" name="skipPatterns[20].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns20.ruleValue" name="skipPatterns[20].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns20.valid" name="skipPatterns[20].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns20.description" name="skipPatterns[20].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv20" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(20);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns21.answerId" name="skipPatterns[21].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns21.ruleValue" name="skipPatterns[21].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns21.valid" name="skipPatterns[21].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns21.description" name="skipPatterns[21].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv21" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(21);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns22.answerId" name="skipPatterns[22].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns22.ruleValue" name="skipPatterns[22].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns22.valid" name="skipPatterns[22].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns22.description" name="skipPatterns[22].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv22" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(22);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns23.answerId" name="skipPatterns[23].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns23.ruleValue" name="skipPatterns[23].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns23.valid" name="skipPatterns[23].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns23.description" name="skipPatterns[23].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv23" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(23);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+	    		
+				  
+				  
+				     
+				
+        		<input id="skipPatterns24.answerId" name="skipPatterns[24].answerId" type="hidden" value=""/>
+	    		<input id="skipPatterns24.ruleValue" name="skipPatterns[24].ruleValue" type="hidden" value=""/> 
+	    		<input id="skipPatterns24.valid" name="skipPatterns[24].valid" type="hidden" value="false"/>
+	    		<input id="skipPatterns24.description" name="skipPatterns[24].description" type="hidden" value=""/>
+	    							
+        		<div id="skipDiv24" style="display: none; font-size: 100%;">
+        			<a href="javascript:deleteSkip(24);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+        		</div>		
+			
+			
+			<br/><br/>
+							          	
+          	<a href="javascript:addAnswerBlock(totalAnswers)" >Add Answer</a>
+			<br/><br/>
+   		</div>
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.0" style="display: block; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(0);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 1.<input id="answers0.valid" name="answers[0].valid" type="hidden" value="true"/><br/>
+				
+				Answer Type: <select id="answers0.type" name="answers[0].type">  
+						<option value="TEXT">TEXT</option><option value="RADIO" selected="selected">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers0.name" name="answers[0].name" type="text" value="testans20" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers0.description" name="answers[0].description" type="text" value="Test Label 20" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers0.value" name="answers[0].value" type="text" value="testlabel20" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.1" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(1);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 2.<input id="answers1.valid" name="answers[1].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers1.type" name="answers[1].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers1.name" name="answers[1].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers1.description" name="answers[1].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers1.value" name="answers[1].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.2" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(2);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 3.<input id="answers2.valid" name="answers[2].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers2.type" name="answers[2].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers2.name" name="answers[2].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers2.description" name="answers[2].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers2.value" name="answers[2].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.3" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(3);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 4.<input id="answers3.valid" name="answers[3].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers3.type" name="answers[3].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers3.name" name="answers[3].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers3.description" name="answers[3].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers3.value" name="answers[3].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.4" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(4);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 5.<input id="answers4.valid" name="answers[4].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers4.type" name="answers[4].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers4.name" name="answers[4].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers4.description" name="answers[4].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers4.value" name="answers[4].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.5" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(5);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 6.<input id="answers5.valid" name="answers[5].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers5.type" name="answers[5].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers5.name" name="answers[5].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers5.description" name="answers[5].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers5.value" name="answers[5].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.6" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(6);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 7.<input id="answers6.valid" name="answers[6].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers6.type" name="answers[6].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers6.name" name="answers[6].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers6.description" name="answers[6].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers6.value" name="answers[6].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.7" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(7);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 8.<input id="answers7.valid" name="answers[7].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers7.type" name="answers[7].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers7.name" name="answers[7].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers7.description" name="answers[7].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers7.value" name="answers[7].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.8" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(8);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 9.<input id="answers8.valid" name="answers[8].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers8.type" name="answers[8].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers8.name" name="answers[8].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers8.description" name="answers[8].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers8.value" name="answers[8].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.9" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(9);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 10.<input id="answers9.valid" name="answers[9].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers9.type" name="answers[9].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers9.name" name="answers[9].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers9.description" name="answers[9].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers9.value" name="answers[9].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.10" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(10);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 11.<input id="answers10.valid" name="answers[10].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers10.type" name="answers[10].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers10.name" name="answers[10].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers10.description" name="answers[10].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers10.value" name="answers[10].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.11" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(11);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 12.<input id="answers11.valid" name="answers[11].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers11.type" name="answers[11].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers11.name" name="answers[11].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers11.description" name="answers[11].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers11.value" name="answers[11].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.12" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(12);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 13.<input id="answers12.valid" name="answers[12].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers12.type" name="answers[12].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers12.name" name="answers[12].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers12.description" name="answers[12].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers12.value" name="answers[12].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.13" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(13);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 14.<input id="answers13.valid" name="answers[13].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers13.type" name="answers[13].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers13.name" name="answers[13].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers13.description" name="answers[13].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers13.value" name="answers[13].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.14" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(14);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 15.<input id="answers14.valid" name="answers[14].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers14.type" name="answers[14].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers14.name" name="answers[14].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers14.description" name="answers[14].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers14.value" name="answers[14].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.15" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(15);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 16.<input id="answers15.valid" name="answers[15].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers15.type" name="answers[15].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers15.name" name="answers[15].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers15.description" name="answers[15].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers15.value" name="answers[15].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.16" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(16);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 17.<input id="answers16.valid" name="answers[16].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers16.type" name="answers[16].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers16.name" name="answers[16].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers16.description" name="answers[16].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers16.value" name="answers[16].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.17" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(17);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 18.<input id="answers17.valid" name="answers[17].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers17.type" name="answers[17].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers17.name" name="answers[17].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers17.description" name="answers[17].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers17.value" name="answers[17].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.18" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(18);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 19.<input id="answers18.valid" name="answers[18].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers18.type" name="answers[18].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers18.name" name="answers[18].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers18.description" name="answers[18].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers18.value" name="answers[18].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.19" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(19);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 20.<input id="answers19.valid" name="answers[19].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers19.type" name="answers[19].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers19.name" name="answers[19].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers19.description" name="answers[19].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers19.value" name="answers[19].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.20" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(20);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 21.<input id="answers20.valid" name="answers[20].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers20.type" name="answers[20].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers20.name" name="answers[20].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers20.description" name="answers[20].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers20.value" name="answers[20].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.21" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(21);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 22.<input id="answers21.valid" name="answers[21].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers21.type" name="answers[21].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers21.name" name="answers[21].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers21.description" name="answers[21].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers21.value" name="answers[21].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.22" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(22);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 23.<input id="answers22.valid" name="answers[22].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers22.type" name="answers[22].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers22.name" name="answers[22].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers22.description" name="answers[22].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers22.value" name="answers[22].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.23" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(23);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 24.<input id="answers23.valid" name="answers[23].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers23.type" name="answers[23].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers23.name" name="answers[23].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers23.description" name="answers[23].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers23.value" name="answers[23].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.24" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(24);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 25.<input id="answers24.valid" name="answers[24].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers24.type" name="answers[24].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers24.name" name="answers[24].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers24.description" name="answers[24].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers24.value" name="answers[24].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.25" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(25);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 26.<input id="answers25.valid" name="answers[25].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers25.type" name="answers[25].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers25.name" name="answers[25].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers25.description" name="answers[25].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers25.value" name="answers[25].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.26" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(26);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 27.<input id="answers26.valid" name="answers[26].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers26.type" name="answers[26].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers26.name" name="answers[26].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers26.description" name="answers[26].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers26.value" name="answers[26].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.27" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(27);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 28.<input id="answers27.valid" name="answers[27].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers27.type" name="answers[27].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers27.name" name="answers[27].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers27.description" name="answers[27].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers27.value" name="answers[27].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.28" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(28);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 29.<input id="answers28.valid" name="answers[28].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers28.type" name="answers[28].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers28.name" name="answers[28].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers28.description" name="answers[28].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers28.value" name="answers[28].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.29" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(29);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 30.<input id="answers29.valid" name="answers[29].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers29.type" name="answers[29].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers29.name" name="answers[29].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers29.description" name="answers[29].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers29.value" name="answers[29].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.30" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(30);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 31.<input id="answers30.valid" name="answers[30].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers30.type" name="answers[30].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers30.name" name="answers[30].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers30.description" name="answers[30].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers30.value" name="answers[30].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.31" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(31);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 32.<input id="answers31.valid" name="answers[31].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers31.type" name="answers[31].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers31.name" name="answers[31].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers31.description" name="answers[31].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers31.value" name="answers[31].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.32" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(32);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 33.<input id="answers32.valid" name="answers[32].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers32.type" name="answers[32].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers32.name" name="answers[32].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers32.description" name="answers[32].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers32.value" name="answers[32].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.33" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(33);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 34.<input id="answers33.valid" name="answers[33].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers33.type" name="answers[33].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers33.name" name="answers[33].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers33.description" name="answers[33].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers33.value" name="answers[33].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.34" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(34);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 35.<input id="answers34.valid" name="answers[34].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers34.type" name="answers[34].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers34.name" name="answers[34].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers34.description" name="answers[34].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers34.value" name="answers[34].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.35" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(35);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 36.<input id="answers35.valid" name="answers[35].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers35.type" name="answers[35].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers35.name" name="answers[35].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers35.description" name="answers[35].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers35.value" name="answers[35].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.36" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(36);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 37.<input id="answers36.valid" name="answers[36].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers36.type" name="answers[36].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers36.name" name="answers[36].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers36.description" name="answers[36].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers36.value" name="answers[36].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.37" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(37);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 38.<input id="answers37.valid" name="answers[37].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers37.type" name="answers[37].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers37.name" name="answers[37].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers37.description" name="answers[37].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers37.value" name="answers[37].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.38" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(38);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 39.<input id="answers38.valid" name="answers[38].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers38.type" name="answers[38].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers38.name" name="answers[38].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers38.description" name="answers[38].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers38.value" name="answers[38].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.39" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(39);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 40.<input id="answers39.valid" name="answers[39].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers39.type" name="answers[39].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers39.name" name="answers[39].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers39.description" name="answers[39].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers39.value" name="answers[39].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.40" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(40);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 41.<input id="answers40.valid" name="answers[40].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers40.type" name="answers[40].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers40.name" name="answers[40].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers40.description" name="answers[40].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers40.value" name="answers[40].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.41" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(41);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 42.<input id="answers41.valid" name="answers[41].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers41.type" name="answers[41].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers41.name" name="answers[41].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers41.description" name="answers[41].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers41.value" name="answers[41].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.42" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(42);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 43.<input id="answers42.valid" name="answers[42].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers42.type" name="answers[42].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers42.name" name="answers[42].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers42.description" name="answers[42].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers42.value" name="answers[42].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.43" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(43);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 44.<input id="answers43.valid" name="answers[43].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers43.type" name="answers[43].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers43.name" name="answers[43].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers43.description" name="answers[43].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers43.value" name="answers[43].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.44" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(44);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 45.<input id="answers44.valid" name="answers[44].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers44.type" name="answers[44].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers44.name" name="answers[44].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers44.description" name="answers[44].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers44.value" name="answers[44].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.45" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(45);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 46.<input id="answers45.valid" name="answers[45].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers45.type" name="answers[45].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers45.name" name="answers[45].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers45.description" name="answers[45].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers45.value" name="answers[45].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.46" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(46);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 47.<input id="answers46.valid" name="answers[46].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers46.type" name="answers[46].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers46.name" name="answers[46].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers46.description" name="answers[46].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers46.value" name="answers[46].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.47" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(47);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 48.<input id="answers47.valid" name="answers[47].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers47.type" name="answers[47].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers47.name" name="answers[47].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers47.description" name="answers[47].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers47.value" name="answers[47].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.48" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(48);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 49.<input id="answers48.valid" name="answers[48].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers48.type" name="answers[48].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers48.name" name="answers[48].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers48.description" name="answers[48].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers48.value" name="answers[48].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.49" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(49);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 50.<input id="answers49.valid" name="answers[49].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers49.type" name="answers[49].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers49.name" name="answers[49].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers49.description" name="answers[49].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers49.value" name="answers[49].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.50" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(50);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 51.<input id="answers50.valid" name="answers[50].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers50.type" name="answers[50].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers50.name" name="answers[50].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers50.description" name="answers[50].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers50.value" name="answers[50].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.51" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(51);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 52.<input id="answers51.valid" name="answers[51].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers51.type" name="answers[51].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers51.name" name="answers[51].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers51.description" name="answers[51].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers51.value" name="answers[51].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.52" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(52);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 53.<input id="answers52.valid" name="answers[52].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers52.type" name="answers[52].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers52.name" name="answers[52].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers52.description" name="answers[52].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers52.value" name="answers[52].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.53" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(53);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 54.<input id="answers53.valid" name="answers[53].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers53.type" name="answers[53].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers53.name" name="answers[53].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers53.description" name="answers[53].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers53.value" name="answers[53].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.54" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(54);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 55.<input id="answers54.valid" name="answers[54].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers54.type" name="answers[54].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers54.name" name="answers[54].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers54.description" name="answers[54].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers54.value" name="answers[54].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.55" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(55);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 56.<input id="answers55.valid" name="answers[55].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers55.type" name="answers[55].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers55.name" name="answers[55].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers55.description" name="answers[55].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers55.value" name="answers[55].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.56" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(56);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 57.<input id="answers56.valid" name="answers[56].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers56.type" name="answers[56].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers56.name" name="answers[56].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers56.description" name="answers[56].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers56.value" name="answers[56].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.57" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(57);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 58.<input id="answers57.valid" name="answers[57].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers57.type" name="answers[57].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers57.name" name="answers[57].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers57.description" name="answers[57].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers57.value" name="answers[57].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.58" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(58);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 59.<input id="answers58.valid" name="answers[58].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers58.type" name="answers[58].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers58.name" name="answers[58].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers58.description" name="answers[58].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers58.value" name="answers[58].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.59" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(59);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 60.<input id="answers59.valid" name="answers[59].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers59.type" name="answers[59].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers59.name" name="answers[59].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers59.description" name="answers[59].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers59.value" name="answers[59].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.60" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(60);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 61.<input id="answers60.valid" name="answers[60].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers60.type" name="answers[60].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers60.name" name="answers[60].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers60.description" name="answers[60].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers60.value" name="answers[60].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.61" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(61);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 62.<input id="answers61.valid" name="answers[61].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers61.type" name="answers[61].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers61.name" name="answers[61].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers61.description" name="answers[61].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers61.value" name="answers[61].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.62" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(62);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 63.<input id="answers62.valid" name="answers[62].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers62.type" name="answers[62].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers62.name" name="answers[62].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers62.description" name="answers[62].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers62.value" name="answers[62].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.63" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(63);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 64.<input id="answers63.valid" name="answers[63].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers63.type" name="answers[63].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers63.name" name="answers[63].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers63.description" name="answers[63].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers63.value" name="answers[63].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.64" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(64);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 65.<input id="answers64.valid" name="answers[64].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers64.type" name="answers[64].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers64.name" name="answers[64].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers64.description" name="answers[64].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers64.value" name="answers[64].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.65" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(65);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 66.<input id="answers65.valid" name="answers[65].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers65.type" name="answers[65].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers65.name" name="answers[65].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers65.description" name="answers[65].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers65.value" name="answers[65].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.66" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(66);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 67.<input id="answers66.valid" name="answers[66].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers66.type" name="answers[66].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers66.name" name="answers[66].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers66.description" name="answers[66].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers66.value" name="answers[66].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.67" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(67);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 68.<input id="answers67.valid" name="answers[67].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers67.type" name="answers[67].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers67.name" name="answers[67].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers67.description" name="answers[67].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers67.value" name="answers[67].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.68" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(68);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 69.<input id="answers68.valid" name="answers[68].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers68.type" name="answers[68].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers68.name" name="answers[68].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers68.description" name="answers[68].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers68.value" name="answers[68].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.69" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(69);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 70.<input id="answers69.valid" name="answers[69].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers69.type" name="answers[69].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers69.name" name="answers[69].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers69.description" name="answers[69].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers69.value" name="answers[69].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.70" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(70);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 71.<input id="answers70.valid" name="answers[70].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers70.type" name="answers[70].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers70.name" name="answers[70].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers70.description" name="answers[70].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers70.value" name="answers[70].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.71" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(71);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 72.<input id="answers71.valid" name="answers[71].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers71.type" name="answers[71].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers71.name" name="answers[71].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers71.description" name="answers[71].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers71.value" name="answers[71].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.72" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(72);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 73.<input id="answers72.valid" name="answers[72].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers72.type" name="answers[72].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers72.name" name="answers[72].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers72.description" name="answers[72].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers72.value" name="answers[72].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.73" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(73);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 74.<input id="answers73.valid" name="answers[73].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers73.type" name="answers[73].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers73.name" name="answers[73].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers73.description" name="answers[73].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers73.value" name="answers[73].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.74" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(74);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 75.<input id="answers74.valid" name="answers[74].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers74.type" name="answers[74].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers74.name" name="answers[74].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers74.description" name="answers[74].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers74.value" name="answers[74].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.75" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(75);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 76.<input id="answers75.valid" name="answers[75].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers75.type" name="answers[75].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers75.name" name="answers[75].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers75.description" name="answers[75].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers75.value" name="answers[75].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.76" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(76);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 77.<input id="answers76.valid" name="answers[76].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers76.type" name="answers[76].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers76.name" name="answers[76].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers76.description" name="answers[76].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers76.value" name="answers[76].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.77" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(77);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 78.<input id="answers77.valid" name="answers[77].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers77.type" name="answers[77].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers77.name" name="answers[77].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers77.description" name="answers[77].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers77.value" name="answers[77].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.78" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(78);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 79.<input id="answers78.valid" name="answers[78].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers78.type" name="answers[78].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers78.name" name="answers[78].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers78.description" name="answers[78].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers78.value" name="answers[78].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.79" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(79);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 80.<input id="answers79.valid" name="answers[79].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers79.type" name="answers[79].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers79.name" name="answers[79].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers79.description" name="answers[79].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers79.value" name="answers[79].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.80" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(80);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 81.<input id="answers80.valid" name="answers[80].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers80.type" name="answers[80].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers80.name" name="answers[80].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers80.description" name="answers[80].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers80.value" name="answers[80].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.81" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(81);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 82.<input id="answers81.valid" name="answers[81].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers81.type" name="answers[81].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers81.name" name="answers[81].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers81.description" name="answers[81].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers81.value" name="answers[81].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.82" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(82);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 83.<input id="answers82.valid" name="answers[82].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers82.type" name="answers[82].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers82.name" name="answers[82].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers82.description" name="answers[82].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers82.value" name="answers[82].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.83" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(83);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 84.<input id="answers83.valid" name="answers[83].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers83.type" name="answers[83].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers83.name" name="answers[83].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers83.description" name="answers[83].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers83.value" name="answers[83].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.84" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(84);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 85.<input id="answers84.valid" name="answers[84].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers84.type" name="answers[84].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers84.name" name="answers[84].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers84.description" name="answers[84].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers84.value" name="answers[84].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.85" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(85);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 86.<input id="answers85.valid" name="answers[85].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers85.type" name="answers[85].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers85.name" name="answers[85].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers85.description" name="answers[85].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers85.value" name="answers[85].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.86" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(86);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 87.<input id="answers86.valid" name="answers[86].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers86.type" name="answers[86].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers86.name" name="answers[86].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers86.description" name="answers[86].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers86.value" name="answers[86].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.87" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(87);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 88.<input id="answers87.valid" name="answers[87].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers87.type" name="answers[87].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers87.name" name="answers[87].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers87.description" name="answers[87].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers87.value" name="answers[87].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.88" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(88);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 89.<input id="answers88.valid" name="answers[88].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers88.type" name="answers[88].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers88.name" name="answers[88].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers88.description" name="answers[88].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers88.value" name="answers[88].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.89" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(89);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 90.<input id="answers89.valid" name="answers[89].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers89.type" name="answers[89].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers89.name" name="answers[89].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers89.description" name="answers[89].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers89.value" name="answers[89].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.90" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(90);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 91.<input id="answers90.valid" name="answers[90].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers90.type" name="answers[90].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers90.name" name="answers[90].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers90.description" name="answers[90].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers90.value" name="answers[90].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.91" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(91);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 92.<input id="answers91.valid" name="answers[91].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers91.type" name="answers[91].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers91.name" name="answers[91].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers91.description" name="answers[91].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers91.value" name="answers[91].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.92" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(92);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 93.<input id="answers92.valid" name="answers[92].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers92.type" name="answers[92].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers92.name" name="answers[92].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers92.description" name="answers[92].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers92.value" name="answers[92].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.93" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(93);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 94.<input id="answers93.valid" name="answers[93].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers93.type" name="answers[93].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers93.name" name="answers[93].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers93.description" name="answers[93].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers93.value" name="answers[93].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.94" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(94);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 95.<input id="answers94.valid" name="answers[94].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers94.type" name="answers[94].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers94.name" name="answers[94].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers94.description" name="answers[94].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers94.value" name="answers[94].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.95" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(95);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 96.<input id="answers95.valid" name="answers[95].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers95.type" name="answers[95].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers95.name" name="answers[95].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers95.description" name="answers[95].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers95.value" name="answers[95].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.96" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(96);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 97.<input id="answers96.valid" name="answers[96].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers96.type" name="answers[96].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers96.name" name="answers[96].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers96.description" name="answers[96].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers96.value" name="answers[96].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.97" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(97);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 98.<input id="answers97.valid" name="answers[97].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers97.type" name="answers[97].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers97.name" name="answers[97].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers97.description" name="answers[97].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers97.value" name="answers[97].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.98" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(98);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 99.<input id="answers98.valid" name="answers[98].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers98.type" name="answers[98].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers98.name" name="answers[98].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers98.description" name="answers[98].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers98.value" name="answers[98].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+			
+			  
+			  
+			
+			<div id="answerDiv.99" style="display: none; font-size: 100%;"  >
+				<hr/>
+				<a href="javascript:deleteAnswer(99);"><img src='images/delete.jpg' alt='delete' height='18' width='18' border='0' /></a>&nbsp;
+				Answer 100.<input id="answers99.valid" name="answers[99].valid" type="hidden" value="false"/><br/>
+				
+				Answer Type: <select id="answers99.type" name="answers[99].type">  
+						<option value="TEXT" selected="selected">TEXT</option><option value="RADIO">RADIO</option><option value="CHECKBOX">CHECKBOX</option>
+					</select>
+				<br/>
+				Short Name:  <input id="answers99.name" name="answers[99].name" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Text:  <input id="answers99.description" name="answers[99].description" type="text" value="" size="75" maxlength="200"/>
+				<br/>
+				Answer Value: <input id="answers99.value" name="answers[99].value" type="text" value="" size="25" maxlength="25"/>
+			</div>        
+		
+		<br/><br/>
+		<input name="submit" type="submit" value="Save" />
+	</form>
+	
+</div><br class="clearfloat" />
+</div><!-- end #content -->
+
+<!-- end #container --> 
+
+<!-- Footer Begin -->
+<div id="footer">
+  
+	<div id="disclamer">&#169;2009-2010 Dr. Susan Love Research Foundation. All rights reserved | <a href="http://localhost:8080/HOW/Home/TermsofUse.do">Terms of Use</a> | <a href="http://localhost:8080/HOW/Home/Privacy.do">Privacy Policy</a> | <a href="http://localhost:8080/HOW/Home/Contact.do">Contact Us</a></div>
+	<div id="powered"><a href="https://cabig.nci.nih.gov/"><img src="../HowFormBuilder/images/pb_cabig.gif" alt="Powered by caBIG&#174;" width="72" height="29" border="0" title="Powered by caBIG&#174;" /></a></div>
+	<br class="clearfloat" />
+	<div id="bot-bg"></div>
+</div><!-- end #footer -->
+<!-- Footer End -->
+</div></body>
+
+<!-- Mirrored from localhost:8080/HowFormBuilder//question.edit?id=52350&formId=50501 by HTTrack Website Copier/3.x [XR&CO'2010], Mon, 19 Apr 2010 21:38:24 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=ISO-8859-1"><!-- /Added by HTTrack -->
+</html>
+

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="xsltforms/xsltforms.xsl" type="text/xsl"?>
+    <!--  DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xform="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      xmlns:ajx="http://www.ajaxforms.net/2006/ajx">
+
+<head>
+	<title>Main Page</title>
+	<script src="xsltforms/dialog_box.js"></script>
+<xform:model>
+<xsd:schema xmlns:hcitT="http://www.healthcit.com/2010/formbuilder" targetNamespace="http://www.healthcit.com/2010/formbuilder"/>
+<xform:instance id="FormDataInstance">
+<form xmlns="" name="Symptom Impact -1- Performance Scales ©" id="033fa146-a423-406c-a788-71ebd8769066">
+<question id="a6b554f4-94aa-4af4-84e3-51a02c5eb107" sn="Mobility">
+<text>Below are categories of mobility disability Each category has some examples included to help you decide. All of the examples within a category may not apply to you. Please read all of the categories and check the single category which best describes your average condition in the past four weeks. Compare your current condition to your mobility before you developed MS</text>
+<answer id="e422c4ca-0e88-4057-a0ee-fabc776a0485"/>
+</question>
+<question id="b86d00ad-a25a-4849-a2b8-8902cf975ee0" sn="Hand function">
+<text>Please read all of the categories and check the single category which best describes your worst hand function condition in the past month. Compare your current condition to your hand function before you developed MS.</text>
+<answer id="9b991612-1440-4213-8303-086c5e8490e8"/>
+</question>
+<question id="128f4537-1afa-4613-9dc3-0de834ac60e3" sn="Vision">
+<text>Please read all of the categories, and check the single category which best describes your overall visual condition (with glasses if you use them) over the past month. Compare your current condition to your vision before you developed MS.</text>
+<answer id="a3365554-c834-455e-87c1-04b5f4cef220"/>
+</question>
+<question id="cd41ceac-dd67-4670-b376-58db38c9bcc7" sn="Fatigue">
+<text>Please read all of the categories, and check the single category that best describes your fatigue condition in the past month. Compare your current condition to your fatigue before you developed MS.</text>
+<answer id="44d8f6db-4160-45a9-b934-a0384dc5821d"/>
+</question>
+</form>
+</xform:instance>
+<xform:instance id="PureContentInstance">
+<data xmlns="">
+<pure-content id="Q.CONTENT-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<pure-content id="Q.CONTENT-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<pure-content id="Q.CONTENT-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<pure-content id="Q.CONTENT-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+</data>
+</xform:instance>
+<xform:instance id="ReadOnlyInstance">
+<form xmlns="" name="Symptom Impact -1- Performance Scales ©" id="read-only-033fa146-a423-406c-a788-71ebd8769066"/>
+</xform:instance>
+<xform:instance id="DataGroupInstance">
+<data xmlns="">
+<data-group id="Q.GRP-26a7b6b6-8433-4513-aac3-3b047677faab" visible="true()"/>
+<data-group id="Q.GRP-985d8d86-1ceb-4cb0-8219-d4783ac818ac" visible="true()"/>
+<data-group id="Q.GRP-956cc9f1-111b-44e2-aa57-d3bd09ab73aa" visible="true()"/>
+<data-group id="Q.GRP-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a" visible="true()"/>
+<data-group id="Q.GRP-bee0a487-c4a1-4f5a-a740-3d07e866f260" visible="true()"/>
+<data-group id="Q.GRP-039b8abb-3e3b-4b2f-abad-7bd14b47dc87" visible="true()"/>
+<data-group id="Q.GRP-0ac8c0ca-4363-4869-87a8-a1733eb5f572" visible="true()"/>
+<data-group id="Q.GRP-b95c952a-3f12-41e2-9e52-9338b8995e43" visible="true()"/>
+</data>
+</xform:instance>
+<xform:instance id="CrossFormSkipInstance">
+<data xmlns=""/>
+</xform:instance>
+<xform:instance id="URLInstance">
+<data xmlns="">
+<base-url>xform.view</base-url>
+<full-url>xform.view</full-url>
+</data>
+</xform:instance>
+<xform:instance id="ContextSpecificErrorsInstance">
+<data xmlns=""/>
+</xform:instance>
+<xform:instance id="ViewInstance">
+<data xmlns=""/>
+</xform:instance>
+<xform:instance id="Q-ANSWER_SET-a6b554f4-94aa-4af4-84e3-51a02c5eb107">
+<options xmlns="">
+<answer sn="" text="Normal: Functionally normal walking and running." example="Example: Although I have MS and some symptoms, my walking or running is not limited. ">0</answer>
+<answer sn="" text="Minimal Gait Disability: Minor but noticeable effects on mobility." example="Example: I am making minor adjustments in my work or lifestyle beacause of some difficulty in walking. Example: I have given up particularly strenuous activties because of walking problems ">1</answer>
+<answer sn="" text="Mild Gait Disability: Noticeable effects of mobility">2</answer>
+<answer sn="" text="Occasional Use of Cane or Unilateral Support:" example="May use cane or unilateral support for greater distances outside">3</answer>
+<answer sn="" text="Frequent Use of Cane: Unable to walk 25 feet (i.e., 2 car lengths) without cane/unilateral support">4</answer>
+<answer sn="" text="Severe Gait Disability - Bilateral Support: Requires bilateral support (e.g. crutches, walker) to walk 25 feet (i.e., 2 car lengths)">5</answer>
+<answer sn="" text="Total Gait Disability or Bedridden: Essentially confined to a wheelchair; may be able to take 1 or 2 steps. " example="Example: Even though I can take a step or two on my own, I need to use a wheelchair for any distances greater than 25 feet (i.e., 2 car lengths).">6</answer>
+</options>
+</xform:instance>
+<xform:instance id="Q-ANSWER_SET-b86d00ad-a25a-4849-a2b8-8902cf975ee0">
+<options xmlns="">
+<answer sn="" text="Normal: Although I have MS and some symptoms, my hands have not been affected.">0</answer>
+<answer sn="" text="Minimal Hand Disability: I have some problems with my hands, but it has not changed my activites. I do not write as well as I used to.">1</answer>
+<answer sn="" text="Mild Hand Disability: I am making a few adjustments in my activities because of some difficulty with coordination, shaking, and strength in my hands. I have reduced some activities requiring fine hand control, such as handicrafts, typing, etc.">2</answer>
+<answer sn="" text="Moderate Hand Disability: I am making many adjustments in my activities due to hand problems.">3</answer>
+<answer sn="" text="Severe Hand Disability: I have given up important activities due to hand problems. I am still able to do my activities, but they take me much longer.">4</answer>
+<answer sn="" text="Total Hand Disability: Every day, difficulty with my hands prevents me from doing many of my activities.">5</answer>
+</options>
+</xform:instance>
+<xform:instance id="Q-ANSWER_SET-128f4537-1afa-4613-9dc3-0de834ac60e3">
+<options xmlns="">
+<answer sn="" text="Normal Vision: Functionally normal; no limitations on activities or lifestyle. MS has not affected my vision. I wear glasses but otherwise my vision is normal.">0</answer>
+<answer sn="" text="Minimal Visual Disability: My vision is normal, but it has been affected in the past by MS">1</answer>
+<answer sn="" text="Mild Visual Disability: I have visual symptoms of either blurred or double vision, but I am still able to do all of my usual activities.">2</answer>
+<answer sn="" text="Moderate Visual Disability: Because of my visual problems, I have been forced to give up some of my usual activities, but after a period of rest I can usually return to these activities.">3</answer>
+<answer sn="" text="Severe Visual Disability: I am no longer able to maintain my original lifestyle because of my vision, and rest does not seem to help my vision. I can no longer drive a car because of my vision.">4</answer>
+<answer sn="" text="Total Visual Disability: I am essentially blind. I cannot read, even with aids.">5</answer>
+</options>
+</xform:instance>
+<xform:instance id="Q-ANSWER_SET-cd41ceac-dd67-4670-b376-58db38c9bcc7">
+<options xmlns="">
+<answer sn="" text="Normal Fatigue: Functionally normal, no limitations on activity or lifestyle. I do not notice being fatigued.">0</answer>
+<answer sn="" text="Minimal Fatigue Disability: I experience fatigue for no apparent reason, but it has not changed my activity.">1</answer>
+<answer sn="" text="Mild Fatigue Disability: Occasionally, fatigue forces me to change some of my activities (e.g, once a week or less).">2</answer>
+<answer sn="" text="Moderate Fatigue Disability: Frequently, fatigue forces me to change some of my activities (e.g., several times a week).">3</answer>
+<answer sn="" text="Severe Fatigue Disability: Every day, fatigue forces me to modify my daily activities. I am always tired.">4</answer>
+<answer sn="" text="Total Fatigue Disability: Every day, fatigue prevents me from doing many of my daily activities.">5</answer>
+</options>
+</xform:instance>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-26a7b6b6-8433-4513-aac3-3b047677faab', instance('DataGroupInstance'))" id="Q.GRP-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-985d8d86-1ceb-4cb0-8219-d4783ac818ac', instance('DataGroupInstance'))" id="Q.GRP-985d8d86-1ceb-4cb0-8219-d4783ac818ac"/>
+<xform:bind nodeset="id('a6b554f4-94aa-4af4-84e3-51a02c5eb107', instance('FormDataInstance'))/answer[@id='e422c4ca-0e88-4057-a0ee-fabc776a0485']" id="Q-a6b554f4-94aa-4af4-84e3-51a02c5eb107" type="xform:string"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-956cc9f1-111b-44e2-aa57-d3bd09ab73aa', instance('DataGroupInstance'))" id="Q.GRP-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a', instance('DataGroupInstance'))" id="Q.GRP-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a"/>
+<xform:bind nodeset="id('b86d00ad-a25a-4849-a2b8-8902cf975ee0', instance('FormDataInstance'))/answer[@id='9b991612-1440-4213-8303-086c5e8490e8']" id="Q-b86d00ad-a25a-4849-a2b8-8902cf975ee0" type="xform:string"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-bee0a487-c4a1-4f5a-a740-3d07e866f260', instance('DataGroupInstance'))" id="Q.GRP-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-039b8abb-3e3b-4b2f-abad-7bd14b47dc87', instance('DataGroupInstance'))" id="Q.GRP-039b8abb-3e3b-4b2f-abad-7bd14b47dc87"/>
+<xform:bind nodeset="id('128f4537-1afa-4613-9dc3-0de834ac60e3', instance('FormDataInstance'))/answer[@id='a3365554-c834-455e-87c1-04b5f4cef220']" id="Q-128f4537-1afa-4613-9dc3-0de834ac60e3" type="xform:string"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-0ac8c0ca-4363-4869-87a8-a1733eb5f572', instance('DataGroupInstance'))" id="Q.GRP-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+<xform:bind nodeset="@id" type="xsd:ID"/>
+<xform:bind nodeset="id('Q.GRP-b95c952a-3f12-41e2-9e52-9338b8995e43', instance('DataGroupInstance'))" id="Q.GRP-b95c952a-3f12-41e2-9e52-9338b8995e43"/>
+<xform:bind nodeset="id('cd41ceac-dd67-4670-b376-58db38c9bcc7', instance('FormDataInstance'))/answer[@id='44d8f6db-4160-45a9-b934-a0384dc5821d']" id="Q-cd41ceac-dd67-4670-b376-58db38c9bcc7" type="xform:string"/>
+<xform:submission id="SendDataElement" method="post" includenamespaceprefixes="">
+<xform:resource value="instance('URLInstance')/full-url"/>
+<xform:message ev:event="xforms-submit-error">The form that you are working on either has incomplete questions or invalid data. This means that you have either not completed all mandatory questions or have entered invalid data into the form. Please recheck the form and make necessary changes before moving on.  Please keep in mind that many of the text fields have restrictions.  Read the question carefully to make sure you are aware of these restrictions.</xform:message>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-b95c952a-3f12-41e2-9e52-9338b8995e43"/>
+</xform:submission>
+<xform:submission id="PartialSendDataElement" method="post" includenamespaceprefixes="" validate="false">
+<xform:message event="xforms-submit-error">The form that you are working on either has incomplete questions or invalid data. This means that you have either not completed all mandatory questions or have entered invalid data into the form. Please recheck the form and make necessary changes before moving on.  Please keep in mind that many of the text fields have restrictions.  Read the question carefully to make sure you are aware of these restrictions.</xform:message>
+<xform:resource value="instance('URLInstance')/full-url"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+<xform:toggle ev:event="xforms-submit-error" case="errBlk-b95c952a-3f12-41e2-9e52-9338b8995e43"/>
+</xform:submission>
+</xform:model></head>
+
+<body class="twoColFixLtHdr">
+<!-- Install Google Chrome Frame in IE browsers if not already installed -->
+<div id="container">
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="header">
+  	<div id="primDivContainer">
+    	<div id="primDiv">
+			<!-- Begin Module Navigation -->
+			<!-- End Module Navigation -->	
+		</div>
+    <!-- end #primDivContainer --></div>
+		<div id="utilDiv">
+		</div>
+  </div><!-- end #header -->
+
+<!-- Header End -->
+
+<div id="xfContentDiv">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<p><!--  Here goes the XForms body -->
+	
+<xform:output ref="instance('FormDataInstance')/@name" class="hcit-form-title"/>
+<xform:group ref="id('Q.GRP-26a7b6b6-8433-4513-aac3-3b047677faab', instance('DataGroupInstance'))" class="hcit-content-heading">
+<xform:switch>
+<xform:case id="noErrBlk-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<xform:case id="errBlk-26a7b6b6-8433-4513-aac3-3b047677faab">
+<xform:switch>
+<xform:case id="noErrInvBlk-26a7b6b6-8433-4513-aac3-3b047677faab"/>
+<xform:case id="errInvBlk-26a7b6b6-8433-4513-aac3-3b047677faab">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('Q.CONTENT-26a7b6b6-8433-4513-aac3-3b047677faab', instance('PureContentInstance'))" class="hcit-content-heading-text">
+<xform:label>
+<b xmlns=""> Mobility </b>
+</xform:label>
+</xform:output>
+</xform:group>
+<xform:group ref="id('Q.GRP-985d8d86-1ceb-4cb0-8219-d4783ac818ac', instance('DataGroupInstance'))" class="hcit-group-input-radio">
+<xform:switch>
+<xform:case id="noErrBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac"/>
+<xform:case id="errBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac">
+<xform:switch>
+<xform:case id="noErrInvBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac"/>
+<xform:case id="errInvBlk-985d8d86-1ceb-4cb0-8219-d4783ac818ac">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('a6b554f4-94aa-4af4-84e3-51a02c5eb107', instance('FormDataInstance'))/text" class="hcitQuestionText"/>
+<xform:select1 ref="id('a6b554f4-94aa-4af4-84e3-51a02c5eb107', instance('FormDataInstance'))/answer" appearance="full" class="hcitAnswerRadio hcit-vertical-align">
+<xform:itemset nodeset="instance('Q-ANSWER_SET-a6b554f4-94aa-4af4-84e3-51a02c5eb107')/answer">
+<xform:label  class="hcit-label-input-radio"><b>
+<xform:output ref="@text"/></b><br/><xform:output ref="@example"/>
+</xform:label>
+<xform:value ref="."/>
+</xform:itemset>
+<xform:alert>
+<xform:output value="'Incorrect format.'"/>
+</xform:alert>
+</xform:select1>
+</xform:group>
+<xform:group ref="id('Q.GRP-956cc9f1-111b-44e2-aa57-d3bd09ab73aa', instance('DataGroupInstance'))" class="hcit-content-heading">
+<xform:switch>
+<xform:case id="noErrBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<xform:case id="errBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa">
+<xform:switch>
+<xform:case id="noErrInvBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa"/>
+<xform:case id="errInvBlk-956cc9f1-111b-44e2-aa57-d3bd09ab73aa">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('Q.CONTENT-956cc9f1-111b-44e2-aa57-d3bd09ab73aa', instance('PureContentInstance'))" class="hcit-content-heading-text">
+<xform:label>
+<b xmlns=""> Hand Function </b>
+</xform:label>
+</xform:output>
+</xform:group>
+<xform:group ref="id('Q.GRP-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a', instance('DataGroupInstance'))" class="hcit-group-input-radio">
+<xform:switch>
+<xform:case id="noErrBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a"/>
+<xform:case id="errBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a">
+<xform:switch>
+<xform:case id="noErrInvBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a"/>
+<xform:case id="errInvBlk-a719f2e1-1dc4-4eed-93ab-e5ced1d61a5a">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('b86d00ad-a25a-4849-a2b8-8902cf975ee0', instance('FormDataInstance'))/text" class="hcitQuestionText"/>
+<xform:select1 ref="id('b86d00ad-a25a-4849-a2b8-8902cf975ee0', instance('FormDataInstance'))/answer" appearance="full" class="hcitAnswerRadio hcit-vertical-align">
+<xform:itemset nodeset="instance('Q-ANSWER_SET-b86d00ad-a25a-4849-a2b8-8902cf975ee0')/answer">
+<xform:label ref="@text" class="hcit-label-input-radio"/>
+<xform:value ref="."/>
+</xform:itemset>
+<xform:alert>
+<xform:output value="'Incorrect format.'"/>
+</xform:alert>
+</xform:select1>
+</xform:group>
+<xform:group ref="id('Q.GRP-bee0a487-c4a1-4f5a-a740-3d07e866f260', instance('DataGroupInstance'))" class="hcit-content-heading">
+<xform:switch>
+<xform:case id="noErrBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<xform:case id="errBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260">
+<xform:switch>
+<xform:case id="noErrInvBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260"/>
+<xform:case id="errInvBlk-bee0a487-c4a1-4f5a-a740-3d07e866f260">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('Q.CONTENT-bee0a487-c4a1-4f5a-a740-3d07e866f260', instance('PureContentInstance'))" class="hcit-content-heading-text">
+<xform:label>
+<b xmlns="">Vision</b>
+</xform:label>
+</xform:output>
+</xform:group>
+<xform:group ref="id('Q.GRP-039b8abb-3e3b-4b2f-abad-7bd14b47dc87', instance('DataGroupInstance'))" class="hcit-group-input-radio">
+<xform:switch>
+<xform:case id="noErrBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87"/>
+<xform:case id="errBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87">
+<xform:switch>
+<xform:case id="noErrInvBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87"/>
+<xform:case id="errInvBlk-039b8abb-3e3b-4b2f-abad-7bd14b47dc87">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('128f4537-1afa-4613-9dc3-0de834ac60e3', instance('FormDataInstance'))/text" class="hcitQuestionText"/>
+<xform:select1 ref="id('128f4537-1afa-4613-9dc3-0de834ac60e3', instance('FormDataInstance'))/answer" appearance="full" class="hcitAnswerRadio hcit-vertical-align">
+<xform:itemset nodeset="instance('Q-ANSWER_SET-128f4537-1afa-4613-9dc3-0de834ac60e3')/answer">
+<xform:label ref="@text" class="hcit-label-input-radio"/>
+<xform:value ref="."/>
+</xform:itemset>
+<xform:alert>
+<xform:output value="'Incorrect format.'"/>
+</xform:alert>
+</xform:select1>
+</xform:group>
+<xform:group ref="id('Q.GRP-0ac8c0ca-4363-4869-87a8-a1733eb5f572', instance('DataGroupInstance'))" class="hcit-content-heading">
+<xform:switch>
+<xform:case id="noErrBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+<xform:case id="errBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572">
+<xform:switch>
+<xform:case id="noErrInvBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572"/>
+<xform:case id="errInvBlk-0ac8c0ca-4363-4869-87a8-a1733eb5f572">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('Q.CONTENT-0ac8c0ca-4363-4869-87a8-a1733eb5f572', instance('PureContentInstance'))" class="hcit-content-heading-text">
+<xform:label>
+<b xmlns="">Fatigue </b>
+</xform:label>
+</xform:output>
+</xform:group>
+<xform:group ref="id('Q.GRP-b95c952a-3f12-41e2-9e52-9338b8995e43', instance('DataGroupInstance'))" class="hcit-group-input-radio">
+<xform:switch>
+<xform:case id="noErrBlk-b95c952a-3f12-41e2-9e52-9338b8995e43"/>
+<xform:case id="errBlk-b95c952a-3f12-41e2-9e52-9338b8995e43">
+<xform:switch>
+<xform:case id="noErrInvBlk-b95c952a-3f12-41e2-9e52-9338b8995e43"/>
+<xform:case id="errInvBlk-b95c952a-3f12-41e2-9e52-9338b8995e43">
+<xform:output class="errorsClass" value="'You have made an invalid entry.'"/>
+</xform:case>
+</xform:switch>
+</xform:case>
+</xform:switch>
+<xform:output ref="id('cd41ceac-dd67-4670-b376-58db38c9bcc7', instance('FormDataInstance'))/text" class="hcitQuestionText"/>
+<xform:select1 ref="id('cd41ceac-dd67-4670-b376-58db38c9bcc7', instance('FormDataInstance'))/answer" appearance="full" class="hcitAnswerRadio hcit-vertical-align">
+<xform:itemset nodeset="instance('Q-ANSWER_SET-cd41ceac-dd67-4670-b376-58db38c9bcc7')/answer">
+<xform:label ref="@text" class="hcit-label-input-radio"/>
+<xform:value ref="."/>
+</xform:itemset>
+<xform:alert>
+<xform:output value="'Incorrect format.'"/>
+</xform:alert>
+</xform:select1>
+</xform:group>
+
+	</p>
+</div>
+
+		<div id="xfFooter">
+		
+<!-- Footer Begin -->
+<div id="footer"> 
+	<div id="powered"><a href="javascript:alert('CURE Form Builder version 2.7.6')">About CURE Form Builder</a></div>
+	<br class="clearfloat" />
+	<div id="bot-bg"></div>
+</div>
+<div id="copyright">Copyright <span id="currentYear">2011</span> © HealthCare IT, Inc. All Rights Reserved.</div>
+<script type="text/javascript">
+<!--
+	var d = new Date();
+	document.getElementById('currentYear').innerHTML = d.getFullYear();
+//-->
+</script>
+<!-- end #footer -->
+<!-- Footer End --><!-- end #container -->
+	</div>
+</div>
+</body>
+</html>

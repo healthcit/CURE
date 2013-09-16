@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<?xml-stylesheet href="xsltforms/xsltforms.xsl" type="text/xsl"?>
+    <!--  DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"  -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xform="http://www.w3.org/2002/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      xmlns:ajx="http://www.ajaxforms.net/2006/ajx">
+
+<head>
+	<title>Main Page</title>
+	<xform:model>
+      <xsd:schema xmlns:hcitT="http://www.healthcit.com/2010/formbuilder" targetNamespace="http://www.healthcit.com/2010/formbuilder"/>
+      <xform:instance id="FormDataInstance">
+        <form xmlns="" name="Test mandatory with skips" id="ecaced26-a961-4ab2-98b3-ed0dc095c221">
+
+          <question id="474c61cf-8c29-4b52-bb9f-22382c717a83" sn="vv">
+            <text>Basic question</text>
+            <answer id="28792"/>
+          </question>
+          <question id="1c9cc6e5-9fd3-48c5-abb6-bfbd23766729" sn="ss">
+            <text>Required with skip</text>
+            <answer id="28793"/>
+          </question>
+
+          <question id="13fe7b60-750b-4e3e-8a61-60f889c1aa73" sn="ty">
+            <text>Test integer</text>
+            <answer id="29024"/>
+          </question>
+        </form>
+      </xform:instance>
+      <xform:instance id="LearnMoreInstance">
+        <data xmlns=""/>
+
+      </xform:instance>
+      <xform:instance id="PureContentInstance">
+        <data xmlns=""/>
+      </xform:instance>
+      <xform:instance id="DataGroupInstance">
+        <data xmlns="">
+          <data-group id="Q.GRP-474c61cf-8c29-4b52-bb9f-22382c717a83" visible="true()"/>
+          <data-group id="Q.GRP-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729" visible="contains(instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer, '2')"/>
+          <data-group id="Q.GRP-13fe7b60-750b-4e3e-8a61-60f889c1aa73" visible="true()"/>
+
+        </data>
+      </xform:instance>
+      <xform:instance id="CrossFormSkipInstance">
+        <data xmlns=""/>
+      </xform:instance>
+      <xform:instance id="URLInstance">
+        <data xmlns="">
+          <base-url>xform.view</base-url>
+
+          <full-url>xform.view</full-url>
+        </data>
+      </xform:instance>
+      <xform:instance id="Q-ANSWER_SET-474c61cf-8c29-4b52-bb9f-22382c717a83">
+        <options xmlns="">
+          <answer sn="" text="A1">1</answer>
+          <answer sn="" text="A2">2</answer>
+
+        </options>
+      </xform:instance>
+      <xform:bind nodeset="instance('DataGroupInstance')//data-group[@id='Q.GRP-474c61cf-8c29-4b52-bb9f-22382c717a83']" id="Q.GRP-474c61cf-8c29-4b52-bb9f-22382c717a83" relevant="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']" id="Q-474c61cf-8c29-4b52-bb9f-22382c717a83" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer[@id='28792']" id="Q-474c61cf-8c29-4b52-bb9f-22382c717a83" type="xsd:string" required="true()"/>
+      <xform:bind nodeset="instance('DataGroupInstance')//data-group[@id='Q.GRP-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']" id="Q.GRP-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729" relevant="contains(instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer, '2')"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']/answer[@id='28793']" id="Q-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729" type="xsd:string" required="contains(instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer, '2')" constraint=""/>
+      <xform:bind nodeset="instance('DataGroupInstance')//data-group[@id='Q.GRP-13fe7b60-750b-4e3e-8a61-60f889c1aa73']" id="Q.GRP-13fe7b60-750b-4e3e-8a61-60f889c1aa73" relevant="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='13fe7b60-750b-4e3e-8a61-60f889c1aa73']/answer[@id='29024']" id="Q-13fe7b60-750b-4e3e-8a61-60f889c1aa73" type="xsd:decimal" required="false()" constraint=". &gt;= 80 and . &lt;= 500"/>
+
+      <xform:submission id="SendDataElement" method="post" includenamespaceprefixes="">
+        <xform:resource value="instance('URLInstance')//full-url"/>
+        <xform:message ev:event="xforms-submit-error">Unable to submit</xform:message>
+      </xform:submission>
+      <xform:submission id="PartialSendDataElement" method="post" includenamespaceprefixes="" validate="false">
+        <xform:message event="xforms-submit-error">Unable to submit</xform:message>
+        <xform:resource value="instance('URLInstance')//full-url"/>
+      </xform:submission>
+
+    </xform:model></head>
+
+<body class="twoColFixLtHdr">
+<div id="container">
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="header">
+  	<div id="primDivContainer">
+    	<div id="primDiv">
+			<!-- Begin Module Navigation -->
+			<!-- End Module Navigation -->	
+		</div>
+    <!-- end #primDivContainer --></div>
+
+		<div id="utilDiv">
+		</div>
+  		<div id="spaceDiv"><p> <!-- --></p></div>
+  </div><!-- end #header -->
+
+<!-- Header End -->
+
+<div id="xfContentDiv">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<p><!--  Here goes the XForms body -->
+	
+    <xform:output ref="instance('FormDataInstance')/@name" class="hcit-form-title"/>
+
+    <xform:group ref="instance('DataGroupInstance')//data-group[@id='Q.GRP-474c61cf-8c29-4b52-bb9f-22382c717a83']" class="hcit-group-input-checkbox">
+      <xform:output ref="instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/text" class="hcitQuestionText hcitRequiredQuestionText"/>
+      <xform:select ref="instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer" appearance="full" class="hcitAnswerCheckbox">
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-474c61cf-8c29-4b52-bb9f-22382c717a83')/answer">
+          <xform:label ref="@text" class="hcit-label-input-checkbox"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+        <xform:alert>
+          <xform:output value="if(normalize-space(instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer)='','You must provide an answer to this question.','Incorrect format.')"/>
+
+        </xform:alert>
+        <xform:action ev:event="xforms-value-changed">
+          <xform:setvalue ref="instance('DataGroupInstance')//data-group[@id='Q.GRP-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']/@visible" value="contains(instance('FormDataInstance')//question[@id='474c61cf-8c29-4b52-bb9f-22382c717a83']/answer, '2')"/>
+        </xform:action>
+      </xform:select>
+    </xform:group>
+    <xform:group ref="instance('DataGroupInstance')//data-group[@id='Q.GRP-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']" class="hcit-group-input-text">
+      <xform:output ref="instance('FormDataInstance')//question[@id='1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']/text" class="hcitQuestionText hcitRequiredQuestionText"/>
+      <xform:input bind="Q-1c9cc6e5-9fd3-48c5-abb6-bfbd23766729" class="hcitAnswerText hcit-text-field-width-short">
+
+        <xform:label class="hcit-label-input-text">Sample</xform:label>
+        <xform:alert>
+          <xform:output value="if(normalize-space(instance('FormDataInstance')//question[@id='1c9cc6e5-9fd3-48c5-abb6-bfbd23766729']/answer)='','You must provide an answer to this question.','Incorrect format.')"/>
+        </xform:alert>
+      </xform:input>
+    </xform:group>
+    <xform:group ref="instance('DataGroupInstance')//data-group[@id='Q.GRP-13fe7b60-750b-4e3e-8a61-60f889c1aa73']" class="hcit-group-input-text">
+      <xform:output ref="instance('FormDataInstance')//question[@id='13fe7b60-750b-4e3e-8a61-60f889c1aa73']/text" class="hcitQuestionText"/>
+
+      <xform:input bind="Q-13fe7b60-750b-4e3e-8a61-60f889c1aa73" class="hcitAnswerText">
+        <xform:label class="hcit-label-input-text">Enter int</xform:label>
+        <xform:alert>
+          <xform:output value="'Incorrect format.'"/>
+        </xform:alert>
+      </xform:input>
+    </xform:group>
+  
+	</p>
+
+</div>
+
+		<div id="xfFooter">
+		
+<!-- Footer Begin -->
+<div id="footer"> 
+	<!-- <div id="disclamer"><a href="javascript:alert('caCURE Form Builder version 0.2')">About caCURE Form Builder</a></div> -->
+    <div id="powered"><a href="javascript:alert('caCURE Form Builder version 0.9.6')">About caCURE Form Builder</a>  <a href="https://cabig.nci.nih.gov/"><img src="/FormBuilder/images/pb_cabig.gif" alt="Powered by caBIG&#174;" width="72" height="29" border="0" title="Powered by caBIG&#174;" /></a></div>
+	<br class="clearfloat" />
+	<div id="bot-bg"></div>
+</div><!-- end #footer -->
+
+<!-- Footer End -->
+<!-- end #container -->
+	</div>
+</div>
+</body>
+</html>
