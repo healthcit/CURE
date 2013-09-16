@@ -1,0 +1,76 @@
+################################################################################
+ #Copyright (c) 2013 HealthCare It, Inc.
+ #All rights reserved. This program and the accompanying materials
+ #are made available under the terms of the BSD 3-Clause license
+ #which accompanies this distribution, and is available at
+ #http://directory.fsf.org/wiki/License:BSD_3Clause
+ #
+ #Contributors:
+ #    HealthCare It, Inc - initial API and implementation
+################################################################################
+
+# This is the root of the directory tree
+
+dn: dc=caHopeAnalytics,dc=com
+description: caHopeAnalytics.Com.
+dc: caHopeAnalytics
+o: caHopeAnalytics.Com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+
+# Subtree for users
+dn: ou=Users,dc=caHopeAnalytics,dc=com
+ou: Users
+description: caHopeAnalytics.Com Users
+objectClass: organizationalUnit
+
+
+
+##
+## USERS
+##
+
+# lkagan
+dn: uid=lkagan,ou=Users,dc=caHopeAnalytics,dc=com
+ou: Users
+uid: lkagan
+cn: Leonid Kagan
+sn: Kagan
+givenName: Leonid
+displayName: Leonid Kagan
+mail: lkagan@healthcit.com
+userPassword: {SSHA}OsjMkEdVuH9Oxua8gYxhJTsUohnXUwFR
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+
+
+# Preeti Gupta:
+dn: uid=pgupta,ou=Users,dc=caHopeAnalytics,dc=com
+ou: Users
+uid: pgupta
+sn: Gupta
+cn: Preeti Gupta
+givenName: Preeti
+displayName: Preeti Gupta
+mail: pgupta@healthcit.com
+userPassword: {SSHA}OsjMkEdVuH9Oxua8gYxhJTsUohnXUwFR
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+
+dn: ou=groups,dc=caHopeAnalytics,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=admin,ou=groups,dc=caHopeAnalytics,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: admin
+uniqueMember: uid=lkagan,ou=users,dc=caHopeAnalytics,dc=com
+ou: admin
+
+
+

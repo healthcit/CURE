@@ -1,0 +1,56 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+@CHARSET "UTF-8";
+
+/* page body text */
+div#page {
+    font-size: 10px;
+}
+
+/* page header text */
+div#page h1 { font-size: 28px; }
+
+/* page header description */
+div#page p.header_description { font-size: 11px; }
+
+/* page paragraph headers */
+div#page h2 { font-size: 12px; }
+
+/* page other headers */
+div#page h3 { font-size: 11px; }
+
+/* nav links */
+div#nav a { font-size: 11px; }
+
+div#nav a.rtecenter { list-style-image: none; }
+
+/* subpage links on 1st level pages */
+div#page div.section_link_box a.biglink { font-size: 15px; }
+
+/* leadership body text  */
+#leadership .yui-content, #board .yui-content { font-size: 10px; line-height: 15px;}
+
+/* leadership name in white on panel */
+#leadership .yui-content div p.name_head, #board .yui-content div p.name_head  { font-size: 14px; }
+
+/* leadership name and title on tab */
+#leadership .yui-nav p, #board .yui-nav p, #leadership .yui-nav span, #board .yui-nav span { font-size: 11px; }
+
+/* leadership tab height */
+#leadership .yui-nav li { height: 68px; }
+#board .yui-nav li { height: 40px; }
+
+/* leadership panel height */
+#leadership .yui-content div, #leadership .yui-content  { height: 700px; }
+#board .yui-content div, #board .yui-content  { height: 510px; }
+
+/* top nav, footer and copywrite */
+div#top_nav, div#footer, div#copyright {font-size: 10px;}

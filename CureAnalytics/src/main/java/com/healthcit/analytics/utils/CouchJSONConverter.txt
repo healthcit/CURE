@@ -1,0 +1,169 @@
+package com.healthcit.cahopeds.utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+
+public class CouchJSONConverter
+{
+	public enum OutputFormat {XML, JSON}
+	protected OutputFormat outputFormat = OutputFormat.JSON;
+	protected OutputStream os;
+	protected InputStream is;
+	
+	public CouchJSONConverter()
+	{
+		
+	}
+	public CouchJSONConverter(OutputFormat of)
+	{
+		outputFormat = of;
+	}
+	
+	public void setOutputStream(OutputStream os)
+	{
+		this.os = os;
+	}
+	
+	public void setInputStream(InputStream is)
+	{
+		this.is = is;
+	}
+	public void convert() throws JsonParseException, IOException
+	{
+		if(OutputFormat.JSON.equals(outputFormat))
+		{
+			writeJSON();
+		}
+		else if (OutputFormat.XML.equals(outputFormat))
+		{
+			writeXML();
+		}
+	}
+	
+	protected void writeJSON()throws JsonParseException, IOException
+	{
+		JsonFactory jsonF = new JsonFactory();
+		JsonParser jp = jsonF.createJsonParser(is);
+		
+		JsonGenerator jg = jsonF.createJsonGenerator(os);
+		jg.useDefaultPrettyPrinter(); // enable indentation just to make debug/testing easier
+		
+		if (jp.nextToken() != JsonToken.START_OBJECT) {
+		    throw new IOException("Expected data to start with an Object");
+		}
+		while ((jp.nextToken() != null))
+		{
+			String fieldName = jp.getCurrentName();
+			   // Let's move to value
+			jp.nextToken();//value or start_object or start_array
+			
+			if ("rows".equals(fieldName)) {
+				jg.writeStartObject();
+				jp.nextToken();//start object, start array was taken care by prev nextToken() call
+				String currentEntityId = null;
+				while(jp.nextToken() != JsonToken.END_OBJECT) //reads the key
+				{
+					String keyName = jp.getCurrentName();
+					jp.nextToken();//value or start_object or start_array
+					if("key".equals(keyName))
+					{
+						String entityId = jp.getText();
+						if(currentEntityId != null && !currentEntityId.equals(entityId))
+						{
+							currentEntityId = entityId;
+							jg.writeEndArray();//Close array for prev entity
+							jg.writeFieldName(entityId);
+							jg.writeStartArray();//start array for this entity
+						}
+						else if(currentEntityId == null)
+						{
+							currentEntityId = entityId;
+							jg.writeFieldName(entityId);
+							jg.writeStartArray();
+						}
+					}
+					else if("value".equals(keyName))
+					{
+//						jg.writeStartObject();
+						Map<String, Object> row = new HashMap<String, Object>(); 
+						readJsonObject(jp, row);
+						JSONObject json = JSONObject.fromObject(row);
+						jg.writeRaw(json.toString()+ "\r\n");
+//						jg.writeEndObject();
+						jp.nextToken(); //move it off the END_OBJECT
+						jp.nextToken(); //move it off the END_OBJECT
+					}
+				}
+				//Close array for the last entityId
+				jg.writeEndArray();
+				jg.writeEndObject();
+			}
+			
+
+		}
+		jp.close(); // important to close both parser and underlying File reader
+//		JSONObject json = new JSONObject();
+//		json.put("key", "value");
+//		JSONArray array = new JSONArray();
+//		json.put("array", array);
+//
+//		jg.writeRaw(json.toString());
+		jg.close();
+	}
+	protected void writeXML()
+	{
+		
+	}
+	private void readJsonObject(JsonParser jp, Map<String, Object> row)throws JsonParseException, IOException
+	{
+		while(jp.nextToken()!= JsonToken.END_OBJECT)
+		{
+			String fieldName = jp.getCurrentName();
+			jp.nextToken();
+			if(jp.getCurrentToken() == JsonToken.START_OBJECT)
+			{
+				Map<String, Object> object = new HashMap<String, Object>();
+				readJsonObject(jp, object);
+//				jp.nextToken();//move off the END_OBJECT
+				row.put(fieldName, object);
+			}
+			else if(jp.getCurrentToken() == JsonToken.START_ARRAY)
+			{
+				List<Object> list = new ArrayList<Object>();
+				readJsonArray(jp, list);
+				row.put(fieldName, list);
+//				jp.nextToken();
+			}
+			else
+			{
+				row.put(fieldName, jp.getText());
+			}
+		}
+	}
+	
+	private void readJsonArray(JsonParser jp, List<Object> array)throws JsonParseException, IOException
+	{
+		while(jp.nextToken()!= JsonToken.END_ARRAY)
+		{
+			Map<String, Object> object = new HashMap<String, Object>();
+			readJsonObject(jp, object);
+//			jp.nextToken();
+			array.add(object);
+
+		}
+		
+	}
+}

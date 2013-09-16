@@ -1,0 +1,55 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+span.upAndDownTextBox {
+	width: 50px;
+}
+
+span.upAndDownTextBoxArrow {
+	background: url(../images/down_arrow.gif) no-repeat;
+	width: 15px;
+	height: 20px;
+	margin: 3px;
+	cursor: pointer;
+}
+
+div.upAndDownSelectBox {
+	width: 110px; 
+	background: lightgray; 
+	border: 1px solid darkgray; 
+	margin-left: 2px; 
+	margin-top:5px; 
+	display: none; 
+	z-index: 999; 
+	position: absolute; 
+	padding-top: 3px;
+	font-style: normal;
+}
+
+div.upAndDownSelectBox .option {
+	padding: 3px; 
+	border: 1px outset gray; 
+	background: none repeat scroll 0% 0% black;
+	color:wheat;
+	font-style: normal;
+}
+
+div.upAndDownSelectBox .option:hover,
+div.upAndDownSelectBox .option.selected {
+	background: black;
+	color:red;
+	border: 1px inset gray;
+}
+
+div.upAndDownSelectBox .option:hover{
+	border: 1px dotted red;
+	cursor:pointer;
+	font-weight: bold;
+}

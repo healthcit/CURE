@@ -1,0 +1,157 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+/*basic reset*/
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li {
+	width:auto;
+}
+ 
+ul#org-systemsbiology-visualization-filtercontainer-header li a, ul#org-systemsbiology-visualization-filtercontainer-filterlist li a{
+	font-family:sans-serif;
+	background:#eee;
+	border:1px solid #ccc;
+	border-radius:3px; /*will need js for IE support of rounded corners*/
+}
+
+/*Click to Close*/
+#filter_container_wrapper{background:#ddd;}
+#filter_container_wrapper .closeWrapper{color:#333;display:block;margin-left:-8px;padding:3px;font-size:10px;text-decoration:none;}
+#filter_container{border:1px solid #666;width:500px}
+
+ul#org-systemsbiology-visualization-filtercontainer-header li a:active, ul#org-systemsbiology-visualization-filtercontainer-filterlist li a:active{
+	position:relative;
+	top:1px;
+}
+
+#filter_container #org-systemsbiology-visualization-filtercontainer ul#org-systemsbiology-visualization-filtercontainer-header li ul#org-systemsbiology-visualization-filtercontainer-options li a#org-systemsbiology-visualization-globalOr{width:45px;}
+
+
+/*tabs*/
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li#org-systemsbiology-visualization-filtercontainer-filteritem-active a {
+	border-bottom:1px solid #transparent;
+	border-color:#000 #000 #DBD3C5;
+	background:#DBD3C5;
+	color:#444;
+	border-radius:3px 3px 0px 0px;/*will need js for IE support of rounded corners*/
+}
+
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li#org-systemsbiology-visualization-filtercontainer-filteritem-active a:hover {
+	border-color:#000 #000 #DBD3C5;
+	background:#DBD3C5;
+	cursor:default;	
+	color:#444;
+}
+
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li a:hover{
+	border-color:#666;
+	background:#DBD3C5;
+	border-bottom:1px solid transparent;
+	color:#444;
+}
+
+div#org-systemsbiology-visualization-filtercontainer-filteritemcontainers {
+	background:#DBD3C5;
+	margin-top: -5px;
+}
+
+div#org-systemsbiology-visualization-filtercontainer-filteritemcontainers div {
+	border-width:0px;
+}
+
+/*clean up top buttons*/
+ul#org-systemsbiology-visualization-filtercontainer-header li#org-systemsbiology-visualization-globalAnd-active a, ul#org-systemsbiology-visualization-filtercontainer-header li#org-systemsbiology-visualization-globalAnd-active a:hover {
+    background: none repeat scroll 0 0 #DBD3C5;
+    border: 1px solid black;
+    color: #000;
+    background: url("../images/filter_gradient.jpg") repeat-x scroll 0 0 #DBD3C5;
+}
+
+div#org-systemsbiology-visualization-filtercontainer{padding:0 2px;}
+
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-globalOr:hover,
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-globalAnd:hover{
+	background: none repeat scroll 0 0 #DBD3C5;
+    border: 1px solid #00A305;
+    color: #000;
+}
+
+ul#org-systemsbiology-visualization-filtercontainer-buttons li {
+	float:right;
+	width:auto;
+}
+
+/*Apply and clear links*/
+#org-systemsbiology-visualization-filtercontainer-header li ul#org-systemsbiology-visualization-filtercontainer-buttons li{
+width:38px;
+margin:0 1px;}
+
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-apply{
+	background:#fff;
+	border-color: #00A305;
+	color: #00A305;
+    font-weight: bold;
+    padding: 3px;
+}
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-clear{
+	background:#fff;
+	border-color: #BA0505;
+	color: #BA0505;
+	padding:3px;
+}
+
+
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-clear:hover, ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-apply:hover{
+	background:#eee;
+}
+
+
+ul#org-systemsbiology-visualization-filtercontainer-header li #org-systemsbiology-visualization-clear:active{
+	top:1px;
+}
+
+	/*will need jQuery for this to work in IE, no ID on li containing clear and apply links, so targeting with n-th child*/
+ul#org-systemsbiology-visualization-filtercontainer-header li:last-child{float:right;}
+
+
+
+#filter_container_wrapper .closeWrapper:hover{
+	color:#000;
+}
+
+/*highlight filters being used*/
+#filter_container #org-systemsbiology-visualization-filtercontainer-menu #org-systemsbiology-visualization-filtercontainer-filterlist li a.active_filter_highlight{color:black;font-weight:bold;background:url(../images/filter_gradient.jpg) repeat-x #DBD3C5;}
+
+/*Clear button*/
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li button, .moved_clear_box{
+	border-color:#BA0505;
+	font-size:10px;
+	cursor:pointer;
+	border: 1px solid #BA0505;
+	border-radius: 3px 3px 3px 3px;
+	font-family: sans-serif;
+	display:block;
+	clear:both;
+	margin-top:10px;
+	float:right;
+	color:#BA0505;
+}
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li button:hover, .moved_clear_box:hover{background-color:#fff;}
+ul#org-systemsbiology-visualization-filtercontainer-filterlist li button:active, .moved_clear_box:active{background-color:#fff;border-color:#BA0505}
+
+/*date filter*/
+#ui-datepicker-div .ui-datepicker-header .ui-datepicker-prev .ui-icon{background-position:-95px 0;cursor:pointer;}
+#ui-datepicker-div .ui-datepicker-header .ui-datepicker-next .ui-icon{background-position:-30px 0;cursor:pointer;}
+
+/*auto scrolling*/
+ul#org-systemsbiology-visualization-filtercontainer-filterlist{height:auto;}
+div#org-systemsbiology-visualization-filtercontainer-menu{height: auto;overflow: auto;width: 500px;}
+
+/*auto scrolling message*/
+#scroll-message{font-weight:bold;color:#222;}

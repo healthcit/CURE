@@ -1,0 +1,58 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+body {
+    width: 800px;
+}
+
+div#container {
+    margin: 0 auto;
+    padding: 2px;
+    background-color: #FFF
+}
+
+div#containerFilterControl {
+    border: 1px solid blue;
+    background-color: #ffffff;
+    color:#000;
+    display: block;
+}
+
+div#line_chart_container {
+    height: 450px;
+}
+
+div#area_chart_container {
+    height: 450px;
+}
+
+div#cChartControlContainer {
+    height: 75px;
+}
+
+table#visualizationsContainer {
+    padding: 3px;
+    margin: 1em auto;
+    width: 100%;
+    border: 1px solid gray;
+}
+
+div#org-systemsbiology-visualization-filtercontainer-header-title a {
+    background-color: #FFFFFF;
+    color: #444;
+    display: block;
+    padding: 0.25em;
+    text-decoration: none;
+}
+
+h2 {
+    font: lighter 150% "Trebuchet MS", Arial sans-serif;
+    color: #0000ff
+}

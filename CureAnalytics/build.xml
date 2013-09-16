@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (c) 2013 HealthCare It, Inc.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the BSD 3-Clause license
+  which accompanies this distribution, and is available at
+  http://directory.fsf.org/wiki/License:BSD_3Clause
+  
+  Contributors:
+      HealthCare It, Inc - initial API and implementation
+-->
+<project name="CureAnalytics" default="all">
+	<!-- Allows for local developer to override settings in a non-versioned file -->
+	<property file="${user.name}-build.properties" />
+
+	<!-- Sets up defaults, including target.context -->
+	<property file="build.properties" />
+
+	<!-- Allows for environment-specific properties -->
+	<property file="${target.context}-build.properties" />
+
+    <target name="set-properties" unless="webapp.name">
+	
+		<property name="build.dir" value="${basedir}/build" />
+        <property name="build.classes.dir" value="${build.dir}/classes" />
+        <property name="build.war.dir" value="${build.dir}/wars" />
+		
+		<property name="src.dir" value="${basedir}/src/main" />
+    	<property name="webroot.dir" value="${basedir}/WebRoot" />
+		
+    	<property name="java.src.dir" value="${src.dir}/java" />
+    	<property name="resources.src.dir" value="${src.dir}/resources" />
+
+    	<property name="proprietary.src.dir" value="${basedir}/src/proprietary" />
+    	<property name="proprietary.java.src.dir" value="${proprietary.src.dir}/java" />
+    	<property name="proprietary.resources.src.dir" value="${proprietary.src.dir}/resources" />
+
+    	<property name="lib.dir" value="${basedir}/lib" />
+    	
+    	<property name="yui.compressor.home" value="${lib.dir}/yuicompressor-2.4.6"/>
+
+        <!-- war stuff -->
+        <property name="webapp.name" value="analytics" />
+        <property name="war.name" value="${webapp.name}.war" />
+        <property name="javascript.dir" value="js" />
+    	<property name="build.javascript.minified.dir" value="${build.dir}/jsmin" />
+    	<property name="build.css.minified.dir" value="${build.dir}/cssmin" />
+        <property name="css.dir" value="css" />
+        <property name="images.dir" value="images" />
+    	<property name="jquery.dir.prefix" value="jquery"/>
+		
+        <path id="jsp.files" >
+            <fileset dir="${webroot.dir}/WEB-INF" >
+            	<include name="includes/**"/>
+	        </fileset>
+        </path>
+        <property name="deploy.dir" value="${tomcat.home}/${tomcat.deploy.dir}"/>
+        <property name="build.war.unzipped.dir" value="${build.war.dir}/unzipped"/>
+
+         <!-- Classpaths for compilation -->
+        <fileset id="war.libs" dir="${lib.dir}" >
+        	<include name="*.jar" />
+			<include name="servlet-apis/*.jar"/>
+			<include name="spring/*.jar"/>
+        </fileset>
+        <path id="main.compile.classpath">
+        	<fileset refid="war.libs"/>
+        </path>
+		
+	</target>
+    <target name="all" depends="build-war"
+        description="Full build locally, or build remote deployment tar file"/>
+
+	<!-- webservice build -->
+    <property name="build.ws" value="${build}/webservice" />
+    <property name="build.ws.src" value="${build.ws}/src" />
+    <property name="build.ws.build" value="${build.ws}/build" />
+	
+	<!-- Multi-platform support for build -->
+    <condition property="script.ext" value="sh">
+        <os family="unix" />
+    </condition>
+    <condition property="script.ext" value="bat">
+        <os family="windows" />
+    </condition>
+	
+	<path id="build.class.path">
+        <fileset dir="${basedir}/lib" includes="**/*.jar" />
+    </path>
+
+    <path id="class.path">
+        <path refid="build.class.path" />
+        <fileset dir="${build.lib}" includes="**/*.jar" />
+    </path>
+	
+	<path id="yuicompress.class.path">
+        <fileset dir="${basedir}/lib/yuicompressor-2.4.6/build" includes="**/*.jar" />
+		<fileset dir="${basedir}/lib" includes="YUIAnt.jar" />
+    </path>	
+	
+	
+	
+	<target name="checkPreconditions" depends="warn.fast.build">
+    </target>
+	
+	<target name="warn.fast.build" if="fast.build">
+        <echo level="error"
+            message="DANGER, , fast build selected; no tests will be run! Use judiciously." />
+    </target>
+	
+	<!-- clean targets -->
+    <target name="clean" depends="set-properties" description="remove all generated project files">
+        <echo level="info">Deleting all from the ${build.dir} directory.</echo>
+        <delete failonerror="false" dir="${build.war.dir}" />
+        <delete failonerror="false" dir="${build.classes.dir}" />
+    	<delete failonerror="false" dir="${build.javascript.minified.dir}" />
+    	<delete failonerror="false" dir="${build.css.minified.dir}" />
+	</target>
+	
+	<target name="mkdirs" depends="checkPreconditions"
+        description="Creating all necessary directories for deployment">
+
+        <mkdir dir="${build.dir}" />
+    	<mkdir dir="${build.classes.dir}"/>
+    	<mkdir dir="${build.war.dir}"/>
+    </target>
+	
+	<!-- from eclipse generated build.xml, not sure if I need -->
+	<target name="init">
+        <mkdir dir="WebRoot/WEB-INF/classes"/>
+        <copy includeemptydirs="false" todir="WebRoot/WEB-INF/classes">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="WebRoot/WEB-INF/classes">
+            <fileset dir="src/main/resources">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+	</target>
+	
+	<!-- from formbuilder build.xml, not sure which to use -->
+	<target name="copy.resources" >
+        <!-- copy resource from source to dest-->
+        <copy todir="${build.classes}" overwrite="yes">
+
+            <fileset dir="${src.java}" excludes="**/*.java"/>
+<!-- need to add code to copy appropiate deployment.properties file
+        	<filterset>
+                <filter token="hibernate.connection.url"
+                    value="${hibernate.connection.url}"/>
+                <filter token="hibernate.connection.username"
+                    value="${hibernate.connection.username}"/>
+                <filter token="hibernate.connection.password"
+                    value="${hibernate.connection.password}"/>
+            	<filter token="hibernate.showsql"
+            	    value="${hibernate.showsql}"/>
+            </filterset>
+-->
+        </copy>
+    </target>
+	
+	
+	<!-- build the application -->
+    <target name="compile" depends="set-properties,mkdirs"
+        description="Compiles all .java files in the ${src.java} dir.">
+
+    	<javac srcdir="${java.src.dir}:${proprietary.java.src.dir}" destdir="${build.classes.dir}"
+               debug="on" deprecation="yes">
+            <classpath refid="main.compile.classpath" />
+        </javac>
+    	<!--<javac srcdir="${proprietary.java.src.dir}" destdir="${build.classes.dir}"
+               debug="on" deprecation="yes">
+            <classpath refid="main.compile.classpath" />
+        </javac>-->
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${resources.src.dir}">
+            	<include name="*/**"/>
+            </fileset>
+            <fileset dir="${proprietary.resources.src.dir}">
+            	<include name="*/**"/>
+            </fileset>
+            <fileset dir="${java.src.dir}" excludes="**/*.java"/>
+            <fileset dir="${proprietary.java.src.dir}" excludes="**/*.java"/>
+        </copy>
+
+    </target>
+
+    <target name="jar" depends="compile, manifest"
+        description="Creates a .jar file named ${ant.project.name}.jar">
+        <jar jarfile="${build}/lib/${ant.project.name}.jar"
+            manifest="${manifest.dest}" >
+            <fileset dir="${build.classes}" />
+        </jar>
+    </target>
+	
+	<target name="manifest">
+        <tstamp />
+        <manifest file="${manifest.dest}" >
+            <attribute name="Specification-Title"
+                value="Ca Hope Analytics" />
+            <attribute name="Specification-Version"
+                value="${service.version}" />
+            <attribute name="Specification-Vendor"
+                value="Business Elite" />
+            <attribute name="Implementation-Title"
+                value="com.businesselite" />
+            <attribute name="Implementation-Vendor"
+                value="Business Elite" />
+            <attribute name="Implementation-Version"
+                value="${target.context} ${DSTAMP}.${TSTAMP} $Name:  $" />
+        </manifest>
+    </target>
+	
+	<target name="make-build-war-dir">
+		<mkdir dir="${build.war.dir}"/>
+	</target>
+	
+	  <!-- Build the war -->
+    <target name="build-war" depends="clean, compile, minify" description="builds the war file">
+        <delete file="${build.war.dir}/${war.name}" />
+
+        <war destfile="${build.war.dir}/${war.name}" webxml="${webroot.dir}/WEB-INF/web.xml" update="false">
+        	<classes dir="${build.classes.dir}"/>
+
+            <!-- All the libs -->
+            <lib dir="${lib.dir}" includes="*.jar"/>
+
+            <!-- css/* -->
+            <zipfileset dir="${basedir}/build/cssmin" prefix="${css.dir}">
+                <include name="*/**"/>
+            </zipfileset>
+
+            <!-- images/* -->
+            <zipfileset dir="${webroot.dir}/${images.dir}" prefix="${images.dir}">
+                <include name="*/**"/>
+            </zipfileset>
+
+            <!-- js/* -->
+            <zipfileset dir="${basedir}/build/jsmin" prefix="${javascript.dir}">
+                <include name="*/**"/>
+            </zipfileset>
+            <zipfileset dir="${webroot.dir}/jquery-ui-1.8.13.custom" prefix="jquery-ui-1.8.13.custom">
+                <include name="*/**"/>
+            </zipfileset>
+            <zipfileset dir="${webroot.dir}/jquery-alerts" prefix="jquery-alerts">
+                <include name="*/**"/>
+            </zipfileset>
+            <zipfileset dir="${webroot.dir}/modalbox1.5.5" prefix="modalbox1.5.5">
+                <include name="*/**"/>
+            </zipfileset>
+
+            <!-- html, static jsps/* -->
+            <zipfileset dir="${webroot.dir}" >
+                <include name="*.html"/>
+                <include name="*.jsp"/>
+            	<exclude name="**/classes/**"/>
+            </zipfileset>
+
+            <!-- favicon.ico -->
+            <zipfileset dir="${webroot.dir}" >
+                <include name="favicon.ico"/>
+            </zipfileset>
+
+            <!-- properties from WEB-INF - duplicate then into both classpath and WEB-INF dir -->
+            <zipfileset dir="${webroot.dir}/WEB-INF" prefix="WEB-INF/classes" >
+                <include name="*.properties"/>
+            </zipfileset>
+  
+
+        	<!-- WEB-INF/* copy all except properties and classes -->
+			<zipfileset dir="${webroot.dir}/WEB-INF" prefix="WEB-INF">
+            	<exclude name="**/classes/**"/>
+            </zipfileset>
+
+
+		</war>
+    </target>
+	
+	<target name="local-clean-deployment" depends="set-properties">
+		<!-- remove file from local tomcat -->
+		<delete includeemptydirs="true" quiet="true" verbose="true">
+			<fileset dir="${tomcat.home}/webapps">
+				<include name="**/${webapp.name}/"/>
+				<include name="${war.name}"/>
+			</fileset>
+			<fileset dir="${tomcat.work.subdirectory}">
+				<include name="**/${webapp.name}/"/>
+			</fileset>
+		</delete>		
+	</target>
+	
+	<target name="minify" depends="clean" description="Minifiy a set of files">
+		<!-- <available file="${lib.dir}/YUIAnt.jar" property="YUIANT_AVAILABLE" />
+		<fail unless="YUIANT_AVAILABLE" message="Run jar target to generate the required task"/> -->
+		<taskdef classpathref="yuicompress.class.path" name="yuicompress" classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+			<classpath>
+				<pathelement path="${yui.compressor.home}/build/yuicompressor-2.4.6.jar" />
+				<pathelement path="${lib.dir}/YUIAnt.jar" />
+			</classpath>
+		</taskdef>
+		<mkdir dir="${build.javascript.minified.dir}" />
+		<yuicompress linebreak="300" warn="false" munge="yes" preserveallsemicolons="true" 
+			outputfolder="${basedir}/build/jsmin">
+			<fileset dir="${webroot.dir}/js" >
+				<include name="**/*.js" />
+				<include name="**/*.css" />
+			</fileset>
+		</yuicompress>
+		<mkdir dir="${build.css.minified.dir}" />
+		<yuicompress linebreak="300" warn="false" munge="yes" preserveallsemicolons="true" 
+			outputfolder="${basedir}/build/cssmin">
+			<fileset dir="${webroot.dir}/css" >
+				<include name="**/*.css" />
+			</fileset>
+		</yuicompress>
+	</target>
+	
+	<target name="deploy-local-as-war" depends="set-properties,build-war,local-clean-deployment"
+		description="Cleans local tomcat and redeploys WAR file">
+		<!-- copy war file to local tomcat -->
+		<copy todir="${tomcat.home}/webapps" file="${build.war.dir}/${war.name}"/>
+	</target>
+	
+	<target name="deploy-local-web-resources" depends="set-properties"
+			description="Deploys non-compilable resourses - HTML, CSS, JS, IMAGES, JSPs">
+			<property name="webapp.local.dir" value="${tomcat.home}/webapps/${webapp.name}"/>
+			<copy todir="${webapp.local.dir}/" description="Copying static resources" >
+				<fileset dir="${webroot.dir}" >
+					<include name="${css.dir}/**"/>
+					<include name="${javascript.dir}/**"/>
+					<include name="${images.dir}/**"/>
+					<include name="${jquery.dir}-*/**"/>
+					<include name="*.jsp"/>
+					<include name="*.html"/>
+				</fileset>
+			</copy>
+			<copy todir="${webapp.local.dir}/WEB-INF" description="Copying WEB-INF resources">
+				<fileset dir="${webroot.dir}/WEB-INF" >
+		            <include name="**/*.html"/>
+		            <include name="**/*.jsp"/>
+				</fileset>
+			</copy>
+		</target>
+</project>

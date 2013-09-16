@@ -1,0 +1,336 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+@CHARSET "UTF-8";
+div#page {
+    width: 920px;
+    float: left;
+    padding-left: 30px;
+    min-height: 380px;
+}
+
+div#top_nav {
+    width: 300px;
+    height: 50px;
+    padding: 10px 45px 20px 0;
+    float: right;
+}
+
+div#top_nav a {
+    color: #9BC4E2;
+    text-decoration: none;
+}
+
+div#top_nav ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+div#top_nav ul li {
+    float: right;
+    padding: 0 15px;
+    border: solid 2px #9BC4E2;
+    border-width: 0 2px 0 0;
+    margin-top: 10px;
+}
+
+div#top_nav ul li.last {
+    border-width: 0;
+}
+
+div.action_block {
+    background: url(../files/CalloutBoxBasicN.png) no-repeat;
+    width: 280px;
+    height: 65px;
+    padding-bottom: 10px;
+}
+
+div.action_holder_big {
+    width: 270px;
+    height: 60px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 20px;
+}
+
+div.action_holder_normal {
+    width: 270px;
+    height: 60px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 20px;
+}
+
+div.action_text_big {
+    width: 220px;
+    height: 40px;
+    font-size: 2em;
+    font-weight: 600;
+    color: #00337f;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.action_text_normal {
+    width: 220px;
+    height: 40px;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #00337f;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.fp_callout {
+    background: url(../files/callout_fp_back_update.gif) no-repeat #fff;
+    width: 360px;
+    height: 144px;
+    float: right;
+    padding-left: 25px;
+}
+
+div.fp_callout div.call_title {
+    height: 36px;
+}
+
+div.fp_callout div.call_body {
+    height: 48px;
+    padding: 12px 20px 0 0;
+    color: #72d1dd;
+    line-height: 1.6;
+}
+
+div.fp_callout div.call_link {
+    padding-left: 235px;
+    height: 44px;
+}
+
+div.fp_callout img {
+    border: none;
+}
+
+div.fp_callout div.invest_left {
+    float: left;
+    width: 165px;
+    display: inline;
+}
+
+div.fp_callout div.invest_left div.stock_graph {
+    padding: 5px 0 0 0;
+}
+
+div.fp_callout div.invest_right {
+    float: left;
+    width: 190px;
+    display: inline;
+}
+
+div.fp_callout div.invest_right div.stock_chart {
+    padding: 20px 0 0 15px;
+    height: 76px;
+}
+
+div.fp_callout div.invest_right div.learn_link {
+    padding-left: 77px;
+}
+
+a img {
+    border: 0px;
+}
+
+div.front_banner_top {
+    width: 600px;
+    height: 38px;
+    float: left;
+    padding-left: 0px;
+    display: block;
+}
+div.front_banner {
+    width: 600px;
+    height: 38px;
+    float: left;
+    padding-left: 0px;
+    display: block;
+}
+
+div.front_panel_About {
+    width: 600px;
+    height: 220px;
+    float: left;
+    display: block;
+    visibility: visible;
+}
+
+div.apanelImageAbout {
+    width: 600px;
+    height: 220px;
+    float: left;
+    background: url(../files/About_Panel.png) no-repeat;
+    margin-top: -8px;
+    margin-left: 10px;
+    display: block;
+    visibility: visible;
+}
+
+div.news_panel {
+    width: 920px;
+    height: 180px;
+    float: left;
+    background: url(../files/News_Panel.png) no-repeat;
+    display: block;
+    visibility: visible;
+    margin:0 0 0 30px;
+}
+
+div.news_panel_outer {
+    width: 810px;
+    height: 140px;
+    margin: 20px 10px 0px 20px;
+}
+
+div.news_panel_holder {
+    width: 795px;
+    height: 120px;
+}
+
+div.news_panel_text {
+    width: 255px;
+    height: 110px;
+    float: left;
+    margin-top: 3px;
+    margin-left: 10px;
+}
+
+div.news_panel_text p {
+    font: Helvetica,san-serif;
+    font-size: 12px;
+    color: #2952cc;
+    margin-top: -4px;
+}
+
+div.news_panel_text h1{
+    font: Helvetica,san-serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 600;
+    color: #0000ff;
+}
+div.news_panel_text1 {
+    width: 255px;
+    height: 108px;
+    float: left;
+    margin-top: 15px;
+    margin-left: 10px;
+}
+
+div.news_panel_text1 p {
+    font: Helvetica,san-serif;
+    font-size: 12px;
+    color: #2952cc;
+    margin-top: -4px;
+}
+
+div.news_panel_text1 h1{
+    font: Helvetica,san-serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 600;
+    color: #0000ff;
+}
+
+div.front_panel {
+    width: 600px;
+    height: 0px;
+    float: left;
+    padding-left: 0px;
+    display: block;
+    visibility: hidden;
+}
+
+div.apaneltext {
+    width: 420px;
+    height: 220px;
+    float: left;
+    vertical-align: top;
+    display: inline;
+    font: Helvetica,san-serif;
+    font-size: 13px;
+    color: #444444;
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+}
+
+div.apaneltext p{
+    margin: 0px;
+    padding: 5px 0px 0px 22px;
+}
+
+div.apaneltextw {
+    width: 495px;
+    height: 220px;
+    float: left;
+    vertical-align: top;
+    display: inline;
+    font: Helvetica,san-serif;
+    font-size: 13px;
+    color: #444444;
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+}
+
+div.apaneltextw p{
+    margin: 0px;
+    padding: 5px 0px 0px 22px;
+}
+
+div.apanelImageMHS {
+    width: 600px;
+    height: 220px;
+    margin-top: -10px;
+    margin-left: 10px;
+    float: left;
+    background: url(../files/MHS_Panel.png) no-repeat;
+    display: inline;
+}
+
+div.apanelImagecaBIG {
+    width: 600px;
+    height: 220px;
+    margin-top: -10px;
+    margin-left: 10px;
+    float: left;
+    background: url(../files/caBIG_Panel.png) no-repeat;
+    display: inline;
+}
+
+div.apanelImageITS {
+    width: 600px;
+    height: 220px;
+    margin-top: -10px;
+    margin-left: 10px;
+    float: left;
+    background: url(../files/ITS_Panel.png) no-repeat;
+    display: inline;
+}
+
+div.apanelImageBIGR {
+    width: 600px;
+    height: 220px;
+    margin-top: -10px;
+    margin-left: 10px;
+    float: left;
+    background: url(../files/BIGR_Panel2.png) no-repeat;
+    display: inline;
+}

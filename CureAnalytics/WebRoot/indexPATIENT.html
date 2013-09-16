@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <title>Visualization Control caHOPE - Data Analytics for caCURE</title>
+
+	<script src="http://code.google.com/js/codesite.pack.01312008.js" type="text/javascript"></script>
+    <link href="http://code.google.com/css/codesite.pack.01312008.css" type="text/css" rel="stylesheet">
+	<link type="text/css" href="css/redmond/jquery-ui-1.8.4.custom.css" rel="stylesheet" />	
+	<link type="text/css" href="css/visualization.css" rel="stylesheet" />	
+	<link type="text/css" href="css/cacure.css" rel="stylesheet" />	
+    <link href="css/codesite.pack.01312008.HOW.css" type="text/css" rel="stylesheet">
+
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="/css/iehacks.css" /><![endif]-->
+
+     <script src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.4.custom.min.js"></script>
+    <script type="text/javascript" src="js/load1.js"></script>
+	<script type="text/javascript" src="js/cacure.js"></script>
+	<script type="text/javascript" src="js/custom.js"></script>
+
+
+	<script type="text/javascript">
+		google.load("prototype", "1.6.0.2");
+		google.load("scriptaculous", "1.8.1");
+		google.load("visualization", "1", {packages:["table", "linechart"]});
+		jQuery.noConflict();
+		jQuery(function(){
+
+			// Accordion
+			jQuery("#accordion").accordion({ header: "h3" });
+			
+			//hover states on the static widgets
+			jQuery('#dialog_link, ul#icons li').hover(
+				function() { jQuery(this).addClass('ui-state-hover'); }, 
+				function() { jQuery(this).removeClass('ui-state-hover'); }
+			);
+		});
+
+	</script>
+
+	<style type="text/css">
+		/*demo page css*/
+		.demoHeaders { margin-top: 2em; }
+		#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+		#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+		ul#icons {margin: 0; padding: 0;}
+		ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+		ul#icons span.ui-icon {float: left; margin: 0 4px;}
+	</style>	
+	
+	<link rel="SHORTCUT ICON" href="files/HCIT_Favicon.ico"/>
+	
+</head>
+
+<body class="gc-documentation">
+
+<meta charset="UTF-8" />
+
+
+<div class="demo">
+	<div>
+		<h2><a href="#">caHOPE - A Data Analytics System for caCURE</a></h2><br>
+		<div id="containerFilterControl">
+		</div>
+	</div>
+	<div id="accordion">
+		<div>
+			<h3><a href="#">Area Chart Showing Trends of Survivorship</a></h3>
+			<div>
+				<h2><span>Area Chart: Filtered</span></h2>
+				<div class="cChartControlContainer" id="cChartControlContainer">
+					<div class='cChartControl'>
+						Display as a function of: 
+						<input type="radio" value="number" name="format"/>Number of Patients
+						<input type="radio" value="percentage" name="format"/>Percentage of Patients
+					</div>
+					<div class='cChartControl'>
+						Display with an incremental x-axis scale of: 
+						<input type="radio" value="3" name="timeInterval"/>3 months 
+						<input type="radio" value="4" name="timeInterval"/>4 months 
+						<input type="radio" value="6" name="timeInterval"/>6 months 
+						<input type="radio" value="12" name="timeInterval"/>12 months
+					</div>
+				</div>
+				<div id="area_chart_container">				
+				</div>
+			</div>
+		</div>
+		<div>
+			<h3><a href="#">Unfiltered Table</a></h3>
+			<div>
+				<h2><span>Table A: Unfiltered</span></h2>
+				<div id="table_a_container"></div>
+			</div>
+		</div>
+		<div>
+			<h3><a href="#">Filtered Table A</a></h3>
+			<div>
+				<h2><span>Table B: (Filtered version of Table A)</span></h2>
+				<div id="table_b_container"></div>
+			</div>	
+		</div>
+		<div>
+			<h3><a href="#">Table Showing Trends of Survivorship (Unfiltered)</a></h3>
+			<div>
+				<h2><span>Table D</span></h2>
+				<div id="table_d_container"></div>
+			</div>	
+		</div>
+		<div>
+			<h3><a href="#">Table Showing Trends of Survivorship (Filtered)</a></h3>
+			<div>
+				<h2><span>Table E</span></h2>
+				<div id="table_e_container"></div>
+			</div>	
+		</div>
+	</div>
+</div><!-- End demo -->
+
+
+<div id="gc-container">
+	<div id="codesiteContent">
+		<div class="g-section g-tpl-170">
+			<div id="gc-pagecontent">
+				<script type="text/javascript">
+					systemsbiology.load("visualization", "1.0", {packages:["filterDataTableControl"]});
+					
+					// Override the "draw" method in the Google visualizations
+					systemsbiology.load("visualization", "1.0");
+					
+					// Make the filter control global so it could be accessed by external scripts
+					var filterControl = null;
+					
+					function drawVisualizations() {
+					  var query = new google.visualization.Query('https://spreadsheets.google.com/ccc?key=0AoHKBtT5SXBWdHp4Sk5Kc2t1Q3VHc1ZlMklKcTZER1E&hl=en');
+					  query.setQuery('select A,B,C,D,E,F');					  
+					  query.send(handleQueryResponse);					  
+					}  					  
+					function handleQueryResponse(response) {
+					    if (response.isError()) {
+						  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+						  return;
+					    }
+
+					    var data  = response.getDataTable();	
+						
+						var tableA = new google.visualization.Table($("table_a_container"));
+						var tableB = new google.visualization.Table($("table_b_container"));
+						var tableD = new google.visualization.Table($("table_d_container"));
+						var tableE = new google.visualization.Table($("table_e_container"));
+						var areachart = new google.visualization.AreaChart($("area_chart_container"));
+						var linechart2 = new google.visualization.LineChart($("line_chart_container_2"));
+						var areachart2 = new google.visualization.AreaChart($("area_chart_container_2"));
+						
+						// The visualizations associated with the Survivorship datatable should be linked to tableB
+						linkNonControlledVisualizations(tableB,
+						                               [tableE,areachart],
+													   1);
+						
+						filterControl = new org.systemsbiology.visualization.FilterDataTableControl($("containerFilterControl"));
+						filterControl.draw(data, {
+							controlledVisualizations: [
+							{visualization: tableB, options: {showRowNumber:true}}],
+							columnIndexesToFilter: [1,2,3,4,5],
+							columnFilterControlConfigByColumnIndex: {
+								// column_3: { labelForTrue:"Yes", labelForFalse:"No"}
+							},
+							simpleOperatorLabels: {
+								gt: "Greater Than",
+								ge: "Greater Or Equal To",
+								eq: "Equals",
+								ne: "Does Not Equal",
+								lt: "Less Than",
+								le: "Less Than Or Equal To"
+							}
+						});
+
+						tableA.draw(data,{showRowNumber:false});
+						var filteredData = setUpDataView(data,1);
+						tableD.draw(filteredData,{showRowNumber:false});
+						
+						// add listeners
+						google.visualization.events.addListener(tableA, "select", function() {
+							filterControl.setSelection(tableA.getSelection());
+						});
+						google.visualization.events.addListener(filterControl, "select", function() {
+							tableA.setSelection(filterControl.getSelection());							
+						});
+					}
+
+					function loadjscssfile(filename, filetype){
+						 if (filetype=="js"){ //if filename is a external JavaScript file
+						  var fileref=document.createElement('script')
+						  fileref.setAttribute("type","text/javascript")
+						  fileref.setAttribute("src", filename)
+						 }
+						 else if (filetype=="css"){ //if filename is an external CSS file
+						  var fileref=document.createElement("link")
+						  fileref.setAttribute("rel", "stylesheet")
+						  fileref.setAttribute("type", "text/css")
+						  fileref.setAttribute("href", filename)
+						 }
+						 if (typeof fileref!="undefined"){
+						  document.getElementsByTagName("head")[0].appendChild(fileref)
+						}
+					}
+
+					google.setOnLoadCallback(drawVisualizations);
+
+					loadjscssfile("css/filterDataTableControl1.css", "css"); //dynamically load and add this .css file
+					
+					setUpChartControls();
+						
+				</script>
+			</div>
+		</div>
+	</div>
+
+
+</div> <!-- end gc-containter -->
+
+	<div id="gc-footer" dir="ltr">
+		<div id="gc-footer-img"></div>
+		<div class="text">
+			&copy;2010 HCIT 
+		</div>
+	</div><!-- end gc-footer -->
+					
+</body>
+</html>
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2013 HealthCare It, Inc.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the BSD 3-Clause license
+  which accompanies this distribution, and is available at
+  http://directory.fsf.org/wiki/License:BSD_3Clause
+  
+  Contributors:
+      HealthCare It, Inc - initial API and implementation
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+		
+		<!-- DAOs -->
+		<bean id="reportTemplateDAO" class="com.healthcit.analytics.dao.impl.JdbcReportTemplateDAO">
+			<property name="dataSource" ref="dataSource"/>
+		</bean>
+		
+		<bean id="userDAO" class="com.healthcit.analytics.dao.impl.UserDAO">
+   			<property name="dataSource" ref="dataSource" />
+		</bean>
+	    
+	    <!-- Business Delegates -->
+	    <bean id="reportTemplateManager" class="com.healthcit.analytics.businessdelegate.ReportTemplateManager"/>
+	    <bean id="moduleMetadataManager" class="com.healthcit.analytics.businessdelegates.ModuleMetadataManager"/>
+	    
+	    <!-- Transaction Manager -->
+	    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+		</bean>
+		
+		<tx:annotation-driven transaction-manager="txManager"/>
+</beans>

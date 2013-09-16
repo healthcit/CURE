@@ -1,0 +1,266 @@
+/*******************************************************************************
+*Copyright (c) 2013 HealthCare It, Inc.
+*All rights reserved. This program and the accompanying materials
+*are made available under the terms of the BSD 3-Clause license
+*which accompanies this distribution, and is available at
+*http://directory.fsf.org/wiki/License:BSD_3Clause
+*
+*Contributors:
+*    HealthCare It, Inc - initial API and implementation
+*******************************************************************************/
+@CHARSET "UTF-8";
+
+html, body { height: 100%; }
+
+body {
+    background: #fff;
+    padding:0;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    width: 920px;
+}
+
+div#page_body {
+    background: #fff;
+    margin: 0 0 0 0;
+    width: 920px;
+    height: 100%;
+    color: #394344;
+    padding: 10px 10px 10px 10px;
+}
+
+div#column1 {
+    background: #fff;
+    margin: 5px 0 0 0;
+    width: 620px;
+    height: 100%;
+    float: left; 
+}
+
+div#column2 {
+    background: #fff;
+    margin: 0 0 0 0;
+    width: 300px;
+    height: 100%;
+    float: right;
+}
+
+div#nav {
+    width: 250px;
+    float: left;
+    padding-left: 0px;
+    background: #fff;
+    font-family: Verdana, Arial, sans-serif;
+    min-height: 600px;
+}
+
+div#header {
+    width: 920px;
+    float: left;
+    padding-left: 0px;
+    background: #fff;
+    font-family: Verdana, Arial, sans-serif;
+    min-height: 80px;
+}
+
+div#header img#healthcareit_logo {
+    padding: 20px 0px 0px 20px;
+    margin: 0px 0px 0px 0px;
+    border: 0px;
+    list-style-image: none;
+}
+
+div#nav a#home_link {
+    background: none;
+    border: 0; 
+    padding: 0;
+    list-style: none;
+}
+
+div#nav ul {
+    margin: -10px 0 0 0;
+    padding: 0 0 0 0;
+    width: 250px;
+}
+
+div#nav li {
+    width: 250px;
+    list-style: none; 
+    margin: 0; 
+    padding: 0;
+}
+
+/* nav link styles for top level */
+div#nav a {
+    text-decoration: none;
+    padding: 0px 0px 0px 23px;
+    display: block;
+    color: #333;
+    font-weight: bold;
+    border: 0px solid #fff;
+    border-width: 0px 0 0 0;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+div#nav li {
+    background:#fff url(../../files/purple_dot.png) no-repeat;
+}
+
+
+div#nav li.main a.main:hover {
+    background: #c6c6e1 url(../../files/purple_triangle.png) no-repeat;
+}
+
+div#nav a.link {
+    background: #ffffff url(../../files/no.png) no-repeat;
+}
+
+
+div#nav li.main1 a.main1:hover {
+    background: #ccddff url(../../files/blue_triangle.png) no-repeat;
+}
+
+div#nav li.main2 a:hover {
+    background: #f3c8ce url(../../files/pink_triangle.png) no-repeat;
+}
+
+div#nav li.main3 a:hover {
+    background: #f3bd3d url(../../files/gold_triangle.png) no-repeat;
+}
+
+div#nav li.main4 a:hover {
+    background: #baf3e3 url(../../files/green_triangle.png) no-repeat;
+}
+/* nav active link style */
+div#nav ul.main li.active a {
+    color: #fff;
+    padding: 0 0 3px 15px;
+    margin-top: 0px;
+    background: #fff url(../../files/menu_back_active.png) repeat;
+}
+
+/* sub menu link styles */
+div#nav ul.main ul.sub li.main a {
+    font-weight: normal;
+    color: #000;
+    padding-left: 15px;
+    background:#e0e9e7 url(../files/menu_sub_arrow_back.gif) no-repeat 20px 6px;
+}
+
+div#nav ul.main ul.sub li.main a:hover {
+    background:#ebe8f1 url(../files/menu_sub_arrow_back.gif) no-repeat 20px 6px;
+}
+div#nav ul.main ul.sub li.active a {
+    font-weight: bold;
+}
+
+/* sub sub menu link styles */
+div#nav ul.main ul.sub ul.sub_sub li a {
+    font-weight: normal;
+    color: #88ACA2;
+    padding-left: 25px;
+    background:#e0e9e7 url(../files/menu_sub_sub_back.gif) no-repeat 30px 7px;
+    border: 0px solid #e0e9e7;
+    border-width: 1px 0 1px 0;
+}
+div#nav ul.main ul.sub ul.sub_sub li a:hover {
+    border-color: #fff;
+    background:#ebe8f1 url(../files/menu_sub_sub_back.gif) no-repeat 30px 7px;
+}
+div#nav ul.main ul.sub ul.sub_sub li.active a {
+    font-weight: bold;
+}
+
+div#nav p.rtemain {
+  font-size: 9px;
+  border: 2px;
+  border-color: #c6c6e1;
+  padding: 0;
+  margin: 0;
+}
+
+div#nav a.rtecenter {
+background: none;
+}
+
+div#nav h3.rteleft {
+  font-size: 11px;
+}
+
+div#footer {
+    clear: both;
+    width: 920px;
+    height: 20px;
+    min-height: 20px;
+    padding: 0px 0px 0px 0px;
+}
+
+div#footer1 {
+    clear: both;
+    width: 920px;
+    height: 185px;
+    min-height: 185px;
+    padding: 0px 0px 0px 0px;
+}
+
+div#footer a {
+    color: #9BC4E2;
+    text-decoration: none;
+}
+
+div#footer ul {
+    margin:0 40px 5px 0;
+    padding:0px;
+    list-style-type: none;
+}
+
+div#footer ul li {
+    float: right;
+    padding: 0 25px;
+    border: solid 1px #9BC4E2;
+    border-width: 0 0 0 1px;
+}
+
+div#footer ul li.last {
+    border-width: 0;
+}
+
+div#footer ul li.first {
+    padding-left: 5px;
+    border-width: 0 0 0 0px;
+}
+
+div#copyright {
+    clear: both;
+    width: 920px;
+    height: 20px;
+    min-height: 20px;
+    padding: 2px 0 0 0;
+    border-top: solid 2px #9BC4E2;
+}
+
+div#copyright p {
+    float: right;
+    color: #9BC4E2;
+    margin-right: 60px;
+}
+
+
+/* site map styles */
+div#page ul.site_map { margin: 5px 0 0 0; padding: 0 0 0 30px; }
+div#page ul.site_map li { line-height: 1.25; margin: 0 0 5px 0; }
+
+a.right_delete_link { float: right; }
+p.edit_links { line-height: 1.3; }
+
+/* CSS Fixing Styles */
+div#clearfix{
+    clear: both;
+    height: 0px;
+}

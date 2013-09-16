@@ -1,0 +1,171 @@
+<div id="wizard_container" class="container" style="display:none;">
+<div id="wizard_container_spinner" class="loading" style="display:none;">&nbsp;</div>
+<div class="title">Reports Wizard</div>
+<div id="wizard_container_content">
+	<fieldset id="wizrd_content_form">
+		<div class="wizrd_label">
+		What would you like to report on?		
+		<!-- Button Panel -->
+		<span id="wizrd_btn_panel">
+			<input type="button" name="Clear" value="Clear" id="wizrd_btn_clear" onclick="resetWizard();"/>
+			<input type="button" name="Finish" value="Done, Generate Report" id="wizrd_btn_proceed" onclick="generateReportsSectionReportWizard()"/>
+		</span>
+		</div>
+			<div class="wizrd_fld">
+				<!-- DEPENDENT VARIABLES section -->
+				<div class="wizrd_section dep">
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						<span class="wizrd_sect dep_sectn_1"  style="visibility:visible;">
+							<select name="wizrd_aggregation" id="aggregation_dep" class="wizrd_input dep_wizrd_input_1">
+								<option value="">-- Select an aggregation --</option>
+								<option value="1" label="count">Total count</option>
+								<option value="0" label="sum">Sum</option>
+								<option value="2" label="avg">Average</option>
+								<option value="3" label="min">Minimum</option>
+								<option value="4" label="max">Maximum</option>
+							</select> of 
+						</span>
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect dep_sectn_2">
+								<input type="text" id="check_dep" value="Search..." class="wizrd_input dep_wizrd_input_2"/>
+								<span id="dep_check_icon" class="check_icon">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</span>
+						</span>
+					</div>
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect dep_sectn_3">
+								expressed as <select name="seldata_dep" id="seldata_dep" class="wizrd_input dep_wizrd_input_3">
+								    <option value="">-- Select a datatype --</option>
+									<option value="string">String</option>
+									<option value="number">Numeric</option>
+									<option value="date">Date</option>
+								</select> type
+							</span>
+						</span>
+					</div>
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect dep_sectn_4">
+								with <select name="wizrd_scope" id="seljoin_dep" class="wizrd_input dep_wizrd_input_4 wizrd_scope">
+									<option value="">-- Select a scope --</option>
+									<option value="default">Default</option>
+									<option value="module">Module</option>
+									<option value="form">Form</option>
+								</select> scope
+							</span>
+						</span>
+						<span class="wizrd_last">
+							<input type="text" id="dep_wizrd_selections"/>
+							<input type="hidden" id="seljoinother_dep" class="dep_wizrd_input_5" value=""/>
+							<input type="hidden" id="select_dep" value="dependent" class="dep_wizrd_input_6" />
+						</span>
+					</div>
+				</div>
+				
+				<!-- INDEPENDENT VARIABLES section -->
+				<div class="wizrd_section ind dep_sectn_2">
+					<div class="wizrd_row">
+						<span class="wizrd_sect ind_sectn_1"  style="visibility:visible;">
+							<span class="wizrd_left">
+							grouped by
+							</span>
+							<span class="wizrd_right">
+								<input type="text" id="check_ind" value="No groups, or search..." class="wizrd_input ind_wizrd_input_1"/>
+								<span id="ind_check_icon" class="check_icon">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</span>
+						</span>
+					</div>									
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect ind_sectn_2">
+							expressed as <select name="wizrd_datatype" id="seldata_ind" class="wizrd_input ind_wizrd_input_2">
+								<option value="">-- Select a datatype --</option>
+								<option value="string">String</option>
+								<option value="number">Numeric</option>
+								<option value="date">Date</option>
+							</select> type
+							</span>
+						</span>
+					</div>
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect ind_sectn_3">with <select name="wizrd_scope" id="seljoin_ind" class="wizrd_input ind_wizrd_input_3 wizrd_scope">
+								<option value="">-- Select a scope --</option>
+								<option value="default">Default</option>
+								<option value="module">Module</option>
+								<option value="form">Form</option>
+							</select> scope</span>
+						</span>
+						<span class="wizrd_last">
+							<input type="text" id="ind_wizrd_selections"/>
+							<input type="hidden" id="seljoinother_ind" value="" class="dep_wizrd_input_4" />
+							<input type="hidden" id="select_ind" value="independent" class="dep_wizrd_input_5" />
+						</span>
+					</div>
+				</div>
+				
+				<!-- FILTER VARIABLES section -->
+				<div class="wizrd_section fil dep_sectn_2">
+					<div class="wizrd_row">
+						<span class="wizrd_sect fil_sectn_1"  style="visibility:visible;">
+							<span class="wizrd_left">
+							filter by
+							</span>
+							<span class="wizrd_right">
+								<input type="text" id="check_fil" value="No filters, or search..." class="wizrd_input fil_wizrd_input_1"/>
+								<span id="fil_check_icon" class="check_icon">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</span>
+						</span>
+					</div>									
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect fil_sectn_2">expressed as <select name="wizrd_datatype" id="seldata_fil" class="wizrd_input fil_wizrd_input_2">
+							    <option value="">-- Select a datatype --</option>
+								<option value="string">String</option>
+								<option value="number">Numeric</option>
+								<option value="date">Date</option>
+							</select> type</span>
+						</span>
+						<span class="wizrd_last">&nbsp;</span>
+					</div>																	
+					<div class="wizrd_row">
+						<span class="wizrd_left">
+						&nbsp;  
+						</span>
+						<span class="wizrd_right">
+							<span class="wizrd_sect fil_sectn_3">with <select name="wizrd_scope" id="seljoin_fil" class="wizrd_input fil_wizrd_input_3 wizrd_scope">
+								<option value="">-- Select a scope --</option>
+								<option value="default">Default</option>
+								<option value="module">Module</option>
+								<option value="form">Form</option>
+							</select> scope</span>
+						</span>
+						<span class="wizrd_last">
+							<input type="text" id="fil_wizrd_selections"/>
+							<input type="hidden" id="seljoinother_fil" value="" class="fil_wizrd_input_4" />
+							<input type="hidden" id="select_fil" value="filter" class="fil_wizrd_input_5" />
+						</span>
+					</div>
+				</div>
+			</div>
+	</fieldset>
+</div>
+</div>
