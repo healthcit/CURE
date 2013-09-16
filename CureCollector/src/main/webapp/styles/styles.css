@@ -1,0 +1,97 @@
+/*******************************************************************************
+*Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+*Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+*Proprietary and confidential
+*******************************************************************************/
+#uploadStatus
+{
+	display: none;
+}
+
+.middle-div
+{
+	height:200;
+	background: url("../images/07.jpg") repeat-y scroll 0 0 transparent;
+	width:890px;
+	padding:30px;
+	
+}
+
+.adminMsg, .adminMsg2
+{
+	color: red;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	border: 1px solid #AFAFAF;
+	background: white;
+	padding: 5px;
+	width: 750px;
+}
+
+.adminMsg2
+{
+	color: black;
+	border: none;
+}
+
+.adminMsg2 table
+{
+	font-size:10px; 
+	border:1px solid black; 
+	width:100%;
+}
+
+.adminMsg2 span.desc
+{
+	font-weight:bold;
+}
+
+.adminMsg2 hr.deschr
+{
+	color:#555E86;
+	margin-bottom:10px;
+}
+
+.adminMsg2 table th
+{
+	background:#97E1F9;
+	border:1px solid black;
+}
+
+.adminMsg2 table th.first
+{
+	width: 20%;
+}
+
+.adminMsg2 .success
+{
+	color: green;
+	font-weight: bold;
+}
+
+.adminMsg2 .warning
+{
+	color: red;
+	font-weight: bold;
+}
+
+#loadingSpinner
+{
+	background: url("../images/spinner.gif") white 230px 230px no-repeat;
+	display: none;
+	border: 1px solid #AFAFAF;
+	padding: 230px;
+	width: 300px;
+	
+}
+
+#loadingSpinner .text
+{	
+	color: red;
+	font-size: 13px;
+}
+
+#recalculateFormSkipsBtn
+{
+	margin-left:240px;
+}

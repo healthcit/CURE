@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+        	<list>
+        		<value>classpath:cacure.properties</value>
+        		<value>classpath:ldap.properties</value>
+        	</list>
+        </property>  
+    </bean>
+
+	<!--  DAO beans -->
+	<bean id="securityQuestionDao" class="com.healthcit.how.dao.SecurityQuestionDao"/>
+	<bean id="userDao" class="com.healthcit.how.dao.UserDao"/>
+	<bean id="patientDao" class="com.healthcit.how.dao.PatientDao"/>
+	<bean id="moduleDao" class="com.healthcit.how.dao.ModuleDao"/>
+	<bean id="tagDao" class="com.healthcit.how.dao.TagDao"/>
+	<bean id="formDao" class="com.healthcit.how.dao.FormDao"/>
+	<bean id="coreEntityDao" class="com.healthcit.how.dao.CoreEntityDao"/>
+	<bean id="sharingGroupDao" class="com.healthcit.how.dao.SharingGroupDao"/>
+	<bean id="formSkipAnswerDao" class="com.healthcit.how.dao.FormSkipAnswerDao"/>
+	<bean id="sharingGroupFormInstanceDao" class="com.healthcit.how.dao.SharingGroupFormInstanceDao">
+		<property name="nativeSqlStatementsMap">
+			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+				<property name="location" value="classpath:sqlstatements.properties"/>
+			</bean>
+		</property>
+	</bean>
+	<bean id="couchDbDao" class="com.healthcit.cacure.dao.CouchDBDao">
+		<property name="host">
+		    <value>${couchDb.host}</value>
+		</property>
+		<property name="port">
+		   	<value>${couchDb.port}</value>
+		</property>
+		<property name="dbName">
+		  	<value>${couchDb.name}</value>
+		</property>
+		<property name="batchSize">
+		   	<value>${couchDb.batch.size}</value>
+		</property>
+		<property name="bulkBatchSize">
+		   	<value>${couchDb.bulk.batch.size}</value>
+		</property>
+		<property name="designDoc">
+		   	<value>${couchDb.design.doc}</value>
+		</property>
+		<property name="cacureDbName">
+			<value>${couchDb.name}</value>
+		</property>
+		<property name="cacureDesignDoc">
+			<value>${couchDb.design.doc}</value>
+		</property>
+		<property name="dbLoginUserName">
+			<value>${couchDb.login.username}</value>
+		</property>
+		<property name="dbLoginPassword">
+			<value>${couchDb.login.password}</value>
+		</property>
+	</bean>
+	
+	<!--  JDBC  -->
+ 	<bean id="FormBuilderDataDao" class="com.healthcit.how.dao.FormBuilderDataDao">
+        <property name="jdbcDataSource" ref="jdbcDataSource"/>        
+		<property name="nativeSqlStatementsMap">
+			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+				<property name="location" value="classpath:sqlstatements.properties"/>
+			</bean>
+		</property>
+    </bean>
+       
+	<!--  Business Delegates -->
+	<bean id="FormBuilderDataManager" class="com.healthcit.how.businessdelegates.FormBuilderDataManager"/>
+	<bean id="moduleDeploymentManager" class="com.healthcit.how.businessdelegates.ModuleDeploymentManager">
+		<property name="dataDirPath" value="${cacure.dataDirPath}"/>
+	</bean>
+	<bean id="securityQuestionManager" class="com.healthcit.how.businessdelegates.SecurityQuestionManager"/>
+	<bean id="userManager" class="com.healthcit.how.businessdelegates.UserManager"/>
+	<bean id="patientManager" class="com.healthcit.how.businessdelegates.PatientManager"/>
+	<bean id="tagManager" class="com.healthcit.how.businessdelegates.TagManager"/>
+	<bean id="moduleManager" class="com.healthcit.how.businessdelegates.ModuleManager"/>
+	<bean id="formManager" class="com.healthcit.how.businessdelegates.FormManager">
+		<property name="staleDays" value="${cacure.staleDays}"/>
+	</bean>
+	<bean id="accessServices" class="${cacure.accessServicesClass}">
+	</bean>
+	<bean id="formDataCollector" class="${cacure.formDataCollectorClass}">
+	</bean>
+	<bean id="formActionsProvider" class="${cacure.formActionsProviderClass}">
+		<property name="formActionsPath"  value="${cacure.formActionsPath}"/>
+		<property name="previousFormActionTemplateFile"  value="previousFormAction.xml"/>
+		<property name="nextFormActionTemplateFile"  value="nextFormAction.xml"/>
+		<property name="submitFormActionTemplateFile"  value="submitFormAction.xml"/>
+		<property name="saveFormActionTemplateFile"  value="saveFormAction.xml"/>
+		<property name="approveFormActionTemplateFile"  value="approveFormAction.xml"/>
+		<property name="declineFormActionTemplateFile"  value="declineFormAction.xml"/>
+		<property name="reopenFormActionTemplateFile"  value="reopenFormAction.xml"/>
+	</bean>
+	<bean id="moduleActionsProvider" class="${cacure.moduleActionsProviderClass}">
+	</bean>
+	<bean id="formDataCollectorDefault" class="com.healthcit.how.businessdelegates.FormDataCollectorDefault">
+	</bean>
+	<bean id="formAccessService" class="com.healthcit.how.businessdelegates.FormAccessService">
+	     <property name="ownersBatchSize">
+		    <value>${formAccessService.ownersBatchSize}</value>
+		</property>
+	</bean>
+	<bean id="coreEntityManager" class="com.healthcit.how.businessdelegates.CoreEntityManager"/>
+	<bean id="sharingGroupManager" class="com.healthcit.how.businessdelegates.SharingGroupManager"/>
+	<bean id="entityPermissionsManager" class="com.healthcit.how.businessdelegates.EntityPermissionsManager"/>
+
+</beans>

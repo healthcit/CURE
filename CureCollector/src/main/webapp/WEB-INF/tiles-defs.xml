@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+	<!-- Main Page Layout -->
+	<definition name=".root" template="/WEB-INF/layouts/how-layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/layouts/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/layouts/footer.jsp"/>
+		<put-attribute name="jspLocation" value="/WEB-INF/"/>
+		<!-- title and body should be overridden -->
+		<put-attribute name="title" value=""/>
+		<put-attribute name="body" value=""/>
+		<put-attribute name="loadXForm" value="false"/>
+	</definition>
+
+	<!-- XForm Page Layout -->
+	<definition name=".xform-root" template="/WEB-INF/layouts/xforms-how-layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/layouts/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/layouts/footer.jsp"/>
+		<put-attribute name="jspLocation" value="/WEB-INF/"/>
+		<!-- title and body should be overridden -->
+		<put-attribute name="title" value=""/>
+		<put-attribute name="body" value=""/>
+		<put-attribute name="loadXForm" value="false"/>
+	</definition>
+
+	<!-- SIDE BARS -->
+	<definition name="root-sidebar" template="/WEB-INF/layouts/sidebar.jsp">
+		<put-attribute name="content" value=""/>
+		<put-list-attribute name="menuList"/>
+	</definition>
+
+	<!--  Questionnaire Side Bar -->
+	<definition name="questionnaire-sidebar" template="root-sidebar">
+		<!--  <put-attributeList name="menuList">
+			<item value="Sample Forms" link="/interview.form?xfPath=xf.xml"/>
+			<item value="Demo Main" link="/main.page"/>
+		</put-attributeList> -->
+		<put-list-attribute name="menuList">
+			<item value="Change Password" link="#"/>
+		</put-list-attribute>
+	</definition>
+
+	<!-- Login Side Bar -->
+	<definition name="login-sidebar" extends="root-sidebar">
+		<put-attribute name="content" value="login-form"/>
+	</definition>
+
+	<!-- Registration Side Bar -->
+	<definition name="registration-sidebar" extends="root-sidebar">
+		<put-list-attribute name="menuList">
+			<item value="Home" link="/main.page" />
+		</put-list-attribute>
+	</definition>
+
+	<!-- Layout of Questionnaire Content page -->
+
+	<definition name="questionnaire-content" template="/WEB-INF/layouts/formsContentLayout.jsp">
+		<put-attribute name="content-sidebar" value="questionnaire-sidebar"/>
+		<put-attribute name="content-menu" value="/WEB-INF/tiles/xforms/menu.jsp"/>
+		<!-- content and activePage should be overridden -->
+		<put-attribute name="content" value=""/>
+		<put-attribute name="activePage" value=""/>
+	</definition>
+
+	<definition name="main-content" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/main.jsp"/>
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="activePage" value="MainPage"/>
+	</definition>
+
+	<definition name="xform-content" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/xforms/form.jsp"/>
+		<put-attribute name="activePage" value="XFormPage"/>
+	</definition>
+
+	<definition name="xform-result" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/echo.jsp"/>
+		<put-attribute name="activePage" value="XFormPage"/>
+	</definition>
+
+	<!-- Registration Pages (non-XForm screens) -->
+
+	<definition name="how-registration-content" template="/WEB-INF/layouts/registration/baseRegistrationLayout.jsp">
+		<put-attribute name="content-sidebar" value="registration-sidebar"/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="activePage" value="Registration"/>
+		<put-attribute name="regStep1" value="/WEB-INF/tiles/registration/registrationStep1.jsp"/>
+		<put-attribute name="regStep2" value="/WEB-INF/tiles/registration/registrationStep2.jsp"/>
+		<put-attribute name="regStep3" value="/WEB-INF/tiles/registration/registrationStep3.jsp"/>
+	</definition>
+
+	<definition name="how-registration" extends=".root">
+		<put-attribute name="title" value="New Registration"/>
+		<put-attribute name="body" value="how-registration-content"/>
+	</definition>
+	
+	<definition name="registration-content" template="/WEB-INF/layouts/registration/baseRegistrationLayout2.jsp">
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="activePage" value="Registration"/>
+		<put-attribute name="regSection" value="/WEB-INF/tiles/registration/registrationSection.jsp"/>
+	</definition>
+
+	<definition name="registration" extends=".root">
+		<put-attribute name="title" value="Manage Users"/>
+		<put-attribute name="body" value="registration-content"/>
+	</definition>
+	
+	<definition name="ldap-content" template="/WEB-INF/tiles/ldap/ldapUsers.jsp">
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="activePage" value=""/>
+		<put-attribute name="regSection" value=""/>
+	</definition>
+
+	<definition name="ldapList" extends=".root">
+		<put-attribute name="title" value="Manage Users"/>
+		<put-attribute name="body" value="ldap-content"/>
+	</definition>
+	
+	<definition name="showWorkflow" extends=".root">
+		<put-attribute name="title" value="Workflow Configuration"/>
+		<put-attribute name="body" value="show-workflow-content"/>
+	</definition>
+	
+	<definition name="show-workflow-content" template="/WEB-INF/layouts/otherLayout.jsp">
+		<put-attribute name="content" value="/WEB-INF/tiles/admin/configureWorkflow.jsp"/>
+		<put-attribute name="activePage" value="Workflow Configuration"/>
+	</definition>
+
+	<definition name="invalid-user" extends=".root">
+		<put-attribute name="title" value="Invalid User"/>
+		<put-attribute name="body" value="invalid-user-content"/>
+	</definition>
+
+	<!-- Invalid New User Page -->
+	<definition name="invalid-user-content" extends="questionnaire-content">
+		<put-attribute name="content-sidebar" value="registration-sidebar"/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="content" value="/WEB-INF/tiles/registration/invalid-user.jsp"/>
+		<put-attribute name="activePage" value="Registration"/>
+	</definition>
+
+	<!-- Registration Success Page -->
+	<definition name="registration-success" extends=".root">
+		<put-attribute name="title" value="Registration Successful"/>
+		<put-attribute name="body" value="registration-success-content"/>
+	</definition>
+
+	<definition name="registration-success-content" extends="questionnaire-content">
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="content" value="/WEB-INF/tiles/registration/registrationSuccess.jsp"/>
+		<put-attribute name="activePage" value="Registration"/>
+	</definition>
+
+	<!-- Login Form -->
+	<definition name="login-form" template="/WEB-INF/tiles/login/loginForm.jsp"/>
+
+	<!-- Main page -->
+	<definition name="main" extends=".root">
+		<put-attribute name="title" value="Cure Collector"/>
+		<put-attribute name="body" value="main-content"/>
+	</definition>	
+	
+	<definition name="login" extends=".root">
+		<put-attribute name="title" value="Cure Collector Login"/>
+		<put-attribute name="body" value="login-content"/>
+	</definition>
+
+	<definition name="how-main" extends=".xform-root">
+		<put-attribute name="title" value="Main Page"/>
+		<put-attribute name="body" value="main-content"/>
+	</definition>
+	
+	<!-- ERROR PAGES -->
+	<!-- Access Denied Page -->
+	<definition name="accessDenied" template="/WEB-INF/views/errors/403.jsp"/> 
+
+	<!-- Home/Welcome Page -->
+	<definition name="home" extends=".xform-root">
+		<put-attribute name="title" value="Main Page"/>
+		<put-attribute name="body" value="home-content"/>
+	</definition>
+
+	<definition name="home-content" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/home.jsp"/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="content-sidebar" value="questionnaire-sidebar"/>
+		<put-attribute name="activePage" value="MainPage"/>
+	</definition>
+	
+	<definition name="login-content" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/login/loginForm.jsp"/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="activePage" value="LoginPage"/>
+	</definition>
+
+	<!-- Questionnaire page -->
+	<definition name="interview" extends=".xform-root">
+		<put-attribute name="title" value="XForm Page"/>
+		<put-attribute name="body" value="xform-content"/>
+		<put-attribute name="loadXForm" value="true"/>
+	</definition>
+
+	<!-- Echo page -->
+	<definition name="echo" extends=".xform-root">
+		<put-attribute name="title" value="Echo"/>
+		<put-attribute name="body" value="xform-result"/>
+	</definition>
+
+	<definition name="uploadModule" extends=".root">
+		<put-attribute name="title" value="Upload Module"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/uploadModule.jsp"/>
+	</definition>
+	
+	<definition name="assignTags" extends=".root">
+		<put-attribute name="title" value="Assign Tags"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/assignTags.jsp"/>
+	</definition>
+	
+	<definition name="updateFormSkipData" extends=".root">
+		<put-attribute name="title" value="Recalculate Form Skips"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/updateFormSkipData.jsp"/>
+	</definition>
+
+	<definition name="mainAdmin" extends=".root">
+		<put-attribute name="title" value="Administration"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/admin.jsp"/>
+	</definition>
+	<definition name="mainAdminMessage" extends=".root">
+		<put-attribute name="title" value="Administration"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/adminMessage.jsp"/>
+	</definition>
+	<definition name="directForms" extends=".root">
+		<put-attribute name="title" value="Direct Forms"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/directForms.jsp"/>
+	</definition>
+	
+	<definition name="entityTagPermissions" extends=".root">
+		<put-attribute name="title" value="Entity Tag Permissions"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/entityTagPermissions.jsp"/>
+	</definition>
+	
+	<definition name="entityTagPermissionsResult" extends=".root">
+		<put-attribute name="title" value="Entity Tag Permissions Result"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/entityTagPermissionsResult.jsp"/>
+	</definition>
+	
+	<definition name="directFormsResult" extends=".xform-root">
+	    <put-attribute name="header" value="/WEB-INF/layouts/xforms-header.jsp"/>
+		<put-attribute name="title" value="Direct Forms Result"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/xforms/xFormBody.jsp"/>
+	</definition>
+	
+	<definition name="directFormsError" extends=".root">
+		<put-attribute name="title" value="Direct Forms Error"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/directFormsError.jsp"/>
+	</definition>
+	<definition name="saveDirectForm" extends=".root">
+		<put-attribute name="title" value="Administration"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/admin/saveDirect.jsp"/>
+	</definition>
+</tiles-definitions>

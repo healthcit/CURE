@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<persistence
+	xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+      http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+
+    <persistence-unit name="caCURE" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.healthcit.how.models.AbstractUUIDKeyedEntity</class>
+		<class>com.healthcit.how.models.CoreEntity</class>
+		<class>com.healthcit.how.models.EntityTagPermission</class>
+		<class>com.healthcit.how.models.EntityTagPermissionPk</class>
+		<class>com.healthcit.how.models.FormSkip</class>
+		<class>com.healthcit.how.models.FormSkipAnswer</class>
+		<class>com.healthcit.how.models.Module</class>
+		<class>com.healthcit.how.models.ModuleFile</class>
+		<class>com.healthcit.how.models.Patient</class>
+		<class>com.healthcit.how.models.QuestionnaireForm</class>
+		<class>com.healthcit.how.models.SecurityQuestion</class>
+		<class>com.healthcit.how.models.SharingGroup</class>
+		<class>com.healthcit.how.models.SharingGroupFormInstance</class>
+		<class>com.healthcit.how.models.SharingGroupFormInstancePk</class>
+		<class>com.healthcit.how.models.SharingGroupModule</class>
+		<class>com.healthcit.how.models.SharingGroupModulePk</class>
+		<class>com.healthcit.how.models.SkipPart</class>		
+		<class>com.healthcit.how.models.Tag</class>
+		<class>com.healthcit.how.models.StateTracker</class>
+		<class>com.healthcit.how.models.User</class>
+        <properties>
+        	<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        	<property name="jboss.as.jpa.providerModule" value="hibernate3-bundled" />
+        </properties>
+    </persistence-unit>
+    <!-- <persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jar-file>file:/home/turin/work/local/lab8/build/classes</jar-file>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            value='create' to build a new database on each run; value='update' to modify an existing database; value='create-drop' means the same as 'create' but also drops tables when Hibernate closes; value='validate' makes no changes to the database
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+        </properties>
+    </persistence-unit>  -->
+</persistence>

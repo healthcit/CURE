@@ -1,0 +1,68 @@
+# This is the root of the directory tree
+
+dn: dc=caCure,dc=com
+description: caCure.Com.
+dc: caCure
+o: caCure.Com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+
+# Subtree for users
+dn: ou=Users,dc=caCure,dc=com
+ou: Users
+description: caCure.Com Users
+objectClass: organizationalUnit
+
+
+
+##
+## USERS
+##
+
+# admin
+dn: uid=admin,ou=Users,dc=caCure,dc=com
+ou: Users
+# Name info:
+uid: admin
+cn: admin
+sn: admin
+givenName: admin
+displayName: admin
+mail: admin@healthcit.com
+# Misc:
+userPassword: {SSHA}OsjMkEdVuH9Oxua8gYxhJTsUohnXUwFR
+# Object Classes:
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+
+
+# Barbara Jensen:
+dn: uid=barbara,ou=Users,dc=caCure,dc=com
+ou: Users
+uid: barbara
+sn: Jensen
+cn: Barbara Jensen
+givenName: Barbara
+displayName: Barbara Jensen
+mail: a@a.com
+userPassword: {SSHA}OsjMkEdVuH9Oxua8gYxhJTsUohnXUwFR
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+
+
+dn: ou=groups,dc=caCure,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=admin,ou=groups,dc=caCure,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: admin
+uniqueMember: uid=barbara,ou=users,dc=caCure,dc=com
+uniqueMember: uid=admin,ou=users,dc=caCure,dc=com
+ou: admin
+

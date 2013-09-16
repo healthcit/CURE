@@ -1,0 +1,7 @@
+<xform:group class="hcit-save-back-group">
+<xform:submit submission="SendDataElement" class="hcit-save-button-back">
+  <xform:label>Save and Go Back</xform:label>
+  <xform:setvalue ev:event="DOMActivate" ref="instance('URLInstance')//full-url" value="concat(instance('URLInstance')//base-url,'/prev')"/>
+</xform:submit>
+<xform:output class="hcit-save-button-back-comment" value="'Click here if you have completed ALL the questions for this form and wish to go back to the previous form.'" /> 
+</xform:group>

@@ -1,0 +1,7 @@
+<xform:group class="hcit-approve-action-group">
+<xform:submit submission="PartialSendDataElement" class="hcit-approve-action-button">
+  <xform:label>Approve</xform:label>
+  <xform:setvalue ev:event="DOMActivate" ref="instance('URLInstance')//full-url" value="concat(instance('URLInstance')//base-url,'/approve')"/>
+</xform:submit>
+<xform:output class="hcit-approve-action-comment" value="'Click here if you have completed ALL the questions for this form and wish to go back to the previous form.'" /> 
+</xform:group>

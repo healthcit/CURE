@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Scans within the base package of the application for @Components to configure as beans -->
+	<context:component-scan base-package="com.healthcit.how">
+        <context:exclude-filter type="regex" expression=".*\.web\..*"/>
+     </context:component-scan>
+
+	<!--  context:component-scan base-package="com.healthcit.how" / -->
+
+	<!-- Configures the message bundle used by the code-base -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages" />
+	</bean>
+
+	<!-- Configures the property place-holder used by the configuration files -->
+	<bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:cacure.properties" />
+    </bean>
+
+    <!-- DATABASE -->
+
+    <!--  Configures the data source (uses DCBP for connection pooling) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	    <property name="driverClassName" value="org.postgresql.Driver" />
+
+	    <property name="username"><value>${jpa.connection.username}</value></property>
+
+	    <property name="password"><value>${jpa.connection.password}</value></property>
+
+	    <property name="url">
+	    	<value>jdbc:postgresql://${jpa.connection.host}:${jpa.connection.port}/${jpa.schema}?autoReconnect=true</value>
+	    </property>
+	</bean>
+
+ <!--  JDBC datasource -->
+    <bean id="jdbcDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url">
+	    	<value>jdbc:postgresql://${jdbc.connection.host}:${jdbc.connection.port}/${jdbc.schema}?autoReconnect=true</value>
+	    </property>
+        <property name="username" value="${jdbc.connection.username}"/>
+        <property name="password" value="${jdbc.connection.password}"/>
+    </bean>
+
+
+	<!-- Configures the EntityManager Factory -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	    <property name="dataSource" ref="dataSource" />
+	    <property name="jpaVendorAdapter">
+	        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	            <property name="database" value="POSTGRESQL" />
+	            <property name="showSql">
+			    	<value>${hibernate.showsql}</value>
+			    </property>
+	        </bean>
+	    </property>
+	</bean>
+
+	<!-- Configures the Transaction Manager for the EntityManager factory -->
+	<bean id="transactionManager"
+	    class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" scope="prototype">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+	</bean> 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    
+    <!-- Configures the REST Template -->
+    <bean id="httpRestClient" class="org.apache.commons.httpclient.HttpClient"/>
+    <bean id="requestFactory" class="org.springframework.http.client.CommonsClientHttpRequestFactory">
+    	<constructor-arg ref="httpRestClient"/>
+    </bean>
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+    	<constructor-arg ref="requestFactory"/>
+    	<property name="messageConverters">
+    		<list>
+    			<bean id="stringMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"/>
+    		</list>
+    	</property>
+    </bean>
+
+	<!-- SERVICES -->
+
+	<!-- Cryptographic Service -->
+	<bean id="cryptoBean"
+		  class="com.healthcit.how.services.Crypto">
+		  <constructor-arg type="java.lang.String">
+		  	<value>${cacure.register.privatekey}</value>
+		  </constructor-arg>
+	</bean>
+	
+	<!-- Configures JAXB Contexts -->
+	<bean id="moduleJaxbContext" class="com.healthcit.how.utils.JAXBUtils" factory-method="getModuleMetadataContext"/>
+	<bean id="xformsJaxbContext" class="com.healthcit.how.utils.JAXBUtils" factory-method="getXFormsContext"/>
+	<bean id="gatewayJaxbContext" class="com.healthcit.how.utils.JAXBUtils" factory-method="getGatewayContext"/>
+
+</beans>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<forms>
+{{#forms}}
+<form id="{{formId}}" revision="{{revision}}" ownerId="{{ownerId}}" moduleId="{{moduleId}}" instanceId="{{instanceId}}"> 
+    {{#questions}}
+	<question id="{{questionId}}" sn="{{questionSn}}">
+        <text>{{questionText}}</text>
+        {{#answerValues}}
+		<answer id="{{ansId}}" text="{{ansText}}">{{ansValue}}</answer>
+		{{/answerValues}}
+    </question>
+	{{/questions}}
+	{{#complexTables}}
+	<complex-table id="{{uuid}}" sn="{{sn}}" >
+		<text>{{tableText}}</text>
+		{{#rows}}
+		<row>
+			{{#columns}}
+			<column id="{{questionId}}" sn="{{questionSn}}" isIdentifying="{{identifying}}">
+				<text>{{questionText}}</text>
+        		{{#answerValues}}
+				<answer id="{{ansId}}" text="{{ansText}}">{{ansValue}}</answer>
+				{{/answerValues}}
+			</column>
+			{{/columns}}
+		</row>
+		{{/rows}}
+	</complex-table>
+	{{/complexTables}}
+	{{#simpleTables}}
+	<question-table id="{{uuid}}" sn="{{sn}}">
+		<text>{{tableText}}</text>
+		{{#questions}}
+		<question id="{{questionId}}" sn="{{questionSn}}">
+        	<text>{{questionText}}</text>
+        	{{#answerValues}}
+			<answer id="{{ansId}}" text="{{ansText}}">{{ansValue}}</answer>
+			{{/answerValues}}
+    	</question>
+		{{/questions}}
+	</question-table>
+	{{/simpleTables}}
+</form>
+{{/forms}}
+</forms>

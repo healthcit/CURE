@@ -1,0 +1,21 @@
+<xform:group  class="hcit-save-for-later-group">
+<xform:submit submission="PartialSendDataElement" class="hcit-save-for-later-button" appearance="compact">
+  <xform:label>Save For Later </xform:label>
+  <xform:setvalue ev:event="DOMActivate" ref="instance('URLInstance')//full-url" value="instance('URLInstance')//base-url"/>
+</xform:submit>
+<xform:output class="hcit-save-for-later-button-comment" value="'Click here if you want to save the information you have entered so far. You can come back and complete this form later.'" />
+</xform:group>
+<xform:group class="hcit-save-back-group">
+<xform:submit submission="SendDataElement" class="hcit-save-button-back">
+  <xform:label>Save and Go Back</xform:label>
+  <xform:setvalue ev:event="DOMActivate" ref="instance('URLInstance')//full-url" value="concat(instance('URLInstance')//base-url,'/prev')"/>
+</xform:submit>
+<xform:output class="hcit-save-button-back-comment" value="'Click here if you have completed ALL the questions for this form and wish to go back to the previous form.'" /> 
+</xform:group>
+<xform:group class="hcit-save-next-group">
+<xform:submit submission="SendDataElement" class="hcit-save-button-next">
+  <xform:label>Save and Continue</xform:label>
+  <xform:setvalue ev:event="DOMActivate" ref="instance('URLInstance')//full-url" value="concat(instance('URLInstance')//base-url,'/next')"/>
+</xform:submit>
+<xform:output class="hcit-save-button-next-comment" value="'Click here if you have completed ALL the questions for this form and wish to continue on to the next form.'" /> 
+</xform:group>

@@ -1,0 +1,1 @@
+ALTER TABLE question_element ADD COLUMN question_is_readonly boolean NOT NULL DEFAULT false;

@@ -1,0 +1,29 @@
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<!DOCTYPE dwr PUBLIC 
+	"-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" 
+	"http://getahead.org/dwr//dwr30.dtd">
+<dwr>
+    <allow>
+    	<convert match="org.springframework.validation.Errors" converter="bean"/>
+    	<convert match="com.healthcit.how.models.SecurityQuestion" converter="bean"/>
+    	<convert match="com.healthcit.how.models.User" converter="bean">
+    		<param name="include" value="username,password,role,id"/>
+    	</convert>
+    	
+        <create creator="spring" javascript="UserValidatorJS">
+              <param name="beanName" value="userValidator"/>
+              <include method="getInputFieldErrorMessages"/>
+        </create>
+        
+        <create creator="spring" javascript="RegistrationService">
+        	  <param name="beanName" value="registrationService"/>
+              <include method="registerUser"/>
+              <include method="deleteUser"/>
+        </create>
+    </allow>
+</dwr>
+

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xform="http://www.w3.org/2002/xforms">
+  <head>
+    <xform:model>
+      <xform:instance id="FormDataInstance">
+        <form xmlns="http://www.healthcit.com/FormDataModel" name="About You" id="10">
+          <question id="200" sn="EducationLevel">
+            <text>What is your highest level of education?</text>
+            <answer id="2000" sn="None"/>
+          </question>
+          <question id="100" sn="YourThoughts">
+            <text>Please tell us what you think</text>
+            <answer id="1000" text="Enter here:" sn="ThoughtsAnswer"/>
+          </question>
+          <question id="300" sn="Diet">
+            <text>What do you eat every day?</text>
+          </question>
+          <question-table id="500" sn="AlcoholConsumption">
+            <question id="5100">
+              <text>How much alcohol do you use daily?</text>
+              <answer id="5100" text="Beer" sn="None"/>
+            </question>
+            <question id="5200">
+              <text>How much alcohol do you use daily?</text>
+              <answer id="5200" text="Wine" sn="None"/>
+            </question>
+            <question id="5300">
+              <text>How much alcohol do you use daily?</text>
+              <answer id="5300" text="Mixed drinks" sn="None"/>
+            </question>
+            <question id="5400">
+              <text>How much alcohol do you use daily?</text>
+              <answer id="5400" text="Vodka, Scotch, etc." sn="None"/>
+            </question>
+          </question-table>
+        </form>
+      </xform:instance>
+      <xform:instance id="LearnMoreInstance">
+        <data xmlns="">
+          <learn-more id="Q.LM-100">Just type in &lt;b&gt;your&lt;/b&gt; opinion</learn-more>
+        </data>
+      </xform:instance>
+      <xform:instance id="PureContentInstance">
+        <data xmlns="">
+          <pure-content id="Q.CONTENT-400">One special option with this form control is when the selection  attribute is specified as open. This indicates that "free entry" is allowed, so that the user can either pick from the list or use input-style data entry to enter a value not originally in the list of items. The entered value is still subject to all the validation rules in XForms, including XML Schema datatype validation.</pure-content>
+        </data>
+      </xform:instance>
+      <xform:instance id="Q-ANSWER_SET-200">
+        <options xmlns="">
+          <answer sn="None" text="No formal education">0</answer>
+          <answer sn="HS" text="High School">HS</answer>
+          <answer sn="BA/BS" text="Bachelors">B</answer>
+          <answer sn="MA/MS" text="Masters">M</answer>
+        </options>
+      </xform:instance>
+      <xform:instance id="Q-ANSWER_SET-300">
+        <options xmlns="">
+          <answer sn="RM" text="Red meat">1</answer>
+          <answer sn="FR" text="Fruits">2</answer>
+          <answer sn="VG" text="Vegies">3</answer>
+          <answer sn="EG" text="Eggs">4</answer>
+          <answer sn="DR" text="Dairy">5</answer>
+          <answer sn="PL" text="Poultry">6</answer>
+        </options>
+      </xform:instance>
+      <xform:instance id="Q-ANSWER_SET-500">
+        <options xmlns="">
+          <answer sn="None" text="None">0</answer>
+          <answer sn="1" text="One">1</answer>
+          <answer sn="2-3" text="2-3">3</answer>
+          <answer sn="4-5" text="4-5">5</answer>
+          <answer sn="5+" text="More than 5">6</answer>
+        </options>
+      </xform:instance>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='200']/answer[@id='2000']" id="Q-200" type="xsd:string" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='100']/answer[@id='1000']" id="Q-100" type="xsd:string" required="false()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='300']" id="Q-300" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='5100']" id="Q-5100" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='5200']" id="Q-5200" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='5300']" id="Q-5300" required="true()"/>
+      <xform:bind nodeset="instance('FormDataInstance')//question[@id='5400']" id="Q-5400" required="true()"/>
+      <xform:submission id="SendDataElement" method="post" includenamespaceprefixes="" action="/ProcessXForm.do">
+        <xform:message ev:event="xforms-submit-error">Unable to submit</xform:message>
+      </xform:submission>
+    </xform:model>
+  </head>
+  <body>
+    <xform:group>
+      <xform:output ref="instance('FormDataInstance')//question[@id='200']/text" class="hcitQuestionText"/>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='200']" appearance="full" class="hcitAnswerRadio">
+        <xform:label/>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-200')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select1>
+    </xform:group>
+    <xform:group>
+      <xform:output ref="instance('PureContentInstance')/pure-content[@id='Q.CONTENT-400']" class="hcitContentText"/>
+    </xform:group>
+    <xform:group>
+      <xform:output ref="instance('FormDataInstance')//question[@id='100']/text" class="hcitQuestionText hcitHasLearnMore"/>
+      <xform:output ref="instance('LearnMoreInstance')/learn-more[@id='Q.LM-100']" class="hcitLearnMore"/>
+      <xform:input bind="Q-100" class="hcitAnswerText">
+        <xform:label>Enter here:</xform:label>
+      </xform:input>
+    </xform:group>
+    <xform:group>
+      <xform:output ref="instance('FormDataInstance')//question[@id='300']/text" class="hcitQuestionText"/>
+      <xform:select ref="instance('FormDataInstance')//question[@id='300']" appearance="full" class="hcitAnswerCheckbox">
+        <xform:label/>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-300')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select>
+    </xform:group>
+    <xform:group>
+      <xform:output ref="instance('FormDataInstance')//question[@id='500']/text" class="hcitQuestionText"/>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='5100']" appearance="full" class="hcitAnswerRadio">
+        <xform:label>Beer</xform:label>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-500')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select1>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='5200']" appearance="full" class="hcitAnswerRadio">
+        <xform:label>Wine</xform:label>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-500')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select1>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='5300']" appearance="full" class="hcitAnswerRadio">
+        <xform:label>Mixed drinks</xform:label>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-500')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select1>
+      <xform:select1 ref="instance('FormDataInstance')//question[@id='5400']" appearance="full" class="hcitAnswerRadio">
+        <xform:label>Vodka, Scotch, etc.</xform:label>
+        <xform:itemset nodeset="instance('Q-ANSWER_SET-500')/answer">
+          <xform:label ref="@text"/>
+          <xform:value ref="."/>
+        </xform:itemset>
+      </xform:select1>
+    </xform:group>
+    <xform:submit submission="SendDataElement">
+      <xform:label>Save</xform:label>
+    </xform:submit>
+  </body>
+</html>
