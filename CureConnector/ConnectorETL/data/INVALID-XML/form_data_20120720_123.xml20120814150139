@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<owner useremail="user@client1.com">
+	<dataset>
+		<question name="DietDesc">
+			<answer>
+				<value>H</value>
+			</answer>
+		</question>
+	<question name="DHabits">
+		<record order="1">
+			<field>Often</field>
+		</record>
+		<record order="2">
+			<field>Often</field>
+		</record>
+		<record order="3">
+			<field>Sometimes</field>
+		</record>
+		<record order="4">
+			<field>Never</field>
+		</record>
+	</question> 
+			<question name="Surveys">
+		<record order="1">
+			<field order="1"></field>
+			<field order="2">St Agnes</field>
+			<field order="3">6</field>
+			<field order="4"></field>
+			<field order="5">08/07/2012</field>
+		</record>
+		<record order="2">
+			<field order="1"></field>
+			<field order="2">Medishare</field>
+			<field order="3">3</field>
+			<field order="4">yes</field>
+			<field order="5"></field>
+		</record>
+	</question>
+	<question name="DietFam">
+		<record order="1">
+			<field order="1">Father</field>
+			<field order="2">Cancer Research</field>
+			<field order="3">Yes</field>
+			<field order="4">Survey about Cancer Research</field>
+		</record>
+		<record order="2">
+			<field order="1">Mother</field>
+			<field order="2">Diabetes Research</field>
+			<field order="3">Yes</field>
+			<field order="4">Survey focusing on the causes of diabetes</field>
+		</record>
+	</question>
+
+	</dataset>
+</owner>

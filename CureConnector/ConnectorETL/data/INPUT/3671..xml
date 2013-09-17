@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<owner userid="3666">
+	<instance index="1" parentInstanceIndex="" parentFormId="" formId="8897ef72-1e4d-41a4-a17a-8b188b6e9923" processOrder="1">
+		<question name="Patient _Last_Name">
+			<answer>
+				<value>Johnson</value>
+			</answer>
+		</question>
+		<question name="Patient_ First_ Name">
+			<answer>
+				<value>Kay</value>
+			</answer>
+		</question>
+		<question name="Patient_Middle_Name">
+			<answer>
+				<value>A</value>
+			</answer>
+		</question>
+		<question name="Patient_BirthDate">
+			<answer>
+				<value>1965-03-14</value>
+			</answer>
+		</question>
+		<question name="Social_Security_Number">
+			<answer>
+				<value>119223922</value>
+			</answer>
+		</question>
+		<question name="Gender">
+			<answer>
+				<value>C16576</value>
+			</answer>
+		</question>
+		<question name="Ethnicity">
+			<answer>
+				<value>C17459</value>
+			</answer>
+		</question>
+		<question name="Race">
+			<answer>
+				<value>C41260</value>
+				<value>C16352</value>
+				<value>C41261</value>
+			</answer>
+		</question>
+	</instance>
+	<instance index="1" parentInstanceIndex="" parentFormId="" formId="9348b0d7-d1c9-412b-a3d3-cd3f7560d420" processOrder="1">
+		<question name="Icd10CmDiagnosisCode">
+			<answer>
+				<value>C61</value>
+			</answer>
+		</question>
+		<question name="DateOfInitialConsultatioWithRadiationOncologist">
+			<answer>
+				<value>1990-01-01</value>
+			</answer>
+		</question>
+		<question name="DateOfDiagnosticBiopsy">
+			<answer>
+				<value>1991-01-02</value>
+			</answer>
+		</question>
+	</instance>
+	<instance index="1" parentInstanceIndex="" parentFormId="" formId="aecbcc6a-2700-4f35-bd3e-e9399e42719e" processOrder="1">
+		<question name="FollowUpInPastYear">
+			<answer>
+				<value>1</value>
+			</answer>
+		</question>
+		<question name="DateofLastFollowUp">
+			<answer>
+				<value>1995-02-01</value>
+			</answer>
+		</question>
+		<question name="PatientVitalStatus">
+			<answer>
+				<value>1</value>
+			</answer>
+		</question>
+		<question name="DateofDeath">
+			<answer>
+				<value/>
+			</answer>
+		</question>
+		<question name="PrimaryCauseOfDeathDiseaseType">
+			<answer>
+				<value/>
+			</answer>
+		</question>
+		<question name="CancerPrimaryCauseOf Death">
+			<answer>
+				<value/>
+			</answer>
+		</question>
+		<question name="NonCancerPrimaryCauseOf Death">
+			<answer>
+				<value/>
+			</answer>
+		</question>
+	</instance>
+</owner>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>GetNotificationReadySubmissions</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <parameters>
+    </parameters>
+    <log>
+<trans-log-table><connection/>
+<schema/>
+<table/>
+<size_limit_lines/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STATUS</id><enabled>Y</enabled><name>STATUS</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name><subject/></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name><subject/></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name><subject/></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name><subject/></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name><subject/></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name><subject/></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>STARTDATE</id><enabled>Y</enabled><name>STARTDATE</name></field><field><id>ENDDATE</id><enabled>Y</enabled><name>ENDDATE</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>DEPDATE</id><enabled>Y</enabled><name>DEPDATE</name></field><field><id>REPLAYDATE</id><enabled>Y</enabled><name>REPLAYDATE</name></field><field><id>LOG_FIELD</id><enabled>Y</enabled><name>LOG_FIELD</name></field></trans-log-table>
+<perf-log-table><connection/>
+<schema/>
+<table/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>SEQ_NR</id><enabled>Y</enabled><name>SEQ_NR</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>INPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>INPUT_BUFFER_ROWS</name></field><field><id>OUTPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>OUTPUT_BUFFER_ROWS</name></field></perf-log-table>
+<channel-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>LOGGING_OBJECT_TYPE</id><enabled>Y</enabled><name>LOGGING_OBJECT_TYPE</name></field><field><id>OBJECT_NAME</id><enabled>Y</enabled><name>OBJECT_NAME</name></field><field><id>OBJECT_COPY</id><enabled>Y</enabled><name>OBJECT_COPY</name></field><field><id>REPOSITORY_DIRECTORY</id><enabled>Y</enabled><name>REPOSITORY_DIRECTORY</name></field><field><id>FILENAME</id><enabled>Y</enabled><name>FILENAME</name></field><field><id>OBJECT_ID</id><enabled>Y</enabled><name>OBJECT_ID</name></field><field><id>OBJECT_REVISION</id><enabled>Y</enabled><name>OBJECT_REVISION</name></field><field><id>PARENT_CHANNEL_ID</id><enabled>Y</enabled><name>PARENT_CHANNEL_ID</name></field><field><id>ROOT_CHANNEL_ID</id><enabled>Y</enabled><name>ROOT_CHANNEL_ID</name></field></channel-log-table>
+<step-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>LOG_FIELD</id><enabled>N</enabled><name>LOG_FIELD</name></field></step-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>Master</name><hostname>127.0.0.1</hostname><port>8180</port><webAppName>Master</webAppName><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>Slave1</name><hostname>127.0.0.1</hostname><port>8181</port><webAppName>Slave1</webAppName><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <created_user>-</created_user>
+  <created_date>2012&#47;08&#47;21 16:46:59.336</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2012&#47;08&#47;21 16:46:59.336</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>jndi_gateway_etl</name>
+    <server/>
+    <type>POSTGRESQL</type>
+    <access>JNDI</access>
+    <database>jndi_gateway_etl</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>If all transactions are completed...</from><to>Select values</to><enabled>Y</enabled> </hop>  <hop> <from>Sort rows</from><to>GetCompletedTransactions</to><enabled>Y</enabled> </hop>  <hop> <from>GetCompletedTransactions</from><to>If all transactions are completed...</to><enabled>Y</enabled> </hop>  <hop> <from>Select values</from><to>Copy rows to result</to><enabled>Y</enabled> </hop>  <hop> <from>Get completed submissions</from><to>Sort rows</to><enabled>Y</enabled> </hop>  <hop> <from>If all transactions are completed...</from><to>Dummy (do nothing)</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>Copy rows to result</name>
+    <type>RowsToResult</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>520</xloc>
+      <yloc>340</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>940</xloc>
+      <yloc>180</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get completed submissions</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>jndi_gateway_etl</connection>
+    <sql>SELECT 
+  sub.idx
+, sub.client_id
+, sub.client_name
+, sub.property_file_name
+, sub.xml_file_count
+, sub.start_ts
+, sub.end_ts
+, sub.status
+, sub.description
+, sub.notification_email
+, tran.status as tran_status
+,case when( tran.status is null or (tran.status is not null and (tran.status &gt;= 80 or (tran.status+1)%10=0))) and
+          (pretran.status = 30 or (pretran.status+1)%10=0) then &apos;PROCESSED&apos; else &apos;IN_PROGRESS&apos; end as &quot;submission_new_status&quot;
+, count(pretran.idx)
+FROM fileprocess.submissions sub, fileprocess.pre_transactions pretran
+left join fileprocess.transactions tran on pretran.idx = tran.ptxn_id
+where pretran.submmission_id = sub.idx
+and sub.status != &apos;PROCESSED_WITH_NOTIFICATION&apos;
+group by sub.idx, sub.client_id, sub.client_name, sub.property_file_name, sub.xml_file_count, sub.start_ts, sub.end_ts, sub.status, sub.description, sub.notification_email, 
+tran.idx, tran.status, pretran.status</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>Y</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>160</xloc>
+      <yloc>180</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GetCompletedTransactions</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>N</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname/>
+      <give_back_row>N</give_back_row>
+      <group>
+        <field>
+          <name>submission_new_status</name>
+        </field>
+        <field>
+          <name>idx</name>
+        </field>
+        <field>
+          <name>client_id</name>
+        </field>
+        <field>
+          <name>client_name</name>
+        </field>
+        <field>
+          <name>property_file_name</name>
+        </field>
+        <field>
+          <name>xml_file_count</name>
+        </field>
+        <field>
+          <name>start_ts</name>
+        </field>
+        <field>
+          <name>end_ts</name>
+        </field>
+        <field>
+          <name>status</name>
+        </field>
+        <field>
+          <name>description</name>
+        </field>
+        <field>
+          <name>notification_email</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>numberOfCompletedTransactions</aggregate>
+          <subject>submission_new_status</subject>
+          <type>COUNT_DISTINCT</type>
+          <valuefield/>
+        </field>
+        <field>
+          <aggregate>transaction_status</aggregate>
+          <subject>tran_status</subject>
+          <type>FIRST</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>500</xloc>
+      <yloc>180</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>If all transactions are completed...</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to>Select values</send_true_to>
+<send_false_to>Dummy (do nothing)</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <leftvalue>numberOfCompletedTransactions</leftvalue>
+   <function>=</function>
+   <rightvalue/>
+   <value><name>constant</name><type>Integer</type><text>1</text><length>-1</length><precision>0</precision><isnull>N</isnull><mask>#;-#</mask></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND</operator>
+   <leftvalue>submission_new_status</leftvalue>
+   <function>=</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>PROCESSED</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  </conditions>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>720</xloc>
+      <yloc>180</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>idx</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>client_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>client_name</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>property_file_name</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>xml_file_count</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>start_ts</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>end_ts</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>status</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>description</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>notification_email</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>transaction_status</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>720</xloc>
+      <yloc>340</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Sort rows</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>submission_new_status</name>
+        <ascending>N</ascending>
+        <case_sensitive>N</case_sensitive>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>340</xloc>
+      <yloc>180</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

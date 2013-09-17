@@ -1,0 +1,1814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>test2</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>&#47;</directory>
+    <parameters>
+    </parameters>
+    <log>
+<trans-log-table><connection/>
+<schema/>
+<table/>
+<size_limit_lines/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STATUS</id><enabled>Y</enabled><name>STATUS</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name><subject/></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name><subject/></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name><subject/></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name><subject/></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name><subject/></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name><subject/></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>STARTDATE</id><enabled>Y</enabled><name>STARTDATE</name></field><field><id>ENDDATE</id><enabled>Y</enabled><name>ENDDATE</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>DEPDATE</id><enabled>Y</enabled><name>DEPDATE</name></field><field><id>REPLAYDATE</id><enabled>Y</enabled><name>REPLAYDATE</name></field><field><id>LOG_FIELD</id><enabled>Y</enabled><name>LOG_FIELD</name></field></trans-log-table>
+<perf-log-table><connection/>
+<schema/>
+<table/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>SEQ_NR</id><enabled>Y</enabled><name>SEQ_NR</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>INPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>INPUT_BUFFER_ROWS</name></field><field><id>OUTPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>OUTPUT_BUFFER_ROWS</name></field></perf-log-table>
+<channel-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>LOGGING_OBJECT_TYPE</id><enabled>Y</enabled><name>LOGGING_OBJECT_TYPE</name></field><field><id>OBJECT_NAME</id><enabled>Y</enabled><name>OBJECT_NAME</name></field><field><id>OBJECT_COPY</id><enabled>Y</enabled><name>OBJECT_COPY</name></field><field><id>REPOSITORY_DIRECTORY</id><enabled>Y</enabled><name>REPOSITORY_DIRECTORY</name></field><field><id>FILENAME</id><enabled>Y</enabled><name>FILENAME</name></field><field><id>OBJECT_ID</id><enabled>Y</enabled><name>OBJECT_ID</name></field><field><id>OBJECT_REVISION</id><enabled>Y</enabled><name>OBJECT_REVISION</name></field><field><id>PARENT_CHANNEL_ID</id><enabled>Y</enabled><name>PARENT_CHANNEL_ID</name></field><field><id>ROOT_CHANNEL_ID</id><enabled>Y</enabled><name>ROOT_CHANNEL_ID</name></field></channel-log-table>
+<step-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>LOG_FIELD</id><enabled>N</enabled><name>LOG_FIELD</name></field></step-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <created_user>-</created_user>
+  <created_date>2012&#47;08&#47;21 17:29:45.999</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2012&#47;08&#47;21 17:29:45.999</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>hcit_FormBuilder</name>
+    <server/>
+    <type>POSTGRESQL</type>
+    <access>JNDI</access>
+    <database>hcit_FormBuilder</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Create Answer Value Fields by Type</from><to>Get Predefined Answer Values</to><enabled>Y</enabled> </hop>  <hop> <from>Create Answer Value Fields by Type</from><to>VALIDATIONS - Free Text</to><enabled>Y</enabled> </hop>  <hop> <from>Create Answer Value Fields by Type</from><to>VALIDATIONS - Predefined Values</to><enabled>Y</enabled> </hop>  <hop> <from>Get Predefined Answer Values</from><to>Send ValidAnswerValue list</to><enabled>Y</enabled> </hop>  <hop> <from>Get Question Data Type</from><to>Get Maximum Answers Allowed</to><enabled>Y</enabled> </hop>  <hop> <from>Get Maximum Answers Allowed</from><to>Check valid number of answers</to><enabled>Y</enabled> </hop>  <hop> <from>Read XML for table questions</from><to>Get Question Short Name (table questions)</to><enabled>Y</enabled> </hop>  <hop> <from>Reformat&#47;Reset Answers</from><to>VALIDATION - Existence of matching question short name</to><enabled>Y</enabled> </hop>  <hop> <from>Update Invalid Question Name</from><to>Update pre_transactions FAIL_MISSING</to><enabled>Y</enabled> </hop>  <hop> <from>Update Invalid Answer Value(s)</from><to>Update pre_transactions table FAIL_INVALID</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATION - Existence of matching question short name</from><to>Get Question Data Type</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATIONS - Predefined Values</from><to>Update pre_transactions table SUCCESS</to><enabled>Y</enabled> </hop>  <hop> <from>Update pre_transactions FAIL_MISSING</from><to>Log Invalid Question Name</to><enabled>Y</enabled> </hop>  <hop> <from>Log Invalid Question Name</from><to>Set up as 1 row</to><enabled>Y</enabled> </hop>  <hop> <from>Update pre_transactions table FAIL_INVALID</from><to>Write to log</to><enabled>Y</enabled> </hop>  <hop> <from>Write to log</from><to>Set up as 1 row (2)</to><enabled>Y</enabled> </hop>  <hop> <from>Update pre_transactions table SUCCESS</from><to>Write to log 2</to><enabled>Y</enabled> </hop>  <hop> <from>Write to log 2</from><to>Set up as 1 row (3)</to><enabled>Y</enabled> </hop>  <hop> <from>Set up as 1 row</from><to>SetVar-Fail</to><enabled>Y</enabled> </hop>  <hop> <from>Set up as 1 row (2)</from><to>SetVar-Fail 2</to><enabled>Y</enabled> </hop>  <hop> <from>Get Question Short Name (table questions)</from><to>Remove extra Table fields</to><enabled>Y</enabled> </hop>  <hop> <from>Remove extra Table fields</from><to>Reformat&#47;Reset Answers</to><enabled>Y</enabled> </hop>  <hop> <from>Send ValidAnswerValue list</from><to>VALIDATIONS - Predefined Values</to><enabled>Y</enabled> </hop>  <hop> <from>Check valid number of answers</from><to>Create Answer Value Fields by Type</to><enabled>Y</enabled> </hop>  <hop> <from>Load file content in memory</from><to>Add constants</to><enabled>Y</enabled> </hop>  <hop> <from>Add constants</from><to>Read XML for table questions</to><enabled>Y</enabled> </hop>  <hop> <from>Add constants</from><to>Read XML for regular questions</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATION - Existence of matching question short name</from><to>Update Invalid Question Name</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATIONS - Free Text</from><to>Update Invalid Answer Value(s)</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATIONS - Predefined Values</from><to>Update Invalid Answer Value(s)</to><enabled>Y</enabled> </hop>  <hop> <from>VALIDATIONS - Free Text</from><to>Write to log 3</to><enabled>Y</enabled> </hop>  <hop> <from>Write to log 3</from><to>Update pre_transactions table SUCCESS</to><enabled>Y</enabled> </hop>  <hop> <from>Read XML for regular questions</from><to>Get Question Short Name (regular questions)</to><enabled>Y</enabled> </hop>  <hop> <from>Get Question Short Name (regular questions)</from><to>Reformat&#47;Reset Answers</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>Create Answer Value Fields by Type</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#47;&#47; Create a set of new fields
+
+var AnswerValueNumber=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Number&quot; type
+var AnswerValuePositiveFloat=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Positive Float&quot; type
+var AnswerValuePositiveInteger=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Positive Integer&quot; type
+var AnswerValueInteger=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Integer&quot; type
+var AnswerValueYear=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Year&quot; type
+var AnswerValueMonthYear=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;MonthYear&quot; type
+var AnswerValueDate=&apos;&apos;; &#47;&#47; Answer Value which corresponds to &quot;Date&quot; type
+var AnswerValueOther=&apos;&apos;; &#47;&#47; Answer Value which corresponds to other types
+
+if (QuestionDataType == &apos;NUMBER&apos;)
+	AnswerValueNumber = AnswerValue;
+else if (QuestionDataType == &apos;POSITIVEFLOAT&apos;)
+	AnswerValuePositiveFloat = AnswerValue;
+else if (QuestionDataType == &apos;POSITIVEINTEGER&apos;)
+	AnswerValuePositiveInteger = AnswerValue;
+else if (QuestionDataType == &apos;INTEGER&apos;)
+	AnswerValueInteger = AnswerValue;
+else if (QuestionDataType == &apos;YEAR&apos;)
+	AnswerValueYear = AnswerValue;
+else if (QuestionDataType == &apos;MONTHYEAR&apos;)
+	AnswerValueMonthYear = AnswerValue;
+else if (QuestionDataType == &apos;DATE&apos;)
+	AnswerValueDate = AnswerValue;
+else
+	AnswerValueOther = AnswerValue;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>AnswerValueNumber</name>
+        <rename>AnswerValueNumber</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValuePositiveFloat</name>
+        <rename>AnswerValuePositiveFloat</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValuePositiveInteger</name>
+        <rename>AnswerValuePositiveInteger</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValueInteger</name>
+        <rename>AnswerValueInteger</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValueYear</name>
+        <rename>AnswerValueYear</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValueMonthYear</name>
+        <rename>AnswerValueMonthYear</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValueDate</name>
+        <rename>AnswerValueDate</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>AnswerValueOther</name>
+        <rename>AnswerValueOther</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1315</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Predefined Answer Values</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>0</rowlimit>
+    <sql>select case av.description when null then trim(upper(av.value)) else trim(upper(av.description)) end as &quot;ValidAnswerValue&quot;
+from question q, answer a, answer_value av
+where a.question_id = q.id
+and av.answer_id = a.id
+and q.short_name = ?
+</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>Y</replace_vars>
+    <parameter>
+      <field>
+        <name>QuestionShortName</name>
+        <type>String</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1316</xloc>
+      <yloc>119</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Question Data Type</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>0</rowlimit>
+    <sql>select a.type as &quot;QuestionDataType&quot; 
+from question q, answer a
+where a.question_id=q.id and trim(q.short_name)=?</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>Y</replace_vars>
+    <parameter>
+      <field>
+        <name>QuestionShortName</name>
+        <type>String</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>920</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Maximum Answers Allowed</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>0</rowlimit>
+    <sql>select case &quot;type&quot; when &apos;SINGLE_ANSWER&apos; then 1 when &apos;SINGLE_ANSWER_TABLE&apos; then 1 else 999999 end 
+as &quot;AnswerValuesMaxAllowed&quot; 
+from question where short_name=?
+</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>Y</replace_vars>
+    <parameter>
+      <field>
+        <name>QuestionShortName</name>
+        <type>String</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1099</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Read XML for regular questions</name>
+    <type>getXMLData</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <namespaceaware>N</namespaceaware>
+    <ignorecomments>N</ignorecomments>
+    <readurl>N</readurl>
+    <validating>N</validating>
+    <usetoken>N</usetoken>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <rownum_field>row_num</rownum_field>
+    <encoding>UTF-8</encoding>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>QuestionText</name>
+        <xpath>..&#47;..&#47;@name</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>Y</repeat>
+      </field>
+      <field>
+        <name>AnswerText</name>
+        <xpath>..&#47;text</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AnswerValue</name>
+        <xpath>.</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AnswerValueCount</name>
+        <xpath>count(..&#47;value)</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <loopxpath>&#47;owner&#47;dataset&#47;question&#47;answer&#47;value</loopxpath>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <XmlField>xml_string</XmlField>
+    <prunePath/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>270</xloc>
+      <yloc>136</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Read XML for table questions</name>
+    <type>getXMLData</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <namespaceaware>N</namespaceaware>
+    <ignorecomments>N</ignorecomments>
+    <readurl>N</readurl>
+    <validating>N</validating>
+    <usetoken>N</usetoken>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <rownum_field>row_num</rownum_field>
+    <encoding>UTF-8</encoding>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>TableQuestionText</name>
+        <xpath>..&#47;..&#47;@name</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>Y</repeat>
+      </field>
+      <field>
+        <name>AnswerText</name>
+        <xpath>.</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AnswerValue</name>
+        <xpath>.</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AnswerValueCount</name>
+        <xpath>count(.)</xpath>
+        <element_type>node</element_type>
+        <result_type>valueof</result_type>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>RecordOrder</name>
+        <xpath>..&#47;@order</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>FieldOrder</name>
+        <xpath>@order</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <loopxpath>&#47;owner&#47;dataset&#47;question&#47;record&#47;field</loopxpath>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <XmlField>xml_string</XmlField>
+    <prunePath/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>266</xloc>
+      <yloc>455</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Reformat&#47;Reset Answers</name>
+    <type>Formula</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <formula><field_name>HasMultiAnswers</field_name>
+<formula_string>IF([AnswerValueCount]&gt;1;999999;[AnswerValueCount])</formula_string>
+<value_type>Number</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<replace_field>AnswerValueCount</replace_field>
+</formula>
+       <formula><field_name>AnswerValue</field_name>
+<formula_string>upper([AnswerValue])</formula_string>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<replace_field>AnswerValue</replace_field>
+</formula>
+       <formula><field_name>AnswerValue</field_name>
+<formula_string>trim([AnswerValue])</formula_string>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<replace_field>AnswerValue</replace_field>
+</formula>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>621</xloc>
+      <yloc>43</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SetVar-Fail 2</name>
+    <type>SetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <field_name>error</field_name>
+        <variable_name>VALIDATION_RESULT</variable_name>
+        <variable_type>JVM</variable_type>
+        <default_value>1</default_value>
+        </field>
+      </fields>
+    <use_formatting>N</use_formatting>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2612</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update Invalid Question Name</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <schema>fileprocess</schema>
+    <table>pre_transaction_details</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>N</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>status</column_name>
+          <stream_name>status</stream_name>
+        </field>
+        <field>
+          <column_name>error_description</column_name>
+          <stream_name>error_description</stream_name>
+        </field>
+        <field>
+          <column_name>key_field</column_name>
+          <stream_name>QuestionText</stream_name>
+        </field>
+        <field>
+          <column_name>value_field</column_name>
+          <stream_name>AnswerValue</stream_name>
+        </field>
+        <field>
+          <column_name>pre_transaction_id</column_name>
+          <stream_name>pre_transaction_id</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>977</xloc>
+      <yloc>318</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update Invalid Answer Value(s)</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <schema>fileprocess</schema>
+    <table>pre_transaction_details</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>status</column_name>
+          <stream_name>status</stream_name>
+        </field>
+        <field>
+          <column_name>error_description</column_name>
+          <stream_name>error_description</stream_name>
+        </field>
+        <field>
+          <column_name>key_field</column_name>
+          <stream_name>QuestionText</stream_name>
+        </field>
+        <field>
+          <column_name>value_field</column_name>
+          <stream_name>AnswerValue</stream_name>
+        </field>
+        <field>
+          <column_name>pre_transaction_id</column_name>
+          <stream_name>pre_transaction_id</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1892</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>VALIDATION - Existence of matching question short name</name>
+    <type>Validator</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<validate_all>Y</validate_all>
+<concat_errors>N</concat_errors>
+<concat_separator>|</concat_separator>
+       <validator_field><name>QuestionShortName</name>
+<validation_name>Question Short Name - Check for existence</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>N</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression/>
+<regular_expression_not_allowed/>
+<error_code>MISSING_QUESTION_SHORT_NAME</error_code>
+<error_description>Invalid question name - no short name exists for this question</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>754</xloc>
+      <yloc>154</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>VALIDATIONS - Free Text</name>
+    <type>Validator</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<validate_all>Y</validate_all>
+<concat_errors>N</concat_errors>
+<concat_separator>|</concat_separator>
+       <validator_field><name>AnswerValueNumber</name>
+<validation_name>Answer Value - Number</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^\d+$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_NUMBER</error_code>
+<error_description>Invalid data, expected a number</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValuePositiveFloat</name>
+<validation_name>Answer Value - Positive Float</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^([+]?(((\d+(\.)?)|(\d*\.\d+))([eE][+-]?\d+)?))$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_POSITIVE_FLOAT</error_code>
+<error_description>Invalid value, expected a positive float</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValuePositiveInteger</name>
+<validation_name>Answer Value - Positive Integer</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^[+]?\d+$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_POSITIVE_INTEGER</error_code>
+<error_description>Invalid value, expected positive integer</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValueInteger</name>
+<validation_name>Answer Value - Integer</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^[+-]?\d+$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_INTEGER</error_code>
+<error_description>Invalid value, expected integer</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValueYear</name>
+<validation_name>Answer Value - Year</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^(19|2[\d])[\d]{2}$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_YEAR</error_code>
+<error_description>Invalid value, expected year</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValueMonthYear</name>
+<validation_name>Answer Value - MonthYear</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^(01|02|03|04|05|06|07|08|09|10|11|12)[\\&#47;-][1,2][0-9]{3}$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_MONTHYEAR</error_code>
+<error_description>Invalid value, expected monthyear</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>AnswerValueDate</name>
+<validation_name>Answer Value - Date</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^$|^(0?[1-9]|[12][0-9]|3[01])[\&#47;\-](0?[1-9]|1[012])[\&#47;\-]\d{4}$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code/>
+<error_description/>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+       <validator_field><name>ValidNumberOfAnswersFlag</name>
+<validation_name>Answer Value - Count</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression>^VALID$</regular_expression>
+<regular_expression_not_allowed/>
+<error_code>INVALID_NUMBER_OF_ANSWERS</error_code>
+<error_description>Invalid number of answers, expected only 1</error_description>
+<is_sourcing_values>N</is_sourcing_values>
+<sourcing_step/>
+<sourcing_field/>
+<allowed_value></allowed_value></validator_field>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1565</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>VALIDATIONS - Predefined Values</name>
+    <type>Validator</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<validate_all>Y</validate_all>
+<concat_errors>N</concat_errors>
+<concat_separator>|</concat_separator>
+       <validator_field><name>AnswerValueOther</name>
+<validation_name>Answer Value - Permissible Values</validation_name>
+<max_length/>
+<min_length/>
+<null_allowed>Y</null_allowed>
+<only_null_allowed>N</only_null_allowed>
+<only_numeric_allowed>N</only_numeric_allowed>
+<data_type>-</data_type>
+<data_type_verified>N</data_type_verified>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<max_value/>
+<min_value/>
+<start_string/>
+<end_string/>
+<start_string_not_allowed/>
+<end_string_not_allowed/>
+<regular_expression/>
+<regular_expression_not_allowed/>
+<error_code>INVALID_ANSWER_VALUE</error_code>
+<error_description>Invalid value - answer not included in the list of permissible values for the question</error_description>
+<is_sourcing_values>Y</is_sourcing_values>
+<sourcing_step>Send ValidAnswerValue list</sourcing_step>
+<sourcing_field>ValidAnswerValue</sourcing_field>
+<allowed_value></allowed_value></validator_field>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1576</xloc>
+      <yloc>119</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update pre_transactions FAIL_MISSING</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <sql>update &quot;fileprocess&quot;.pre_transactions set status=29 where idx = ?</sql>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>pre_transaction_id</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>977</xloc>
+      <yloc>462</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Log Invalid Question Name</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <logmessage>INVALID QUESTION NAME</logmessage>
+    <fields>
+      <field>
+        <name>QuestionText</name>
+        </field>
+      <field>
+        <name>AnswerValue</name>
+        </field>
+      <field>
+        <name>error</name>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1305</xloc>
+      <yloc>462</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update pre_transactions table FAIL_INVALID</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <sql>update &quot;fileprocess&quot;.pre_transactions set status=29 where idx = ?;</sql>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>pre_transaction_id</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2150</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Write to log</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <logmessage>INVALID ANSWER VALUES FOUND...</logmessage>
+    <fields>
+      <field>
+        <name>QuestionText</name>
+        </field>
+      <field>
+        <name>AnswerValue</name>
+        </field>
+      <field>
+        <name>QuestionDataType</name>
+        </field>
+      <field>
+        <name>error_description</name>
+        </field>
+      <field>
+        <name>error</name>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2353</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update pre_transactions table SUCCESS</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <sql>update &quot;fileprocess&quot;.pre_transactions set status=30 where idx = ? and status != 29;</sql>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>pre_transaction_id</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2144</xloc>
+      <yloc>118</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Write to log 2</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <logmessage>VALID ANSWER VALUE(S)  FOUND!</logmessage>
+    <fields>
+      <field>
+        <name>QuestionText</name>
+        </field>
+      <field>
+        <name>AnswerValue</name>
+        </field>
+      <field>
+        <name>success</name>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2359</xloc>
+      <yloc>53</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SetVar-Fail</name>
+    <type>SetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <field_name>error</field_name>
+        <variable_name>VALIDATION_RESULT</variable_name>
+        <variable_type>JVM</variable_type>
+        <default_value>1</default_value>
+        </field>
+      </fields>
+    <use_formatting>N</use_formatting>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1749</xloc>
+      <yloc>462</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Set up as 1 row</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>N</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname/>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>pre_transaction_id</name>
+        </field>
+        <field>
+          <name>error</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>aggregator</aggregate>
+          <subject>QuestionText</subject>
+          <type>COUNT_ALL</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1543</xloc>
+      <yloc>462</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Set up as 1 row (2)</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>N</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname/>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>pre_transaction_id</name>
+        </field>
+        <field>
+          <name>error</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>aggregator</aggregate>
+          <subject>QuestionText</subject>
+          <type>COUNT_ALL</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2491</xloc>
+      <yloc>33</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Set up as 1 row (3)</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>N</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname/>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>pre_transaction_id</name>
+        </field>
+        <field>
+          <name>success</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>aggregator</aggregate>
+          <subject>QuestionText</subject>
+          <type>COUNT_ALL</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>2494</xloc>
+      <yloc>52</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Question Short Name (table questions)</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>1</rowlimit>
+    <sql>select q.short_name as &quot;QuestionShortName&quot;,
+       sn2.client_sn as &quot;QuestionText&quot;
+       from form_element fe, question q, 
+	   fileprocess.sn_mapping sn, fileprocess.sn_mapping sn2, answer a
+       left join answer_value av on av.answer_id=a.id
+       where fe.id = q.parent_id and a.question_id = q.id 
+       and fe.table_type is not null
+       and sn.hcit_sn = fe.table_short_name
+       and sn2.hcit_sn = q.short_name
+       and sn.client_sn = ?
+       -- Only include FIELDORDER in the join for STATIC and DYNAMIC tables
+       and (case fe.table_type when &apos;SIMPLE&apos; then true else 
+		(case fe.table_type when &apos;SIMPLE&apos; then 1 else q.ord end = ?) end)
+       -- ONLY include RECORDORDER in the join for SIMPLE tables
+       and (case fe.table_type when &apos;DYNAMIC&apos; then true when &apos;STATIC&apos; then true else
+		(case fe.table_type when &apos;SIMPLE&apos; then q.ord else 999999 end = ?) end)</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>N</replace_vars>
+    <parameter>
+      <field>
+        <name>TableQuestionText</name>
+        <type>String</type>
+      </field>
+      <field>
+        <name>FieldOrder</name>
+        <type>Integer</type>
+      </field>
+      <field>
+        <name>RecordOrder</name>
+        <type>Integer</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>383</xloc>
+      <yloc>605</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Remove extra Table fields</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>xml_string</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>xml_file</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>xml_file_name</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>pre_transaction_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>success</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>error</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QuestionText</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AnswerText</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AnswerValue</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AnswerValueCount</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QuestionShortName</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>381</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Send ValidAnswerValue list</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>ValidAnswerValue</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1439</xloc>
+      <yloc>237</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Check valid number of answers</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>
+var ValidNumberOfAnswersFlag = 
+   (AnswerValueCount &gt; AnswerValuesMaxAllowed ?
+    &apos;INVALID&apos; :
+    &apos;VALID&apos;);
+
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>ValidNumberOfAnswersFlag</name>
+        <rename>ValidNumberOfAnswersFlag</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1212</xloc>
+      <yloc>279</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>xml_file</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>C:\workspace\CURE_ETL_PROCESS\PROCESS_XML\DATA\INPUT\CLIENT1\test.xml</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>xml_file_name</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>test.xml</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>pre_transaction_id</name>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>49</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>success</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>0</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>error</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>63</xloc>
+      <yloc>302</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Load file content in memory</name>
+    <type>LoadFileInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>Y</addresultfile>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <rownum_field/>
+    <encoding/>
+    <file>
+      <name>C:\workspace\CURE_ETL_PROCESS\PROCESS_XML\DATA\INPUT\CLIENT1\test.xml</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+      </file>
+    <fields>
+      <field>
+        <name>xml_string</name>
+        <element_type>content</element_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        </field>
+      </fields>
+    <limit>0</limit>
+    <IsInFields>N</IsInFields>
+    <DynamicFilenameField/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>61</xloc>
+      <yloc>441</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Write to log 3</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <logmessage/>
+    <fields>
+      <field>
+        <name>pre_transaction_id</name>
+        </field>
+      <field>
+        <name>AnswerValue</name>
+        </field>
+      <field>
+        <name>QuestionText</name>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1951</xloc>
+      <yloc>90</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Question Short Name (regular questions)</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>fileprocess</schema>
+      <table>sn_mapping</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>QuestionText</name>
+        <field>client_sn</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>hcit_sn</name>
+        <rename>QuestionShortName</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>394</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+      <error>
+        <source_step>VALIDATION - Existence of matching question short name</source_step>
+        <target_step>Update Invalid Question Name</target_step>
+        <is_enabled>Y</is_enabled>
+        <nr_valuename/>
+        <descriptions_valuename>error_description</descriptions_valuename>
+        <fields_valuename/>
+        <codes_valuename>status</codes_valuename>
+        <max_errors/>
+        <max_pct_errors/>
+        <min_pct_rows/>
+      </error>
+      <error>
+        <source_step>VALIDATIONS - Free Text</source_step>
+        <target_step>Update Invalid Answer Value(s)</target_step>
+        <is_enabled>Y</is_enabled>
+        <nr_valuename/>
+        <descriptions_valuename>error_description</descriptions_valuename>
+        <fields_valuename/>
+        <codes_valuename>status</codes_valuename>
+        <max_errors/>
+        <max_pct_errors/>
+        <min_pct_rows/>
+      </error>
+      <error>
+        <source_step>VALIDATIONS - Predefined Values</source_step>
+        <target_step>Update Invalid Answer Value(s)</target_step>
+        <is_enabled>Y</is_enabled>
+        <nr_valuename/>
+        <descriptions_valuename>error_description</descriptions_valuename>
+        <fields_valuename/>
+        <codes_valuename>status</codes_valuename>
+        <max_errors/>
+        <max_pct_errors/>
+        <min_pct_rows/>
+      </error>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

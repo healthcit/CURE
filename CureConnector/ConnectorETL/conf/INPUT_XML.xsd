@@ -1,0 +1,111 @@
+<!-- edited with XMLSpy v2012 rel. 2 (http://www.altova.com) by Tola Awofolu (Healthcare IT) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="ownerType">
+		<xs:annotation>
+			<xs:documentation>Represents the owner of the data</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="form" type="formType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="userid" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The external ID associated with the owner of the data (e.g. patient)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="questionType">
+		<xs:choice>
+			<xs:element name="answer" type="answerType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contains the question response for non-table questions</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="record" type="recordType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Contains the question response for table questions (rows)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the question as defined by the client (may or may not match the FormBuilder shortname)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="answerType">
+		<xs:sequence>
+			<xs:element name="value" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The question response(s) (will be mapped to the appropriate FormBuilder AnswerValue, or none if this is a free-text question)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="recordType">
+		<xs:sequence>
+			<xs:element name="field" type="fieldType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Contains the question response for table questions (columns)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="order" use="required">
+			<xs:annotation>
+				<xs:documentation>1-based index of the row</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="fieldType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="order" use="required">
+					<xs:annotation>
+						<xs:documentation>1-based index of the column</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="instanceType">
+		<xs:sequence>
+			<xs:element name="question" type="questionType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A table/non-table question</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="form" type="formType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="index" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="owner" type="ownerType">
+		<xs:annotation>
+			<xs:documentation>The owner of the data</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="formType">
+		<xs:sequence>
+			<xs:element name="instance" type="instanceType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Divides the data into groups of questions</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:schema>

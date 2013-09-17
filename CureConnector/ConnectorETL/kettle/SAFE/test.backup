@@ -1,0 +1,117 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.1.4
+-- Dumped by pg_dump version 9.1.4
+-- Started on 2012-08-06 12:18:48
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = fileprocess, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 163 (class 1259 OID 18118)
+-- Dependencies: 7
+-- Name: merge_scomplex; Type: TABLE; Schema: fileprocess; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE merge_scomplex (
+    idx integer NOT NULL,
+    form_id character varying(100),
+    form_name character varying(100),
+    question_id character varying(100),
+    question_sn character varying(100),
+    answer_id character varying(100),
+    answer character varying(100),
+    question_text text,
+    answer_text text,
+    checksum character varying(100) NOT NULL,
+    job_id character varying(100),
+    table_id character varying(100),
+    table_sn character varying(100),
+    table_text text,
+    answer_sn character varying(100),
+    row_id character varying(100),
+    is_identifying character varying(100)
+);
+
+
+ALTER TABLE fileprocess.merge_scomplex OWNER TO postgres;
+
+--
+-- TOC entry 1861 (class 0 OID 0)
+-- Dependencies: 163
+-- Name: TABLE merge_scomplex; Type: COMMENT; Schema: fileprocess; Owner: postgres
+--
+
+COMMENT ON TABLE merge_scomplex IS 'InnoDB free: 1415168 kB';
+
+
+--
+-- TOC entry 162 (class 1259 OID 18116)
+-- Dependencies: 163 7
+-- Name: merge_scomplex_idx_seq; Type: SEQUENCE; Schema: fileprocess; Owner: postgres
+--
+
+CREATE SEQUENCE merge_scomplex_idx_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE fileprocess.merge_scomplex_idx_seq OWNER TO postgres;
+
+--
+-- TOC entry 1862 (class 0 OID 0)
+-- Dependencies: 162
+-- Name: merge_scomplex_idx_seq; Type: SEQUENCE OWNED BY; Schema: fileprocess; Owner: postgres
+--
+
+ALTER SEQUENCE merge_scomplex_idx_seq OWNED BY merge_scomplex.idx;
+
+
+--
+-- TOC entry 1855 (class 2604 OID 18121)
+-- Dependencies: 163 162 163
+-- Name: idx; Type: DEFAULT; Schema: fileprocess; Owner: postgres
+--
+
+ALTER TABLE ONLY merge_scomplex ALTER COLUMN idx SET DEFAULT nextval('merge_scomplex_idx_seq'::regclass);
+
+
+--
+-- TOC entry 1858 (class 2606 OID 18126)
+-- Dependencies: 163 163
+-- Name: pk_merge_scomplex; Type: CONSTRAINT; Schema: fileprocess; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY merge_scomplex
+    ADD CONSTRAINT pk_merge_scomplex PRIMARY KEY (idx);
+
+
+--
+-- TOC entry 1856 (class 1259 OID 18127)
+-- Dependencies: 163
+-- Name: merge_scomplex_checksum; Type: INDEX; Schema: fileprocess; Owner: postgres; Tablespace: 
+--
+
+CREATE UNIQUE INDEX merge_scomplex_checksum ON merge_scomplex USING btree (checksum);
+
+
+-- Completed on 2012-08-06 12:18:49
+
+--
+-- PostgreSQL database dump complete
+--
+

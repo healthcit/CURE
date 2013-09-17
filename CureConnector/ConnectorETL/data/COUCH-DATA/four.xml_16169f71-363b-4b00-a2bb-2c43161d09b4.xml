@@ -1,0 +1,128 @@
+<form xmlns="" name="ETL Form" id="16169f71-363b-4b00-a2bb-2c43161d09b4">
+          <question id="1b063436-9ce0-4604-954b-fc22a67f9fba" sn="PatientName">
+            <text>Patient Name</text>
+            <answer id="608cd5a0-f8a6-4012-a7f6-aa0026f4ed60">Test Patient</answer>
+          </question>
+          <question id="c02266b3-8a9c-4731-a92b-6df4a12d002a" sn="Address1">
+            <text>Address</text>
+            <answer id="8fb5f4dd-8f2d-426a-a0a5-527c7ded24f4">123 address</answer>
+          </question>
+          <question id="e7deddba-17cf-4fb5-abbb-834fb8deec45" sn="PhoneHome">
+            <text>Phone (hm)</text>
+            <answer id="bb076f45-9952-4eae-b586-a64affe5a94c">1231231234</answer>
+          </question>
+          <question id="7268d5a4-9833-4dc6-a98a-086dfcd47b37" sn="DOB">
+            <text>DOB</text>
+            <answer id="77691c91-019f-4e17-ba3b-faa6232acb69"/>
+          </question>
+          <question id="6dd0cdd9-b603-4192-b598-47362eb99eab" sn="Sex">
+            <text>Please indicate your sex:</text>
+            <answer id="6070f00d-52ff-4d92-b728-cec433efe6d3">2</answer>
+          </question>
+          <question id="b362a738-a72b-41ae-b2de-4bbbc3af2bff" sn="Race">
+            <text>Race Check all that apply.</text>
+            <answer id="06901833-0612-4c94-87c1-079e6082105c">1__VALUE_SEPARATOR__2__VALUE_SEPARATOR__3__VALUE_SEPARATOR__4__VALUE_SEPARATOR__5__VALUE_SEPARATOR__6</answer>
+          </question>
+          <question id="e1903f3b-f596-4f92-9141-fb997abfd620" sn="Diagnosis date">
+            <text>Diagnosis year:</text>
+            <answer id="7ceff47b-788c-47b3-950e-77f8bfa11d6d"/>
+          </question>
+          <question-table id="cb4f79ee-0407-4fe3-b4da-806b389080e3" sn=" patient experience">
+            <text>Did the patient experience?</text>
+            <question id="5d74d48a-7150-4d65-b09c-bedf20bd4654" sn="Abdominal Pain">
+              <text>Abdominal Pain</text>
+              <answer id="062bcb42-8465-4408-83e4-92c1243514a4"/>
+            </question>
+            <question id="98894241-4e7f-4c93-8645-877dd543aed3" sn="Arthralgia">
+              <text>Arthralgia</text>
+              <answer id="316ae28c-ff26-4880-87ba-c4b50bb3c728"/>
+            </question>
+            <question id="2e10e6e1-edcf-40dd-bb10-0f819bb25159" sn="Diarrhea">
+              <text>Diarrhea</text>
+              <answer id="c250fad8-8c8e-483a-bab8-326048414159"/>
+            </question>
+            <question id="eb8a31fc-227e-4b94-9a33-36bb057aa568" sn="Fatigue">
+              <text>Fatigue</text>
+              <answer id="a50733e0-d5bd-411f-8e39-92d0c77c4361"/>
+            </question>
+            <question id="a1ee5e18-3a18-423e-a481-7e4ec5757eb2" sn="Fever">
+              <text>Fever</text>
+              <answer id="55a3067d-ab41-4d6e-8121-8cf593de1301"/>
+            </question>
+          </question-table>
+          <question id="3b8d3ce1-0ea1-4c09-87ef-8f177793c01e" sn="pregnant">
+            <text>Patient currently pregnant?</text>
+            <answer id="4bcdd30f-c34d-459a-bf6c-46ffe013f0db"/>
+          </question>
+          <question id="387c2ca2-4397-437e-8aee-a59dd7682cdc" sn="Due date">
+            <text>Due date:</text>
+            <answer id="5065db10-f148-4063-b4f8-096755071680"/>
+          </question>
+          <complex-table id="2daf29bd-d0ee-4268-81d6-11f1e75c57c0" sn="liver enzyme">
+            <text>Pleae answer:</text>
+            <row id="207bc5d2-b327-42e2-a6aa-b15459c1004e">
+              <column questionSn="identifyingRowShortName-ef0f0753-6363-4eaf-b3a3-a1b48c2e2ee9" questionId="d63e32d4-abc0-43e5-b1e6-10a6d6b3ce69" isIdentifying="true">
+                <answer answerId="d969550b-a4e3-48d7-a509-db0c6b653173" text="" sn="">Liver enzyme values:</answer>
+              </column>
+              <column questionSn="values" questionId="1548aab3-ed34-420e-b02b-ff11f250c701">
+                <questionText>Values</questionText>
+                <answer answerId="dca880b9-1111-46c8-921c-a89ccc50d00b" text="" sn=""/>
+              </column>
+              <column questionSn="Test Date" questionId="9586c539-e1a7-4fae-b98a-8f00863b79e2">
+                <questionText>Test Date</questionText>
+                <answer answerId="396a52e8-a9dc-4e54-b11d-fd06f0edf81a" text="" sn=""/>
+              </column>
+              <column questionSn="upper limit" questionId="e8eee8c0-8d69-4a2d-9354-b490cf6542fa">
+                <questionText>Upper limit normal:</questionText>
+                <answer answerId="2dd9648c-99a6-4860-998a-984992f6d310" text="" sn=""/>
+              </column>
+            </row>
+          </complex-table>
+          <complex-table id="d2744a21-fcac-4c6e-b65d-24161a99c678" sn="Hepatitis B Vaccination">
+            <text>Hepatitis B Vaccination</text>
+            <row>
+              <column questionSn="Vaccine Type" questionId="81d3cdd4-8d56-4bea-8d0f-6652104adf6d">
+                <questionText>Vaccine Type</questionText>
+                <answer answerId="2845490d-332f-4518-9f60-64968f95de44" text="" sn=""/>
+              </column>
+              <column questionSn="Brand Name" questionId="0a642eea-c6db-43f1-9259-f6627cd228e5">
+                <questionText>Brand Name</questionText>
+                <answer answerId="d669e768-ed53-41b8-af5a-e2106b91ce5d" text="" sn=""/>
+              </column>
+              <column questionSn="Date Given" questionId="42ce187c-f482-49da-a821-4d9edc865b95">
+                <questionText>Date Given</questionText>
+                <answer answerId="575088f7-65d7-411e-a2b7-f905461744b9" text="" sn=""/>
+              </column>
+              <column questionSn="Lot" questionId="3fde6619-ebd2-4343-9cc8-588858e85ebc">
+                <questionText>Lot Number</questionText>
+                <answer answerId="6abe788b-2272-409b-976a-36331c812f3d" text="" sn=""/>
+              </column>
+            </row>
+            <row>
+              <column questionSn="Vaccine Type" questionId="81d3cdd4-8d56-4bea-8d0f-6652104adf6d">
+                <questionText>Vaccine Type</questionText>
+                <answer answerId="2845490d-332f-4518-9f60-64968f95de44" text="" sn=""/>
+              </column>
+              <column questionSn="Brand Name" questionId="0a642eea-c6db-43f1-9259-f6627cd228e5">
+                <questionText>Brand Name</questionText>
+                <answer answerId="d669e768-ed53-41b8-af5a-e2106b91ce5d" text="" sn=""/>
+              </column>
+              <column questionSn="Date Given" questionId="42ce187c-f482-49da-a821-4d9edc865b95">
+                <questionText>Date Given</questionText>
+                <answer answerId="575088f7-65d7-411e-a2b7-f905461744b9" text="" sn=""/>
+              </column>
+              <column questionSn="Lot" questionId="3fde6619-ebd2-4343-9cc8-588858e85ebc">
+                <questionText>Lot Number</questionText>
+                <answer answerId="6abe788b-2272-409b-976a-36331c812f3d" text="" sn=""/>
+              </column>
+            </row>
+          </complex-table>
+          <question id="d282c01c-2de8-4085-9436-9ac38932d8fb" sn="inject drug">
+            <text>Did the patient inject drugs not prescribed by a doctor?</text>
+            <answer id="1810b7b5-f1e0-4240-b3b6-99c81018cbfa"/>
+          </question>
+          <question id="7ebc875d-80e0-4469-92af-1e08ed6ddcb8" sn="drug choice">
+            <text>If yes, what was patient's drug of choice?</text>
+            <answer id="34d01281-8a79-426b-8b36-a6dc737fb995"/>
+          </question>
+        </form>

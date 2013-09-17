@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>test</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>&#47;</directory>
+    <parameters>
+    </parameters>
+    <log>
+<trans-log-table><connection/>
+<schema/>
+<table/>
+<size_limit_lines/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STATUS</id><enabled>Y</enabled><name>STATUS</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name><subject/></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name><subject/></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name><subject/></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name><subject/></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name><subject/></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name><subject/></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>STARTDATE</id><enabled>Y</enabled><name>STARTDATE</name></field><field><id>ENDDATE</id><enabled>Y</enabled><name>ENDDATE</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>DEPDATE</id><enabled>Y</enabled><name>DEPDATE</name></field><field><id>REPLAYDATE</id><enabled>Y</enabled><name>REPLAYDATE</name></field><field><id>LOG_FIELD</id><enabled>Y</enabled><name>LOG_FIELD</name></field></trans-log-table>
+<perf-log-table><connection/>
+<schema/>
+<table/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>SEQ_NR</id><enabled>Y</enabled><name>SEQ_NR</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>INPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>INPUT_BUFFER_ROWS</name></field><field><id>OUTPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>OUTPUT_BUFFER_ROWS</name></field></perf-log-table>
+<channel-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>LOGGING_OBJECT_TYPE</id><enabled>Y</enabled><name>LOGGING_OBJECT_TYPE</name></field><field><id>OBJECT_NAME</id><enabled>Y</enabled><name>OBJECT_NAME</name></field><field><id>OBJECT_COPY</id><enabled>Y</enabled><name>OBJECT_COPY</name></field><field><id>REPOSITORY_DIRECTORY</id><enabled>Y</enabled><name>REPOSITORY_DIRECTORY</name></field><field><id>FILENAME</id><enabled>Y</enabled><name>FILENAME</name></field><field><id>OBJECT_ID</id><enabled>Y</enabled><name>OBJECT_ID</name></field><field><id>OBJECT_REVISION</id><enabled>Y</enabled><name>OBJECT_REVISION</name></field><field><id>PARENT_CHANNEL_ID</id><enabled>Y</enabled><name>PARENT_CHANNEL_ID</name></field><field><id>ROOT_CHANNEL_ID</id><enabled>Y</enabled><name>ROOT_CHANNEL_ID</name></field></channel-log-table>
+<step-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>LOG_FIELD</id><enabled>N</enabled><name>LOG_FIELD</name></field></step-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <created_user>-</created_user>
+  <created_date>2012&#47;08&#47;20 04:57:45.702</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2012&#47;08&#47;20 04:57:45.702</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>hcit_FormBuilder</name>
+    <server/>
+    <type>POSTGRESQL</type>
+    <access>JNDI</access>
+    <database>hcit_FormBuilder</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Split field to rows</from><to>Split Fields</to><enabled>Y</enabled> </hop>  <hop> <from>LoadFile</from><to>Split field to rows</to><enabled>Y</enabled> </hop>  <hop> <from>Split Fields</from><to>JScript</to><enabled>Y</enabled> </hop>  <hop> <from>JScript</from><to>GetXML</to><enabled>Y</enabled> </hop>  <hop> <from>LoadFile</from><to>GetXMLFile</to><enabled>Y</enabled> </hop>  <hop> <from>DB-SnMapping</from><to>Switch &#47; Case</to><enabled>Y</enabled> </hop>  <hop> <from>Switch &#47; Case</from><to>DBJoin-Regular</to><enabled>Y</enabled> </hop>  <hop> <from>Switch &#47; Case</from><to>DBJoin-Table</to><enabled>Y</enabled> </hop>  <hop> <from>GetXMLFile</from><to>DB-SnMapping</to><enabled>Y</enabled> </hop>  <hop> <from>DBJoin-Regular</from><to>Dummy (do nothing)</to><enabled>Y</enabled> </hop>  <hop> <from>DBJoin-Table</from><to>Dummy (do nothing)</to><enabled>Y</enabled> </hop>  <hop> <from>GetXML</from><to>Merge Join</to><enabled>Y</enabled> </hop>  <hop> <from>Merge Join</from><to>Group by</to><enabled>Y</enabled> </hop>  <hop> <from>Dummy (do nothing)</from><to>Blocking Step</to><enabled>Y</enabled> </hop>  <hop> <from>Blocking Step</from><to>Merge Join</to><enabled>Y</enabled> </hop>  <hop> <from>Group by</from><to>Add constants</to><enabled>Y</enabled> </hop>  <hop> <from>Add constants</from><to>Calculator</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>LoadFile</name>
+    <type>LoadFileInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>Y</addresultfile>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <rownum_field/>
+    <encoding/>
+    <file>
+      <name>C:\Users\lenovo\Desktop\form_data_20120720_123-1.xml</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+      </file>
+    <fields>
+      <field>
+        <name>file_content</name>
+        <element_type>content</element_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        </field>
+      <field>
+        <name>file_size</name>
+        <element_type>size</element_type>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        </field>
+      </fields>
+    <limit>0</limit>
+    <IsInFields>N</IsInFields>
+    <DynamicFilenameField/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>80</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Split field to rows</name>
+    <type>SplitFieldToRows3</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+   <splitfield>file_content</splitfield>
+   <delimiter>question&gt;</delimiter>
+   <newfield>new_field</newfield>
+   <rownum>Y</rownum>
+   <rownum_field>row_num</rownum_field>
+   <resetrownumber>Y</resetrownumber>
+   <delimiter_is_regex>N</delimiter_is_regex>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>80</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Split Fields</name>
+    <type>FieldSplitter</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+   <splitfield>new_field</splitfield>
+   <delimiter>&lt;question</delimiter>
+    <fields>      <field>        <name>junk</name>
+        <id/>
+        <idrem>N</idrem>
+        <type>String</type>
+        <format/>
+        <group/>
+        <decimal/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif/>
+        <ifnull/>
+        <trimtype>none</trimtype>
+      </field>      <field>        <name>q_tag</name>
+        <id/>
+        <idrem>N</idrem>
+        <type>String</type>
+        <format/>
+        <group/>
+        <decimal/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif/>
+        <ifnull/>
+        <trimtype>none</trimtype>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>180</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JScript</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#47;&#47;Script here
+
+
+if (q_tag.getString()) 
+{	question_tag = &apos;&lt;question&gt;&apos; + q_tag + &apos;question&gt;&apos;;
+	trans_Status = CONTINUE_TRANSFORMATION;
+}
+else trans_Status = SKIP_TRANSFORMATION;
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>question_tag</name>
+        <rename>question_tag</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>260</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GetXML</name>
+    <type>getXMLData</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>Y</rownum>
+    <addresultfile>N</addresultfile>
+    <namespaceaware>N</namespaceaware>
+    <ignorecomments>N</ignorecomments>
+    <readurl>N</readurl>
+    <validating>N</validating>
+    <usetoken>N</usetoken>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <rownum_field>row_num_q_tag</rownum_field>
+    <encoding>UTF-8</encoding>
+    <file>
+      <name>C:\Users\lenovo\Desktop\tt.xml</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>q_name</name>
+        <xpath>@name</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <loopxpath>&#47;question</loopxpath>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <XmlField>question_tag</XmlField>
+    <prunePath/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>380</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GetXMLFile</name>
+    <type>getXMLData</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>Y</rownum>
+    <addresultfile>N</addresultfile>
+    <namespaceaware>N</namespaceaware>
+    <ignorecomments>N</ignorecomments>
+    <readurl>N</readurl>
+    <validating>N</validating>
+    <usetoken>N</usetoken>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>N</doNotFailIfNoFile>
+    <rownum_field>row_num</rownum_field>
+    <encoding>UTF-8</encoding>
+    <file>
+      <name>C:\Users\lenovo\Desktop\form_data_20120720_123-1.xml</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>q_name</name>
+        <xpath>@name</xpath>
+        <element_type>attribut</element_type>
+        <result_type>valueof</result_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <loopxpath>&#47;owner&#47;dataset&#47;question</loopxpath>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <XmlField>file_content</XmlField>
+    <prunePath/>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>200</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DB-SnMapping</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>fileprocess</schema>
+      <table>sn_mapping</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>q_name</name>
+        <field>client_sn</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>hcit_sn</name>
+        <rename>hcit_sn</rename>
+        <default/>
+        <type>String</type>
+      </value>
+      <value>
+        <name>table_type</name>
+        <rename>tableType</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>360</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DBJoin-Regular</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>0</rowlimit>
+    <sql>select m.uuid as &quot;moduleId&quot;, f.uuid as &quot;formId&quot;,f.name as &quot;formName&quot;, q.short_name as &quot;shortName&quot;
+from module m, form_element fe, form_element fe2, 
+form f, question q
+where short_name=?
+and fe2.form_id = f.id and fe.table_type is null
+and ((fe2.link_id is null and fe.id=fe2.id) or (fe2.link_id is not null and fe2.link_id = fe.uuid))
+and fe.id = q.parent_id
+and m.id = f.module_id; </sql>
+    <outer_join>N</outer_join>
+    <replace_vars>Y</replace_vars>
+    <parameter>
+      <field>
+        <name>hcit_sn</name>
+        <type>String</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>660</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Switch &#47; Case</name>
+    <type>SwitchCase</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<fieldname>tableType</fieldname>
+<use_contains>Y</use_contains>
+<case_value_type>String</case_value_type>
+<case_value_format/>
+<case_value_decimal/>
+<case_value_group/>
+<default_target_step>DBJoin-Table</default_target_step>
+<cases><case><value>NONE</value>
+<target_step>DBJoin-Regular</target_step>
+</case></cases>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>500</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DBJoin-Table</name>
+    <type>DBJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>hcit_FormBuilder</connection>
+    <rowlimit>0</rowlimit>
+    <sql>select m.uuid as &quot;moduleId&quot;, f.uuid as &quot;formId&quot;,f.name as &quot;formName&quot;, fe.table_short_name as &quot;shortName&quot; 
+from module m, form_element fe, form_element fe2, form f
+where fe.table_short_name=?
+and fe2.form_id = f.id
+and ((fe2.link_id is null and fe.id=fe2.id) or (fe2.link_id is not null and fe2.link_id = fe.uuid))
+and m.id = f.module_id;
+</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>Y</replace_vars>
+    <parameter>
+      <field>
+        <name>hcit_sn</name>
+        <type>String</type>
+      </field>
+    </parameter>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>660</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Dummy (do nothing)</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>800</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Merge Join</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<join_type>INNER</join_type>
+<step1>GetXML</step1>
+<step2>Blocking Step</step2>
+    <keys_1>
+      <key>row_num</key>
+    </keys_1>
+    <keys_2>
+      <key>row_num</key>
+    </keys_2>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>800</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Group by</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>N</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname/>
+      <give_back_row>N</give_back_row>
+      <group>
+        <field>
+          <name>formId</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>questions_xml</aggregate>
+          <subject>question_tag</subject>
+          <type>CONCAT_STRING</type>
+          <valuefield>${line.separator}</valuefield>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>900</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Blocking Step</name>
+    <type>BlockingStep</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <pass_all_rows>Y</pass_all_rows>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>block</prefix>
+      <cache_size>5000</cache_size>
+      <compress>Y</compress>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>920</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Calculator</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <calculation><field_name>form_xml</field_name>
+<calc_type>ADD3</calc_type>
+<field_a>begining</field_a>
+<field_b>questions_xml</field_b>
+<field_c>end</field_c>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1060</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>begining</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>&lt;owner&gt;&lt;dataset&gt;</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>end</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>&lt;&#47;dataset&gt;&lt;&#47;owner&gt;</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>980</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

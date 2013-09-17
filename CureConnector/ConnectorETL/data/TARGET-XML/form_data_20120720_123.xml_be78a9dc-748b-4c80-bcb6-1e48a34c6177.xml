@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form id="be78a9dc-748b-4c80-bcb6-1e48a34c6177" name="Diet Research 2">${TARGET_QUESTION_XML_STRING}<question-table id="fb548ce9-f408-4262-bde5-38a7ff40fd0e" sn="HDietHabits"><text>Describe your eating habits for the following foods.</text><question id="c17c647f-ac17-467d-8913-f43d147056a8" sn="Hdietveg"><text>Vegetables</text><answer id="054721e7-e8ff-454b-8437-b5a3f4debb2b">1</answer></question>
+<question id="51594028-af5b-4caa-974d-91106fbe39c5" sn="Hdietfruit"><text>Fruits</text><answer id="2961c5f5-4203-48e1-b6b9-d7dd1625dc67">1</answer></question>
+<question id="f600ca02-c72c-40a1-a100-f622cbc15c2a" sn="Hdietgrain"><text>Grains</text><answer id="1dc377ff-59c3-46a6-a741-bac651c1892c">2</answer></question>
+<question id="ea4d3065-4a26-420b-9988-6a6652f7781e" sn="Hdietdairy"><text>Dairy</text><answer id="da68253f-ece9-4324-80f9-ca9210c2e655">3</answer></question></question-table>${TARGET_STATIC_XML_STRING}${DYNAMIC_TABLE_XML_STRING}</form>

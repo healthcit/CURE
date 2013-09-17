@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>SendNotification</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <parameters>
+    </parameters>
+    <log>
+<trans-log-table><connection/>
+<schema/>
+<table/>
+<size_limit_lines/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STATUS</id><enabled>Y</enabled><name>STATUS</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name><subject/></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name><subject/></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name><subject/></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name><subject/></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name><subject/></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name><subject/></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>STARTDATE</id><enabled>Y</enabled><name>STARTDATE</name></field><field><id>ENDDATE</id><enabled>Y</enabled><name>ENDDATE</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>DEPDATE</id><enabled>Y</enabled><name>DEPDATE</name></field><field><id>REPLAYDATE</id><enabled>Y</enabled><name>REPLAYDATE</name></field><field><id>LOG_FIELD</id><enabled>Y</enabled><name>LOG_FIELD</name></field></trans-log-table>
+<perf-log-table><connection/>
+<schema/>
+<table/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>SEQ_NR</id><enabled>Y</enabled><name>SEQ_NR</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>INPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>INPUT_BUFFER_ROWS</name></field><field><id>OUTPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>OUTPUT_BUFFER_ROWS</name></field></perf-log-table>
+<channel-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>LOGGING_OBJECT_TYPE</id><enabled>Y</enabled><name>LOGGING_OBJECT_TYPE</name></field><field><id>OBJECT_NAME</id><enabled>Y</enabled><name>OBJECT_NAME</name></field><field><id>OBJECT_COPY</id><enabled>Y</enabled><name>OBJECT_COPY</name></field><field><id>REPOSITORY_DIRECTORY</id><enabled>Y</enabled><name>REPOSITORY_DIRECTORY</name></field><field><id>FILENAME</id><enabled>Y</enabled><name>FILENAME</name></field><field><id>OBJECT_ID</id><enabled>Y</enabled><name>OBJECT_ID</name></field><field><id>OBJECT_REVISION</id><enabled>Y</enabled><name>OBJECT_REVISION</name></field><field><id>PARENT_CHANNEL_ID</id><enabled>Y</enabled><name>PARENT_CHANNEL_ID</name></field><field><id>ROOT_CHANNEL_ID</id><enabled>Y</enabled><name>ROOT_CHANNEL_ID</name></field></channel-log-table>
+<step-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>LOG_FIELD</id><enabled>N</enabled><name>LOG_FIELD</name></field></step-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>Master</name><hostname>127.0.0.1</hostname><port>8180</port><webAppName>Master</webAppName><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>Slave1</name><hostname>127.0.0.1</hostname><port>8181</port><webAppName>Slave1</webAppName><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <created_user>-</created_user>
+  <created_date>2012&#47;08&#47;29 09:38:28.478</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2012&#47;08&#47;29 09:38:28.478</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>jndi_gateway_etl</name>
+    <server/>
+    <type>POSTGRESQL</type>
+    <access>JNDI</access>
+    <database>jndi_gateway_etl</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>ReadEmailTemplate</from><to>GetVars</to><enabled>Y</enabled> </hop>  <hop> <from>AddConst</from><to>Send Mail</to><enabled>Y</enabled> </hop>  <hop> <from>Send Mail</from><to>Update</to><enabled>Y</enabled> </hop>  <hop> <from>Update</from><to>Reset transaction status</to><enabled>Y</enabled> </hop>  <hop> <from>Get rows from result</from><to>Select values</to><enabled>Y</enabled> </hop>  <hop> <from>Select values</from><to>Get File Name</to><enabled>Y</enabled> </hop>  <hop> <from>Get File Name</from><to>ReadEmailTemplate</to><enabled>Y</enabled> </hop>  <hop> <from>Send Mail</from><to>Write to log</to><enabled>Y</enabled> </hop>  <hop> <from>GetVars</from><to>Reset Notification Email If Blank</to><enabled>Y</enabled> </hop>  <hop> <from>Reset Notification Email If Blank</from><to>AddConst</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>AddConst</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>title</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>ETL Submission - Data Migration Report</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>processed_with_notification</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>PROCESSED_WITH_NOTIFICATION</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>server_port</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>25</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>960</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get File Name</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <calculation><field_name>ext</field_name>
+<calc_type>CONSTANT</calc_type>
+<field_a>.txt</field_a>
+<field_b/>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>Y</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+       <calculation><field_name>tmp_file_name</field_name>
+<calc_type>ADD</calc_type>
+<field_a>tmp_file</field_a>
+<field_b>ext</field_b>
+<field_c/>
+<value_type>String</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>400</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get rows from result</name>
+    <type>RowsFromResult</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>submission_id</name>
+        <type>Integer</type>
+        <length>9</length>
+        <precision>0</precision>
+        </field>      <field>        <name>notification_email</name>
+        <type>String</type>
+        <length>100</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>tmp_file_name</name>
+        <type>String</type>
+        <length>100</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>160</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GetVars</name>
+    <type>GetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>cc</name>
+        <variable>${MAIL_CC}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>send</name>
+        <variable>${MAIL_FROM}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>smtp_server</name>
+        <variable>${SMTP_SEVER_ADDR}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>tmp_dir</name>
+        <variable>${TMP_DIR}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>704</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ReadEmailTemplate</name>
+    <type>LoadFileInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>Y</addresultfile>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <rownum_field/>
+    <encoding/>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+      </file>
+    <fields>
+      <field>
+        <name>content</name>
+        <element_type>content</element_type>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        </field>
+      </fields>
+    <limit>0</limit>
+    <IsInFields>Y</IsInFields>
+    <DynamicFilenameField>tmp_file_name</DynamicFilenameField>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>544</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Reset transaction status</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>jndi_gateway_etl</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <sql>update fileprocess.transactions set status = 100 where status &gt;= 90 and idx in 
+(select t.idx from fileprocess.transactions t, fileprocess.pre_transactions pt, fileprocess.submissions s
+where t.ptxn_id = pt.idx and pt.submmission_id = s.idx and s.idx = ?)</sql>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>submission_id</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>submission_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>notification_email</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>tmp_file_name</name>
+        <rename>tmp_file</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>288</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Send Mail</name>
+    <type>Mail</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <server>smtp_server</server>
+      <port>server_port</port>
+      <destination>non_blank_notification_email</destination>
+      <destinationCc>cc</destinationCc>
+      <destinationBCc/>
+      <replyToAddresses/>
+      <replyto>send</replyto>
+      <replytoname>send</replytoname>
+      <subject>title</subject>
+      <include_date>N</include_date>
+      <include_subfolders>N</include_subfolders>
+      <zipFilenameDynamic>N</zipFilenameDynamic>
+      <isFilenameDynamic>N</isFilenameDynamic>
+      <dynamicFieldname/>
+      <dynamicWildcard/>
+      <dynamicZipFilename/>
+      <sourcefilefoldername/>
+      <sourcewildcard/>
+      <contact_person/>
+      <contact_phone/>
+      <comment>content</comment>
+      <include_files>N</include_files>
+      <zip_files>N</zip_files>
+      <zip_name/>
+      <zip_limit_size>0</zip_limit_size>
+      <use_auth>N</use_auth>
+      <use_secure_auth>N</use_secure_auth>
+      <auth_user/>
+      <auth_password>Encrypted </auth_password>
+      <only_comment>Y</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>N</use_Priority>
+    <encoding>UTF-8</encoding>
+    <priority>normal</priority>
+    <importance>normal</importance>
+    <secureconnectiontype>SSL</secureconnectiontype>
+      <embeddedimages>
+      </embeddedimages>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>960</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Update</name>
+    <type>Update</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>jndi_gateway_etl</connection>
+    <skip_lookup>N</skip_lookup>
+    <commit>100</commit>
+    <use_batch>N</use_batch>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema>fileprocess</schema>
+      <table>submissions</table>
+      <key>
+        <name>submission_id</name>
+        <field>idx</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>status</name>
+        <rename>processed_with_notification</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>752</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Write to log</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <loglevel>log_level_basic</loglevel>
+      <displayHeader>Y</displayHeader>
+      <logmessage>ERROR WHEN ATTEMPTING TO SEND MAIL
+==================================</logmessage>
+    <fields>
+      <field>
+        <name>submission_id</name>
+        </field>
+      <field>
+        <name>notification_email</name>
+        </field>
+      <field>
+        <name>content</name>
+        </field>
+      <field>
+        <name>cc</name>
+        </field>
+      <field>
+        <name>title</name>
+        </field>
+      <field>
+        <name>err_desc</name>
+        </field>
+      <field>
+        <name>err_code</name>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>960</xloc>
+      <yloc>528</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Reset Notification Email If Blank</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var non_blank_notification_email = notification_email;
+if ( notification_email == null || notification_email == &quot;&quot; ){
+   non_blank_notification_email = send;
+}
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>non_blank_notification_email</name>
+        <rename>non_blank_notification_email</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>832</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+      <error>
+        <source_step>Send Mail</source_step>
+        <target_step>Write to log</target_step>
+        <is_enabled>Y</is_enabled>
+        <nr_valuename/>
+        <descriptions_valuename>err_desc</descriptions_valuename>
+        <fields_valuename/>
+        <codes_valuename>err_code</codes_valuename>
+        <max_errors/>
+        <max_pct_errors/>
+        <min_pct_rows/>
+      </error>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>
