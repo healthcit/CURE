@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+  <servlet>
+    <servlet-name>CADSRServlet</servlet-name>
+    <display-name>cadsrServlet</display-name>
+    <description>Servlet used to access the CADSR metadata repository</description>
+    <servlet-class>com.healthcit.cadsr.servlet.CADSRServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>CADSRServlet</servlet-name>
+    <url-pattern>/CADSRServlet</url-pattern>
+  </servlet-mapping>
+
+</web-app>

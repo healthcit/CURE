@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<project name="cadsr" default="deploy" basedir=".">
+	<!-- Set properties -->
+	<property name="build.dir" value="${basedir}/build"/>
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="lib.dir" value="${basedir}/WebRoot/WEB-INF/lib"/>
+	<property name="classes.dir" value="${basedir}/WebRoot/WEB-INF/classes"/>
+	<target name="compile">
+	</target>
+	<target name="build" depends="compile">
+	</target>
+	<target name="deploy" depends="build">
+	</target>
+</project>

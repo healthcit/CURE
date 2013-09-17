@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="caDSR"
+  id="myeclipse.1282848912542"
+  context-root="/caDSR"
+  j2ee-spec="5.0"
+  archive="caDSR.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
