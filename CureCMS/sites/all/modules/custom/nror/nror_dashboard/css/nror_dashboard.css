@@ -1,0 +1,48 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+.dashboard-frame {overflow: auto; margin-top: 0; border: 2px solid #35496D; width: 1000px; display: block; padding: 10px}
+.dashboard-frame #nror-dashboard-change-facility-module-status { display: inline-block; }
+.dashboard-title {display: inline; font-size: 16px; font-weight: bold; text-align: center; }
+.dashboard-table { float: left; width: 100%; max-height: 300px; overflow-y: auto; }
+.dashboard-table table th, .dashboard-table table td { text-align: center; padding: 3px; }
+.dashboard-table table tr.odd, .dashboard-table table tr.empty-res, .dashboard-table table tr.even, .dashboard-table table tr.odd td, .dashboard-table table tr.even td { background-color: #FDFFEF; border-bottom: 1px solid #CCCCCC; border-left: 1px solid #CCCCCC; }
+.dashboard-table table {border-collapse: inherit; width: 99%}
+.dashboard-table table tbody td:first-child {border-left: 0}
+.dashboard-frame .form-submit { font-size: 12px; filter: none; background: url("images/buttons.png") repeat-x scroll 0 0 transparent; border-color: #E4E4E4 #D2D2D2 #B4B4B4; font-family: "Lucida Grande",Verdana,sans-serif; cursor: pointer; margin: 5px 5px 5px 0; border-style: solid; border-width: 0.5px; color: #5A5A5A; text-transform: none; font-weight: normal; float:left; }
+.dashboard-frame .form-submit:hover, .dashboard-frame .form-submit:focus { filter: none; font-size: 12px; background: url("images/buttons.png") repeat-x scroll 0 0 transparent; border-color: #E4E4E4 #D2D2D2 #B4B4B4; font-family: "Lucida Grande",Verdana,sans-serif; cursor: pointer; margin: 5px 5px 5px 0; border-style: solid; border-width: 0.5px; color: #35496D; text-transform: none; font-weight: normal; }
+table.tablesorter thead tr .header { background-repeat: no-repeat; cursor: pointer; } 
+table.tablesorter thead tr .header p.header-sort { margin: 0 auto; width: 100px; }
+table.tablesorter thead tr .headerSortUp p.header-sort { background: url(images/sort_up.png) no-repeat right center transparent; }
+table.tablesorter thead tr .headerSortDown p.header-sort { background: url(images/sort_down.png) no-repeat right center transparent; }
+.search { float:right; margin: 5px 5px 5px 0; }
+.nror_import_button { float:left; }
+.dashboard-frame .dashboard-disabled-submit { font-size: 12px; filter: none; background: url("images/buttons.png") repeat-x scroll 0 0 transparent; border-color: #E4E4E4 #D2D2D2 #B4B4B4; font-family: "Lucida Grande",Verdana,sans-serif; cursor: default; margin: 5px 5px 5px 0; border-style: solid; border-width: 0.5px; color: #909090; text-transform: none; font-weight: normal; float:left; opacity: 50; }
+.dashboard-frame .dashboard-disabled-submit:hover, .dashboard-frame .dashboard-disabled-submit:focus { font-size: 12px; filter: none; background: url("images/buttons.png") repeat-x scroll 0 0 transparent; border-color: #E4E4E4 #D2D2D2 #B4B4B4; font-family: "Lucida Grande",Verdana,sans-serif; cursor: default; margin: 5px 5px 5px 0; border-style: solid; border-width: 0.5px; color: #909090; text-transform: none; font-weight: normal; float:left; opacity: 50; }
+.dashboard-frame span.module-title { font-size: 114.28%; font-weight: bold; margin-right: 10px;}
+.dashboard-frame .module-block-header {margin: 10px 0;}
+
+table.forms-table { color: #666; background: #FDFFEF; border-top: 1px solid #CCCCCC;}
+table.forms-table tbody { border: none;  }
+table.forms-table tbody tr.form-subheader-row { background: #f4f4f4; }
+table.forms-table tbody tr.form-subheader-row th {  }
+table.forms-table tbody th { }
+table.forms-table td, table.forms-table th { padding: 3px; text-align: center; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }
+table.forms-table td:first-child, table.forms-table th:first-child { border-left: none; }
+
+.dashboard-loading-img {text-align: center; margin: 10px 0px;}
+ul.dashboard-tabs {margin: 0!important; padding: 0; height: 25px; list-style: none;}
+.dashboard-tabs li {background-color: #5a7fbc; border-radius: 5px 5px 0 0; margin-right: 4px; float: left; position: relative;}
+.dashboard-tabs li:hover {background-color: #47689c; margin-right: 4px;}
+.dashboard-tabs li:active {background-color: #446496; margin-right: 4px;}
+.dashboard-tabs li a {display: block; background-color: #5a7fbc; border: medium none; border-radius: 5px 5px 0 0; color: #FFFFFF; padding: 7px 8px; text-decoration: none; font: 14px Verdana;}
+.dashboard-tabs li:hover a {background-color: #47689c;}
+.dashboard-tabs li.active a {background-color: #35496D;}
+
+.dashboard-header {margin-bottom: 10px;}
+
+.import-top-controls-bar {float: left; width: 200px;}
+.import-control {width: 100%; float: left; margin-top: 20px;}

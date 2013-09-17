@@ -1,0 +1,140 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+module_load_include('php', 'cacure_mail', 'MailSender');
+
+/**
+ * Implementation of hook_menu().
+ */
+function cacure_mail_menu(){
+  $items = array();
+
+  $items['admin/config/cacure_settings/templates'] = array(
+    'title' => 'Manage CURE mail sender',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cacure_mail_form'),
+    'access arguments' => array('access cacure settings'),
+    'description' => '',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function cacure_mail_theme(){
+  return array(
+    'cacure_mail' => array(
+      'template' => 'mail_template',
+      'variables' => array('vars' => NULL),
+      'path' => drupal_get_path('module', 'cacure_mail') . '/templates/'
+    ),
+  );
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function cacure_mail_token_info() {
+
+  return array(
+    'types' => array('cacure_mail' => array('needs-data' => 'cacure_mail')),
+    'tokens' => array(
+      'cacure_mail' => array('cacure_mail' => array('name' => t('Name'))),
+    ),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function cacure_mail_tokens($type, $tokens, $data = array()) {
+  $replacements = array();
+  if ($type == 'cacure_mail') {
+    foreach ($tokens as $name => $original) {
+      if ($name == 'cacure_mail') {
+        $replacements[$original] = isset($data['entity']->name) ? $data['entity']->name : 'User';
+      }
+    }
+//    $tokens['formname_nocomplite'] = isset($data['formname_nocomplite']) ? $data['formname_nocomplite'] : 'Form';
+//    $tokens['link_nocomplite'] = isset($data['link_nocomplite']) ? $data['link_nocomplite'] : 'Form';
+    return $tokens;
+  }
+}
+
+/**
+ * Form construct.
+ */
+function cacure_mail_form($form, &$form_state){
+  $form = array();
+
+  $form['fieldset1'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Template for "Module submition" mail')
+  );
+
+  $form['fieldset2'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Template for "Submition reminder" mail')
+  );
+
+
+  $form['fieldset1']['cacure_mail_template_module_submition_subject'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Subject',
+    '#default_value' => variable_get('cacure_mail_template_module_submition_subject', 'Empty template.'),
+    '#required' => TRUE
+  );
+  $form['fieldset1']['cacure_mail_template_module_submition'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Template',
+    '#default_value' => variable_get('cacure_mail_template_module_submition', 'Empty template.'),
+    '#required' => TRUE
+  );
+
+
+
+  $form['fieldset2']['cacure_mail_template_submit_reminders_subject'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Subject',
+    '#default_value' => variable_get('cacure_mail_template_submit_reminders_subject', 'Empty template.'),
+    '#required' => TRUE
+  );
+  $form['fieldset2']['cacure_mail_template_submit_reminders'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Template',
+    '#default_value' => variable_get('cacure_mail_template_submit_reminders', 'Empty template.'),
+    '#required' => TRUE
+  );
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save template.')
+  );
+
+  return $form;
+}
+
+/**
+ * Form submit.
+ * @param  array $form
+ * @param  array $form_state
+ * @return void
+ */
+function cacure_mail_form_submit($form, &$form_state){
+  while(list($key) = each($form_state['values'])){
+    if((bool)strrchr($key, 'cacure_mail_template')){
+      variable_set($key, $form_state['values'][$key]);
+    }
+  }
+  drupal_set_message(t('New mail template has been saved.'), 'status');
+}
+
+

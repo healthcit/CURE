@@ -1,0 +1,200 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+require_once dirname(__FILE__).'/cure_forms_logs.db.inc';
+
+function cure_forms_logs_permission() {
+  return array(
+    'access form logs' => array(
+      'title' => t('Access CURE form logs'),
+    )
+  );
+}
+
+/**
+ * Implements hook_menu()
+ */
+function cure_forms_logs_menu() {
+  $items = array();
+
+  $items['admin/reports/CURE/form-log'] = array(
+    'title' => 'CURE forms log',
+    'description' => 'CURE forms log',
+    'page callback' => 'cure_forms_logs_main',
+    'access arguments' => array('access form logs'),
+  );
+
+  $items['admin/reports/CURE/form-log/%'] = array(
+    'title' => 'CURE forms log',
+    'description' => 'CURE forms log',
+    'page callback' => 'cure_forms_logs_main',
+    'page arguments' => array(4),
+    'access arguments' => array('access form logs'),
+    'type' => MENU_CALLBACK
+  );
+  
+  $items['admin/config/cacure_settings/forms-log'] = array(
+    'title' => 'Forms Log Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_forms_logs_settings'),
+    'access arguments' => array('access cacure settings'),
+    'description' => 'Forms Log Settings',
+    'type' => MENU_LOCAL_TASK,
+  );
+  
+  return $items;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_path()
+ * @see cure_forms_logs_menu()
+ */
+function cure_forms_logs_settings($form, $form_state) {
+  $form = array();
+
+  $settings = cure_forms_logs_get_settings();
+  
+  $restcall = RestCall::getInstance();
+  
+  $allModules = SimpleXmlParser::toArray($restcall->allModules());
+  foreach ($allModules['module'] as $module) {
+    $options[$module['@attributes']['id']] = $module['@attributes']['name'];
+  }
+  
+  $form['cure_forms_logs_module_enabled'] = array(
+    '#type' => 'checkbox', 
+    '#title' => t('Enabled'),
+    '#default_value' => $settings['enabled'],
+  );
+    
+  $form['cure_forms_logs_module_id'] = array(
+    '#type' => 'select',
+    '#title' => 'Module name',
+    '#options' => $options,
+    '#default_value' => $settings['module'],
+    "#empty_option"=>t('- Select -'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implementation of hook_theme().
+ * @return array
+ */
+function cure_forms_logs_theme($existing, $type, $theme, $path) {
+  return array(
+    'cure_forms_logs' => array(
+      'variables' => array(
+        'forms' => array(),
+        'logs' => array(),
+        'formId' => null,
+      ),
+    )
+  );
+}
+
+function cure_forms_logs_main($formId = null) {
+  $emptyMessage = 'No logs were found.';
+  
+  $forms = cure_forms_logs_get_all_forms();  
+  
+  if (!$forms) {
+    return $emptyMessage;
+  } else {
+    foreach ($forms as $form) {
+      $formList[$form->fid] = $form->name;
+      $logList[$form->fid] = cure_forms_logs_get_logs_by_form_id($form->fid);
+    }
+  }
+  
+  return theme('cure_forms_logs', array('forms' => $formList, 'logs' => $logList, 'formId' => $formId));
+}
+
+function theme_cure_forms_logs($vars) {
+  $forms = $vars['forms'];
+  $logs = $vars['logs'];
+  $formId = $vars['formId'];
+  if (empty($formId)) {
+    $keys = array_keys($forms);
+    $formId = $keys[0];
+  }
+  
+  $formOptions = '';
+  foreach ($forms as $id => $formName) {
+    $formOptions .= '<option';
+    if ($id == $formId) {
+      $formOptions .= ' selected="selected"';
+    }
+    $formOptions .= ' value="' . $id . '"';
+    $formOptions .= '>' . $formName . '</option>';
+  }
+
+  $output  = '<div style="margin-bottom: 15px;">Please, select form:&nbsp;&nbsp;';
+  $output .= '<select style="border: 1px solid #9fa09b;" id="form_id" onchange="window.location.href=\'/admin/reports/CURE/form-log/\'+this.value;">';
+  $output .= $formOptions;
+  $output .= '</select></div>';
+
+  $header = array(
+    array('data' => 'Username'),
+    array('data' => 'Form Owner'),
+    array('data' => 'Date')
+  );
+
+  $rows = array();
+  foreach ($logs[$formId] as $log) {
+    $rows[] = array(
+      array('data' => $log->name),
+      array('data' => cure_groups_get_group_name($log->owner_id)),
+      array('data' => $log->date)
+    );
+  }
+
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+
+  return $output;
+}
+
+function cure_forms_logs_form_accessed($formId, $ownerId) {
+  $setting = cure_forms_logs_get_settings();
+  
+  if ($setting['enabled']) {
+     global $user;
+  
+     $restcall = RestCall::getInstance();  
+     $allModules = SimpleXmlParser::toArray($restcall->allModules());  
+  
+    foreach ($allModules['module'] as $module) {
+      if ($module['@attributes']['id'] == $setting['module']) {
+        $forms = $module['form'];
+        if (isset($forms['@attributes'])) {
+          $forms = array($forms);
+        }
+        foreach ($forms as $form) {
+          if ($form['@attributes']['id'] == $formId) {
+            $cureForm = array('fid' => $formId, 'name' => $form['@attributes']['name']);
+            cure_forms_logs_save_form($cureForm);
+            $cureFormLog = array('form_id' => $formId, 'owner_id' => $ownerId, 'user_id' => $user->uid);
+            cure_forms_logs_write_access_log($cureFormLog);
+          }
+        }       
+      }
+    } 
+  }  
+}
+
+/**
+ * Gets settings from drupal variables
+ * @return array 
+ */
+function cure_forms_logs_get_settings() {
+  return array(
+    'module' => variable_get('cure_forms_logs_module_id', ''),
+    'enabled' => variable_get('cure_forms_logs_module_enabled', false)
+  );
+}

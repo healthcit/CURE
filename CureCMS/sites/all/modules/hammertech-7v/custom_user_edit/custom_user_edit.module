@@ -1,0 +1,30 @@
+<?php
+/**
+ * Implementation of hook_menu().
+ */
+function custom_user_edit_menu() {
+  $items['user/edit'] = array(
+    'page callback' => 'custom_user_edit_callback',
+    'access callback' => array('custom_user_edit_access'),
+  );
+  return $items;
+}
+
+/**
+ * Menu callback
+ * @see custom_user_edit_menu()
+ */
+function custom_user_edit_callback() {
+  global $user;
+  drupal_goto("user/".$user->uid.'/edit');
+}
+
+/**
+ * Checks if user is logged in
+ * @see user_is_logged_in()
+ * @return bool
+ */
+function custom_user_edit_access() {
+  return user_is_logged_in();
+}
+

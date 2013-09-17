@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+.cacure_tags_permissions_tag_table_header{
+  text-align: center;
+}
+td.cacure_tags_permissions_tag_id{
+  font-weight: bold;
+  border-right: gainsboro solid 1px;
+  border-left: gainsboro solid 1px;;
+  width: 240px;  
+}
+.cacure_tags_permissions_tag_table_checkbox{
+  text-align: center;
+  border-right: gainsboro solid 1px;
+  width: 90px;
+}
+.cacure_tags_permissions_tag_permission{
+  padding-left: 50px;
+  border-right: gainsboro solid 1px;
+}
+
+.multiple-choice {
+    text-align: right;
+}
+
+th.selected {
+  background: none repeat scroll 0 0 #cccccc;
+}
+

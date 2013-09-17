@@ -1,0 +1,659 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('NROR_TABLE_LIMIT', 10);
+
+define('NROR_DATA_RC', 'rcs');
+define('NROR_DATA_PATIENTS', 'pts');
+define('NROR_DATA_PHYSICIANS', 'phs');
+
+define('NROR_USER_ROLE_ADMIN', 'NROR admin');
+define('NROR_USER_ROLE_DRUPAL_ADMINISTRATOR', 'administrator');
+define('NROR_USER_ROLE_FACILITY', 'Facility');
+define('NROR_USER_ROLE_COORDINATOR', 'RegistryCoordinator');
+define('NROR_USER_ROLE_PHYSICIAN', 'Physician');
+define('NROR_USER_ROLE_PATIENT', 'Patient');
+
+define('NROR_CONTEXT_FACILITY', 'facility');
+define('NROR_CONTEXT_PHYSICIAN', 'physician');
+define('NROR_CONTEXT_PATIENT', 'patient');
+
+function nror_preprocess_page(&$vars) {
+  $path = arg();
+  if ($path[0] == 'form') {
+    global $user;
+    $context = $path[1];
+    $groupId = cure_groups_get_active_group();
+    $role = null;
+
+    foreach ($user->roles as $rid => $name) {
+      if (cure_contexts_get_role_context($rid)) {
+        $role = $name;
+        break;
+      }
+    }
+    if (!empty($groupId)) {
+      $pageTitle = '';
+      if ($context == NROR_CONTEXT_PATIENT) {
+        if ($role == NROR_USER_ROLE_PHYSICIAN || $role == NROR_USER_ROLE_COORDINATOR || nror_check_is_admin()) {
+          $patient = user_load_by_name(cure_groups_get_group_name($groupId));
+          $pageTitle = "Patient forms";
+          $vars['title'] = 'Chart ID: ' . nror_patients_prepare_patient_name($patient->name);
+        }
+        elseif ($role == NROR_USER_ROLE_PATIENT) {
+          $pageTitle = "";
+          $vars['title'] = $pageTitle;
+        }
+      }
+      elseif ($context == NROR_CONTEXT_PHYSICIAN) {
+        if ($role == NROR_USER_ROLE_COORDINATOR || nror_check_is_admin()) {
+          $physician = user_load_by_name(cure_groups_get_group_name($groupId));
+          $pageTitle = 'Provider forms';
+          $vars['title'] = $physician->profile_first_name.' '.$physician->profile_last_name;
+        }
+        elseif ($role == NROR_USER_ROLE_PHYSICIAN) {
+          $pageTitle = "Your forms";
+          $vars['title'] = $pageTitle;
+        }
+      }
+      elseif (nror_check_is_admin() || $role == NROR_USER_ROLE_COORDINATOR && $context == NROR_CONTEXT_FACILITY) {
+        $facility = cure_groups_get_group_name($groupId);
+        $pageTitle = "Practice forms";
+        $vars['title'] = $facility;
+      }
+    }
+    if (!empty($pageTitle)) {
+      drupal_set_title($pageTitle);
+    }
+  }
+}
+
+function nror_menu() {
+  $items = array();
+
+  $items['nror/pass/reset/%'] = array(
+    'title' => 'Change password',
+    'description' => t('Change password page'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_pass_reset_form', 3),
+    'access callback' => true,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function nror_token_info() {
+  $type = array(
+    'name' => 'Nror',
+    'description' => t('Tokens related to NROR')
+  );
+
+  $token = array('change-password-link' => array(
+    'name' => t('Change password'),
+    'description' => t('One-time link to change password page.'),
+  ));
+  return array(
+    'types' => array('nror' => $type),
+    'tokens' => array('nror' => $token),
+  );
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function nror_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  global $base_url;
+  $replacements = array();
+
+  if ($type == 'nror' && !empty($data['user'])) {
+    $account = $data['user'];
+    $replacements['[nror:change-password-link]'] = $base_url . '/nror/pass/reset/' . $account->uid;
+  }
+
+  return $replacements;
+}
+
+
+/**
+ * Menu callback
+ * @see nror_menu()
+ */
+function nror_main_page() {
+  $item = menu_get_item();
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+  }
+  else {
+    $output = t('You do not have any administrative items.');
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_form_user_register_form_alter(&$form, &$form_state) {
+  $form['account']['roles']['#access'] = false;
+  $form['account']['mail']['#required'] = false;
+  $form['#validate'][] = 'nror_validate_user_form';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_form_user_profile_form_alter(&$form, &$form_state) {
+  $form['account']['roles']['#access'] = false;
+  if (!nror_check_is_admin()) {
+    $form['contact']['#access'] = false;
+  }
+  $form['#validate'][] = 'nror_validate_user_form';
+}
+
+function nror_validate_user_form($form, $form_state) {
+  if (!empty($form_state['values']['roles'][NROR_USER_ROLE_ADMIN])) {
+    if (nror_admin_exists()) {
+      form_set_error('', t('ASCO admin was already created'));
+    }
+  }
+}
+
+/**
+ * Changes user status
+ * @param object $user
+ */
+function nror_change_status($user) {
+  if ($user->status == 1) {
+    $success = t('User %u was blocked.', array('%u' => $user->name));
+    $user->status = 0;
+  }
+  else {
+    $success = t('User %u was activated.', array('%u' => $user->name));
+    $user->status = 1;
+  }
+  $user->original = $user;
+  if (user_save($user)) {
+    drupal_set_message($success);
+  }
+  else {
+    $error = t('Error occurred. Users %u status was not changed.', array('%u' => $user->name));
+    drupal_set_message($error, 'error');
+  }
+}
+
+/**
+ * Changes statuses of users listed
+ * @param array $uids Users IDs
+ */
+function nror_change_status_multiple($uids) {
+
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    nror_change_status($user);
+  }
+}
+
+/**
+ * Gets users by specified role
+ * @param int $rid Role ID
+ * @return array
+ */
+function nror_get_users_by_role_id($rid) {
+  $query = new EntityFieldQuery;
+
+  $entities = $query
+    ->entityCondition('entity_type', 'user')
+    ->execute();
+  $result = array();
+  foreach ($entities['user'] as $eid => $entity) {
+    $user = user_load($eid);
+    $user_roles = array_keys($user->roles);
+    if (in_array($rid, $user_roles)) {
+      $result[$user->uid] = $user;
+    }
+  }
+  return $result;
+}
+
+/**
+ * Checks whether pathed e-mail address is already taken
+ * @param type $mail
+ * @param type $uid
+ * @return boolean 
+ */
+function nror_validate_mail($mail, $uid = null) {
+  $user = user_load_by_mail($mail);
+  if($user != false) {
+    if (!empty($uid) && $user->uid == $uid) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+function nror_profile_user($uid) {
+  $profile_info = new stdClass();
+  $profile_info->uid = $uid;
+  $users[$uid] = $profile_info;
+  profile_user_load($users);
+  return $users[$uid];
+}
+
+function nror_pass_reset_form($form, &$form_state, $uid) {
+  $user = user_load($uid);
+  
+  if (is_null($user) || user_is_logged_in()) {
+    drupal_set_message(t('Another user is logged in this browser.'));
+    drupal_goto();
+  }
+  
+  $form = array();
+  
+  $form['#user'] = $user;
+  
+  $form['message'] = array('#markup' => t('<p>Enter your new password in both fields.</p><p> After setting your password you will be able to login with it in the future.</p>'));
+          
+  $form['pass'] = array(
+    '#type' => 'password_confirm',
+    '#size' => 25,
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save password'),
+  );
+  return $form;
+}
+
+function nror_pass_reset_form_submit($form, &$form_state) {
+  $account = $form_state['complete form']['#user'];
+  $new_pass = trim($form_state['values']['pass']);
+  
+  user_save($account, array('pass' => $new_pass));
+  
+  // Log user in.
+  $login['uid'] = $account->uid;
+  user_login_submit(array(), $login);
+  drupal_goto();
+}
+
+function nror_validate_profile_info($form, $form_state) {
+  cure_users_validate_profile_info($form, $form_state);
+}
+
+function nror_check_is_admin() {
+  global $user;
+  $role = user_role_load_by_name(NROR_USER_ROLE_DRUPAL_ADMINISTRATOR);
+  if (isset($user->roles[$role->rid])) {
+    return true;
+  }
+  return false;
+}
+
+function nror_check_is_nror_admin() {
+  global $user;
+  $role = user_role_load_by_name(NROR_USER_ROLE_ADMIN);
+  if (isset($user->roles[$role->rid])) {
+    return true;
+  }
+  return false;
+}
+
+function nror_access_to_patients() {
+  global $user;
+  $role_admin = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+  $role_rc = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+  if (nror_check_is_admin() || isset($user->roles[$role_admin->rid]) || isset($user->roles[$role_rc->rid])) {
+    return true;
+  }
+  return false;
+}
+
+function nror_get_admin() {
+  $role = user_role_load_by_name(NROR_USER_ROLE_ADMIN);
+  $result = nror_get_users_by_role_id($role->rid);
+  if ($result != false) {
+    $keys = array_keys($result);
+    return $result[$keys[0]];
+  }
+  return false;
+}
+
+function nror_admin_exists() {
+  $role = user_role_load_by_name(NROR_USER_ROLE_ADMIN);
+  $result = nror_get_users_by_role_id($role->rid);
+  if ($result != false) {
+    return true;
+  }
+  return false;
+}
+
+function nror_delete_admin_form($form, &$form_state) {
+  $form = array();
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete ASCO admin?').'</p>');
+  
+  $user = nror_get_admin();
+  
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+function nror_delete_admin_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    user_delete($form_state['values']['uid']);
+    drupal_set_message(t('ASCO admin was deleted successfully.'));
+  }
+  drupal_goto('dashboard/admin');
+}
+
+function nror_prepare_data($users, $role = null) {
+  global $user;
+  $entityId = $user->entityId;
+
+  $result = array();
+
+  if (!empty($users)) {
+    foreach($users as $entity) {
+      $context = cure_contexts_get_user_context($entity->uid);
+      $profile = nror_profile_user($entity->uid);
+      $form_statuses = cacure_x_form_statuses();
+
+      $result[$entity->uid] = array(
+        'uid' => $entity->uid,
+        'entityId' => $entity->entity_id,
+        'name' => $entity->name,
+        'full_name'=> $profile->profile_first_name . ' ' . $profile->profile_last_name,
+        'status' => $entity->status == 1 ? 'Active' : 'Blocked',
+      );
+      if (!nror_check_is_nror_admin()) {
+        $module = nror_get_module($entityId, $entity);
+        if (!empty($module)) {
+          $result[$entity->uid]['submission_date'] =
+            $module['@attributes']['status'] == CACURE_X_FORMS_STATUS_SUBMITTED && isset($module['@attributes']['dateModified'])
+              ? substr($module['@attributes']['dateModified'], 0, 10) : '';
+          $result[$entity->uid]['module_editable'] = $module['@attributes']['isEditable'];
+          $result[$entity->uid]['module_id'] = $module['@attributes']['id'];
+          $result[$entity->uid]['module_status'] = !empty($module) ? $form_statuses[$module['@attributes']['status']] : false;
+          if (!empty($module['form'])) {
+            $form = nror_get_current_form($module['form']);
+            $instance = nror_get_current_instance($form['formInstances']);
+            $formId = $form['@attributes']['id'];
+            $query = array();
+            if (!empty($instance)) {
+              $query['instanceId'] = $instance['@attributes']['instanceId'];
+            }
+            $result[$entity->uid]['form_path'] = url($context.'/'.$formId.'/'.$entity->name, array('query' => $query));
+            $result[$entity->uid]['forms_completed'] = _nror_forms_completed($module['form']);
+          }
+        }
+      }
+      if (nror_check_is_admin() || nror_check_is_nror_admin()) {
+         $result[$entity->uid]['facility'] = $entity->facility;
+      }
+      if (!empty($role)) {
+        if ($role == NROR_DATA_PATIENTS) {
+          $doctor = nror_patients_get_patient_doctor($entity->uid);
+          $doctor_profile = nror_profile_user($doctor);
+          $degree = nror_physicians_get_doctor_degrees($doctor);
+          $result[$entity->uid]['physician'] = $doctor_profile->profile_first_name.' '.$doctor_profile->profile_last_name.', '. $degree;
+        }
+        if ($role == NROR_DATA_PHYSICIANS) {
+          $degree = nror_physicians_get_doctor_degrees($entity->uid);
+          $result[$entity->uid]['degree'] = $degree;
+        }
+      }
+    }
+  }
+
+  return $result;
+}
+
+function nror_get_module($entityId, $entity) {
+  $call = RestCall::getInstance();
+
+  $context = cure_contexts_get_user_context($entity->uid);
+  $groupId = cure_groups_get_group_id($entity->name);
+  $response = $call->getAllUserModules($entityId, $groupId, $context);
+  if (!empty($response)) {
+    $modules = SimpleXmlParser::toArray($response);
+    if (!empty($modules)) {
+      $modules = $modules['module'];
+      if (isset($modules['@attributes'])) {
+        $modules = array($modules);
+      }
+      foreach ($modules as $module) {
+        $attribs = $module['@attributes'];
+        if ($attribs['status'] == CACURE_X_FORMS_STATUS_NEW && $attribs['isEditable'] == 'true') {
+          return $module;
+        }
+      }
+      foreach ($modules as $module) {
+        $attribs = $module['@attributes'];
+        if ($attribs['status'] == CACURE_X_FORMS_STATUS_IN_PROGRESS && $attribs['isEditable'] == 'true') {
+          return $module;
+        }
+      }
+      return $modules[0];
+    }
+  }
+  return null;
+}
+
+function nror_get_current_form($forms) {
+  $currentNewForm = _nror_check_new_form($forms);
+  if (!empty($currentNewForm)) {
+    return $currentNewForm;
+  }
+  $currentInProgrressForm = _nror_check_in_progress_form($forms);
+  if (!empty($currentInProgrressForm)) {
+    return $currentInProgrressForm;
+  }
+  if (isset($forms['@attributes'])) {
+    $forms = array($forms);
+  }
+  return $forms[0];
+}
+
+function _nror_check_new_form($forms, $childes = false) {
+  if (isset($forms['@attributes'])) {
+    $forms = array($forms);
+  }
+  foreach ($forms as $form) {
+    if ($childes == true && (!isset($form['formInstances']['availableParentInstances']) || empty($form['formInstances']['availableParentInstances'])) && $form['formInstances']['@attributes']['existingInstances'] == 0) {
+      continue;
+    }
+    if ($form['@attributes']['status'] == CACURE_X_FORMS_STATUS_NEW) {
+      return $form;
+    }
+    if (isset($form['form'])) {
+      $newChildForm = _nror_check_new_form($form['form'], true);
+      if (!empty($newChildForm)) {
+        return $newChildForm;
+      }
+    }
+  }
+  return null;
+}
+
+function _nror_check_in_progress_form($forms, $childes = false) {
+  if (isset($forms['@attributes'])) {
+    $forms = array($forms);
+  }
+  foreach ($forms as $form) {
+    if ($childes == true && (!isset($form['formInstances']['availableParentInstances']) || empty($form['formInstances']['availableParentInstances'])) && $form['formInstances']['@attributes']['existingInstances'] == 0) {
+      continue;
+    }
+    if (isset($form['form'])) {
+      $inProgressChildForm = _nror_check_in_progress_form($form['form'], true);
+      if (!empty($inProgressChildForm)) {
+        return $inProgressChildForm;
+      }
+    }
+    if ($form['@attributes']['status'] == 'in-progress') {
+      return $form;
+    }
+  }
+  return null;
+}
+
+function nror_get_current_instance($formInstances) {
+  if ($formInstances['@attributes']['existingInstances'] > 0 && isset($formInstances['instance'])) {
+    $instances = $formInstances['instance'];
+    if (isset($instances['@attributes'])) {
+      return $instances;
+    }
+
+    foreach ($instances as $instance) {
+      if ($instance['@attributes']['status'] == CACURE_X_FORMS_STATUS_IN_PROGRESS) {
+        return $instance;
+      }
+    }
+
+    return $instances[0];
+  }
+  return null;
+}
+
+function _nror_forms_completed($forms) {
+  if (isset($forms['@attributes'])) {
+    $forms = array($forms);
+  }
+  $formsCompleted = true;
+  $subFormsCompleted = true;
+  foreach ($forms as $form) {
+    if (!isset($form['formInstances']['availableParentInstances']) || !empty($form['formInstances']['availableParentInstances'])) {
+      if ($form['@attributes']['status'] != CACURE_X_FORMS_STATUS_SUBMITTED) {
+        $formsCompleted = false;
+        break;
+      }
+      if (isset($form['form'])) {
+        $subFormsCompleted = _nror_forms_completed($form['form']);
+      }
+    }
+  }
+  return ($formsCompleted == true && $subFormsCompleted == true);
+}
+
+function nror_user_name_unique($name) {
+  $result = db_select('users', 'u')
+    ->fields('u')
+    ->condition('u.name', $name)
+    ->execute()
+    ->fetchAll();
+  
+  if (!empty($result)) {
+    return false;
+  }
+  return true;
+}
+
+function nror_get_uid_by_name($name) {
+  $result = db_select('users', 'u')
+    ->fields('u', array('uid'))
+    ->condition('u.name', $name)
+    ->execute()
+    ->fetch();
+  
+  return $result->uid;
+}
+
+function nror_mail($key, &$message, $params) {
+  $language = $message['language'];
+  $variables = array('user' => $params['account']);
+  $message['subject'] .= _nror_mail_text($key . '_subject', $language, $variables);
+  $message['body'][] = _nror_mail_text($key . '_body', $language, $variables);
+}
+
+function _nror_mail_text($key, $language = NULL, $variables = array(), $replace = TRUE) {
+  $langcode = isset($language) ? $language->language : NULL;
+
+  switch ($key) {
+      case 'notification_subject':
+        $text = t('Account details for [user:name] at [site:name]', array(), array('langcode' => $langcode));
+        break;
+      case 'notification_body':
+        $text = t("Dear [user:profile-first-name] [user:profile-last-name],
+
+Your e-mail has been changed in our system.
+
+username: [user:name]
+new email address: [user:mail]
+
+Thank you for your interest in HealthCare IT, Inc.
+
+--  [site:name] team", array(), array('langcode' => $langcode));
+        break;
+  }
+  
+  if ($replace) {
+    return token_replace($text, $variables, array('language' => $language, 'callback' => 'user_mail_tokens', 'sanitize' => FALSE, 'clear' => TRUE));
+  }
+
+  return $text;
+}
+
+function nror_trim_values(&$array) {
+  $result = array();
+  foreach ($array as $key => $value) {
+    if (!empty($value) && is_string($value)) {
+      $value = trim($value);
+    }
+    $result[$key] = $value;
+  }
+  $array = $result;
+}
+
+function nror_form_user_pass_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['submit']['#value'] = 'Send request';
+}
+
+function nror_table_form_action_links($cureUser) {
+  global $user;
+  $module_status = array_search($cureUser['module_status'], cacure_x_form_statuses());
+  $links = array();
+  if ($cureUser['module_editable'] == 'true' && $module_status != CACURE_X_FORMS_STATUS_SUBMITTED) {
+    $links[] = "<a href='/form{$cureUser['form_path']}' title='Edit'>Edit</a>";
+  }
+  if (nror_rc_is_coordinator($user)) {
+    $groupId = cure_groups_get_group_id($cureUser['name']);
+    if (!empty($groupId)) {
+      if ($cureUser['forms_completed'] && $module_status != CACURE_X_FORMS_STATUS_SUBMITTED) {
+        $links[] = "<a href='/management/submit-module/{$cureUser['module_id']}/{$groupId}' title='Submit'>Submit</a>";
+      }
+      elseif ($module_status == CACURE_X_FORMS_STATUS_SUBMITTED) {
+        $links[] = "<a href='/management/reopen-module/{$cureUser['module_id']}/{$groupId}' title='Re-open'>Re-open</a>";
+      }
+    }
+  }
+  if (!empty($links)) {
+    return ' ('.implode(' | ', $links).')';
+  }
+  else {
+    return '';
+  }
+}

@@ -1,0 +1,106 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function cacure_change_role_block_info(){
+  $blocks = array();
+  $blocks[0]['info'] = t('Custom block with change role form');
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cacure_change_role_block_view($delta = ''){
+  $block = array();
+  
+  switch ($delta) {
+    case 0:
+      $block['subject'] = t('Area of Interest');
+      $block['content'] =  cacure_change_role_block_content();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * hook_block_view callback
+ * @return string 
+ */
+function cacure_change_role_block_content() {
+  global $user;
+  
+  $allowed_roles = cacure_change_role_allowed_roles();
+  $current_role = array_intersect_key($user->roles, $allowed_roles);
+  if (count($allowed_roles)>0) {
+    return drupal_get_form('cacure_change_role_block_form', $allowed_roles, $current_role);
+  }
+  else {
+    $output = '<div>';
+    if ($user->uid == 1) {
+      $output .= t('Roles for user choice were not configured. To configure go to ');
+      $output .= l(t('User choice'), 'admin/config/people/autoassignrole/user');
+    }
+    else {
+      $output .= t('No roles available');
+    }
+    $output .= '</div>';
+    return $output;
+  }     
+}
+
+/**
+ * drupal_get_form callback
+ * @return type 
+ */
+function cacure_change_role_block_form($form, &$form_state, $allowed_roles, $current_role) {
+  
+    $form['roles_list'] = array(
+    '#type' => 'select',
+    '#default_value' => key($current_role),
+    '#options' => $allowed_roles,
+  );
+ 
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Switch'));
+  return $form;
+}
+
+/**
+ * cacure_change_role_block_form submit function 
+ */
+function cacure_change_role_block_form_submit($form, &$form_state) {
+  global $user;
+
+  $allowed_roles = cacure_change_role_allowed_roles();
+  $current_role = array_intersect_key($user->roles, $allowed_roles);
+  $new_role_value = $allowed_roles[$form_state['values']['roles_list']];
+  foreach ($current_role as $key => $role){
+    unset($user->roles[$key]);    
+  }
+  $user->roles[$form_state['values']['roles_list']] = $new_role_value;
+  user_save($user, array('roles' => $user->roles));
+  drupal_set_message(t('Your Area of Interest has been changed.'));
+}
+
+/**
+ * Returns filtered allowed roles 
+ * @return array 
+ */
+function cacure_change_role_allowed_roles(){
+  $allowed_roles = variable_get('autoassignrole_user_roles', array());
+  foreach ($allowed_roles as $key => $value){
+    if($value == 0) {
+      unset($allowed_roles[$key]);
+    }
+  }
+  $all_roles = user_roles(TRUE);
+  $allowed_roles = array_intersect_key($all_roles, $allowed_roles);
+  return $allowed_roles;
+}

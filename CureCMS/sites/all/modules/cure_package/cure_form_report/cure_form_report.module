@@ -1,0 +1,417 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+function cure_form_report_permission() {
+  return array(
+    'access form data report' => array(
+      'title' => t('Access CURE form report module'),
+    )
+  );
+}
+
+function cure_form_report_menu() {
+  $items = array();
+
+  $items['admin/reports/CURE/form-report'] = array(
+    'title' => 'Form data report',
+    'description' => 'Show form data report.',
+    'page callback' => 'cure_form_report_main',
+    'access arguments' => array('access form data report'),
+  );
+
+  $items['admin/reports/CURE/form-report/%'] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'cure_form_report_main',
+    'page arguments' => array(4),
+    'access arguments' => array('access form data report'),
+    'type' => MENU_CALLBACK
+  );
+
+  $items['admin/reports/CURE/form-report/%/%'] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'cure_form_report_main',
+    'page arguments' => array(4, 5),
+    'access arguments' => array('access form data report'),
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ * @return array
+ */
+function cure_form_report_theme($existing, $type, $theme, $path) {
+  return array(
+    'cure_form_report' => array(
+      'variables' => array(
+        'modules' => array(),
+        'forms' => array(),
+        'moduleId' => null,
+      ),
+    )
+  );
+}
+
+function cure_form_report_main($moduleId = null, $formId = null) {
+  $emptyMessage = 'No forms were found.';
+  $restcall = RestCall::getInstance();
+  $xml= $restcall->allModules();
+  $modules = SimpleXmlParser::toArray($xml);
+  if (empty($modules['module'])) {
+    return $emptyMessage;
+  }
+  if (isset($modules['module']['@attributes'])) {
+    $modules['module'] = array($modules['module']);
+  }
+  foreach ($modules['module'] as $module) {
+    if (empty($module['form'])) {
+      continue;
+    }
+    if (isset($module['form']['@attributes'])) {
+      $module['form'] = array($module['form']);
+    }
+    foreach ($module['form'] as $form) {
+      $module_list[$module['@attributes']['id']] = $module['@attributes']['name'];
+      $form_list[$module['@attributes']['id']][$form['@attributes']['id']]= $form['@attributes']['name'];
+    }
+  }
+  
+  if (!empty($formId) && !empty($moduleId)){
+    $formName = $form_list[$moduleId][$formId];
+    cure_form_report_download_xls($formId, $formName);
+  }
+  
+  return theme('cure_form_report', array('modules' => $module_list, 'forms' => $form_list, 'moduleId' => $moduleId));
+}
+
+function theme_cure_form_report($vars) {
+  $modules = $vars['modules'];
+  $forms = $vars['forms'];
+  $moduleId = $vars['moduleId'];
+  if (empty($moduleId)) {
+    $keys = array_keys($modules);
+    $moduleId = $keys[0];
+  }
+  $moduleOptions = '';
+  foreach ($modules as $id => $val) {
+    $moduleOptions .= '<option';
+    if ($id == $moduleId) {
+      $moduleOptions .= ' selected="selected"';
+    }
+    $moduleOptions .= ' value="'.$id.'"';
+    $moduleOptions .= '>'.$val.'</option>';
+  }
+
+  $output  = '<div style="margin-bottom: 10px;">Please, select module:&nbsp;&nbsp;';
+  $output .= '<select id="module_id" onchange="window.location.href=\'/admin/reports/CURE/form-report/\'+this.value;">';
+  $output .= $moduleOptions;
+  $output .= '</select></div>';
+
+  $header = array(
+    array('data' => 'Forms'),
+    array('data' => 'Actions'),
+  );
+
+  $rows = array();
+  foreach ($forms[$moduleId] as $fid => $form) {
+    $link = l('download', 'admin/reports/CURE/form-report/'.$moduleId.'/'.$fid);
+    $rows[] = array(
+      array('data' => $form),
+      array('data' => $link)
+    );
+  }
+
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
+
+  return $output;
+}
+
+function cure_form_report_download_xls($formId, $formName) {
+  $restcall = RestCall::getInstance();
+  $formDataXml = $restcall->getFormData($formId);
+  if (strpos($formDataXml, '"error":"not_found"')) {
+    $message = 'Error: Not found.';
+    if (strpos($formDataXml, '"reason":"missing_named_view"')) {
+      $message .= ' Reason: Missing named view.';
+    }
+    drupal_set_message($message);
+    drupal_goto('admin/reports/CURE/form-report');
+  }
+  try {
+    $formData = SimpleXmlParser::toArray($formDataXml);
+    
+    if (!empty($formData) && is_array($formData)) {
+      $formName = str_replace(' ', '_', $formName);
+      $formData = cure_form_report_excel_table_info($formData);
+      $owners = $formData['owners'];
+      $questions = $formData['questions'];
+      $questions_data = $formData['questions_data'];
+      $complex_tables = $formData['complex_tables'];
+      $complex_tables_columns = $formData['complex_tables_columns'];
+      $complex_tables_data = $formData['complex_tables_data'];
+
+      require_once libraries_get_path('phpexcel').'/PHPExcel.php';
+      require_once libraries_get_path('phpexcel').'/PHPExcel/IOFactory.php';
+
+      $workbook = new PHPExcel();
+
+      cure_form_report_xls_questions_worksheet($workbook, $owners, $questions, $questions_data);
+      cure_form_report_xls_tables($workbook, $owners, $complex_tables, $complex_tables_columns, $complex_tables_data);
+      $writer = PHPExcel_IOFactory::createWriter($workbook, "Excel5");
+
+      header('Content-Type: application/vnd.ms-excel');
+      header('Content-Disposition: attachment;filename="'.$formName.'.xls"');
+      header('Cache-Control: max-age=0');
+
+      $writer->save('php://output');
+    }
+  } catch (Exception $e) {
+    drupal_set_message('Wrong xml format', 'error');
+  }  
+}
+
+function cure_form_report_xls_questions_worksheet($workbook, $owners, $questions, $questions_data) {
+  $worksheet = $workbook->getSheet(0);
+  $worksheet->setTitle('Questions');
+  $ownerIdColumnWidth = strlen(max($owners));
+  $instanceIdColumnWidth = strlen('Instance ID') + 2;
+  $worksheet->getColumnDimensionByColumn(0)->setWidth($ownerIdColumnWidth);
+  $worksheet->getColumnDimensionByColumn(0)->setWidth($instanceIdColumnWidth);
+  $worksheet->setCellValueByColumnAndRow(0, 1, 'Owner ID');
+  $worksheet->getStyleByColumnAndRow(0, 1)->getFont()->setBold(true);
+  $worksheet->setCellValueByColumnAndRow(1, 1, 'Instance ID');
+  $worksheet->getStyleByColumnAndRow(1, 1)->getFont()->setBold(true);
+  $col_count = 2;
+  foreach ($questions as $qid => $qtext) {
+    $row_count = 2;
+    $worksheet->setCellValueByColumnAndRow($col_count, 1, $qtext);
+    $worksheet->getStyleByColumnAndRow($col_count, 1)->getFont()->setBold(true);
+    $worksheet->getColumnDimensionByColumn($col_count)->setWidth(35);
+    if (isset($questions_data[$qid])) {
+      foreach ($questions_data[$qid] as $owner_id => $instances) {
+        foreach ($instances as $instanceId => $answer) {
+          if (isset($owners[$owner_id])) {
+            $str = cure_form_report_insert_new_line($answer, 30);
+            $worksheet->setCellValueByColumnAndRow(0, $row_count, $owner_id);
+            $worksheet->setCellValueByColumnAndRow(1, $row_count, $instanceId);
+            $worksheet->setCellValueByColumnAndRow($col_count, $row_count, $str);
+            $row_count ++;
+          }
+        }
+      }
+    }
+    $col_count ++;
+  }
+
+}
+
+function cure_form_report_xls_tables($workbook, $owners, $complex_tables, $complex_tables_columns, $complex_tables_data) {
+  $table_count = 1;
+  foreach ($complex_tables as $tid => $tname) {
+    cure_form_report_xls_tables_worksheets($workbook, $table_count, $owners, $tid, $tname, $complex_tables_columns, $complex_tables_data);
+    $table_count++;
+  }
+}
+
+function cure_form_report_xls_tables_worksheets($workbook, $table_count, $owners, $tid, $tname, $complex_tables_columns, $complex_tables_data) {
+  if (strlen($tname) > 27) {
+    $tname = substr($tname, 0, 27);
+    $tname .= '...';
+  }
+  
+  $tname = str_replace(':', '', $tname);
+  $table_columns = $complex_tables_columns[$tid];
+  $table_data = $complex_tables_data[$tid];
+  $workbook->createSheet($table_count);
+  $worksheet = $workbook->getSheet($table_count);
+  $ownerIdColumnWidth = strlen(max($owners));
+  $instanceIdColumnWidth = strlen('Instance ID') + 2;
+  $worksheet->setTitle($tname);
+  $worksheet->getColumnDimensionByColumn(0)->setWidth($ownerIdColumnWidth);
+  $worksheet->getColumnDimensionByColumn(0)->setWidth($instanceIdColumnWidth);
+  $worksheet->setCellValueByColumnAndRow(0, 1, 'Owner ID');
+  $worksheet->getStyleByColumnAndRow(0, 1)->getFont()->setBold(true);
+  $worksheet->setCellValueByColumnAndRow(1, 1, 'Instance ID');
+  $worksheet->getStyleByColumnAndRow(1, 1)->getFont()->setBold(true);
+  $col_count = 2;
+  foreach ($table_columns as $cid => $cname) {
+    $row_count = 2;
+    $worksheet->setCellValueByColumnAndRow($col_count, 1, $cname);
+    $worksheet->getStyleByColumnAndRow($col_count, 1)->getFont()->setBold(true);
+    $worksheet->getColumnDimensionByColumn($col_count)->setWidth(37);
+    if (isset($table_data[$cid])) {
+      foreach ($table_data[$cid] as $owner_id => $instances) {
+        foreach ($instances as $instanceId => $answers) {
+          foreach ($answers as $answer) {
+            $str = cure_form_report_insert_new_line($answer, 30);
+            $worksheet->setCellValueByColumnAndRow(0, $row_count, $owner_id);
+            $worksheet->setCellValueByColumnAndRow(1, $row_count, $instanceId);
+            $worksheet->setCellValueByColumnAndRow($col_count, $row_count, $str);
+            $row_count ++;
+          }
+        }
+      }
+    }
+    $col_count ++;
+  }
+}
+
+function cure_form_report_excel_table_info($form_data) {
+  $owners = array();
+  $questions = array();
+  $questions_data = array();
+  $complex_tables = array();
+  $complex_tables_columns = array();
+  $complex_tables_data = array();
+
+  if (isset($form_data['owner']['@attributes'])) {
+    $form_data['owner'] = array($form_data['owner']);
+  }
+  
+  foreach ($form_data['owner'] as $owner_data) {
+    cure_form_report_owner_data($owner_data, $owners, $questions, $questions_data, $complex_tables, $complex_tables_columns, $complex_tables_data);
+  }
+  $result = array(
+    'owners' => $owners,
+    'questions' => $questions,
+    'questions_data' => $questions_data,
+    'complex_tables' => $complex_tables,
+    'complex_tables_columns' => $complex_tables_columns,
+    'complex_tables_data' => $complex_tables_data
+  );
+
+  return $result;
+}
+
+function cure_form_report_owner_data($data, &$owners, &$questions, &$questions_data, &$complex_tables, &$complex_tables_columns, &$complex_tables_data) {
+  $groupId = $data['@attributes']['id'];
+  $owners[$groupId] = $groupId;
+
+  $instances = $data['instance'];
+  if (!empty($instances)) {
+    if (isset($instances['@attributes'])) {
+      $instances = array($instances);
+    }
+    foreach ($instances as $instance) {
+      $instanceId = $instance['@attributes']['id'];
+      if (!empty($instance['questions'])) {
+        $instanceQuestions = $instance['questions']['question'];
+        if (isset($instanceQuestions['@attributes'])) {
+          $instanceQuestions = array($instanceQuestions);
+        }
+        foreach ($instanceQuestions as $question) {
+          cure_form_report_questions($groupId, $instanceId, $question, $questions, $questions_data);
+        }
+      }
+      if (is_array($instance['complex-tables']['complex-table'])) {
+        $complexTable = $instance['complex-tables']['complex-table'];
+        if (isset($complexTable['@attributes'])) {
+          $complexTable = array($complexTable);
+        }
+        foreach ($complexTable as $table) {
+          cure_form_report_tables($groupId, $instanceId, $table, $complex_tables, $complex_tables_columns, $complex_tables_data);
+        }
+      }
+    }
+  }
+}
+
+function cure_form_report_questions($groupId, $instanceId, $question, &$questions, &$questions_data) {
+    $question_id = $question['@attributes']['id'];
+    $question_text = $question['text'];
+    if (!empty($question_id) && !empty($question_text)) {
+      if (!isset($questions[$question_id])) {
+        $questions[$question_id] = $question_text;
+      }
+      if (!isset($questions_data[$question_id])) {
+        $questions_data[$question_id] = array();
+      }
+
+      if (is_string($question['answer'])) {
+        $questions_data[$question_id][$groupId][$instanceId] = $question['answer'];
+      }
+      else if (is_array($question['answer']) && isset($question['answer']['text'])) {
+        $questions_data[$question_id][$groupId][$instanceId] = $question['answer']['text'];
+      }
+    }
+  }
+  
+function cure_form_report_tables($groupId, $instanceId, $complex_table, &$complex_tables, &$complex_tables_columns, &$complex_tables_data) {
+  $table_id = $complex_table['@attributes']['id'];
+
+  if (!isset($complex_tables[$table_id])) {
+    $complex_tables[$table_id] = $complex_table['text'];
+  }
+  if (!isset($complex_tables_columns[$table_id])) {
+    $complex_tables_columns[$table_id] = array();
+  }
+  if (!isset($complex_tables_data[$table_id])) {
+    $complex_tables_data[$table_id] = array();
+  }
+
+  if (!isset($complex_table['row'][0]) && !empty($complex_table['row'])) {
+    $row = $complex_table['row'];
+    $complex_table['row'] = array($row);
+  }
+  foreach ($complex_table['row'] as $row) {
+    if (!isset($row['column'][0]) && !empty($row['column'])) {
+      $column = $row['column'];
+      $row['column'] = array($column);
+    }
+    foreach ($row['column'] as $column) {
+      $column_id =  $column['@attributes']['id'];
+      if (!isset($complex_tables_columns[$table_id][$column_id])) {
+        $complex_tables_columns[$table_id][$column_id] = $column['text'];
+      }
+      if (!isset($complex_tables_data[$table_id][$column_id])) {
+        $complex_tables_data[$table_id][$column_id] = array();
+      }
+      if (!isset($complex_tables_data[$table_id][$column_id][$groupId])) {
+        $complex_tables_data[$table_id][$column_id][$groupId] = array();
+      }
+      if (!isset($complex_tables_data[$table_id][$column_id][$groupId][$instanceId])) {
+        $complex_tables_data[$table_id][$column_id][$groupId][$instanceId] = array();
+      }
+
+      if (is_string($column['answer'])) {
+        $complex_tables_data[$table_id][$column_id][$groupId][$instanceId][] = $column['answer'];
+      }
+      else if (is_array($column['answer']) && isset($column['answer']['text'])) {
+        $complex_tables_data[$table_id][$column_id][$groupId][$instanceId][] = $column['answer']['text'];
+      }
+    }
+  }
+}
+
+function cure_form_report_insert_new_line($string, $length) {
+  $words = explode(' ', trim($string));
+  $res_str = "";
+  if (strlen($string) > $length && count($words) > 1) {
+    $cur_length = 0;
+    foreach ($words as $word) {
+      $word_len = strlen(trim($word));
+      $cur_length = $cur_length + $word_len + 1;
+      if (($cur_length + $word_len) > $length) {
+        $res_str .= "\n";
+        $cur_length = 0;
+      }
+      $res_str .= trim($word)." ";
+    }
+  }
+  else {
+    $res_str = $string;
+  }
+  return $res_str;
+}
+
+
+

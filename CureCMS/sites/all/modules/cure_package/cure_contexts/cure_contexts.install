@@ -1,0 +1,59 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function cure_contexts_schema() {
+  $schema = array();
+
+  $schema['cure_contexts'] = array(
+    'fields' => array(
+      'context_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Context name.',
+      ),
+      'description' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'description' => 'Short context description'
+      ),
+    ),
+    'primary key' => array('context_id'),
+  );
+
+  $schema['cure_roles_contexts'] = array(
+    'fields' => array(
+      'role_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Drupal role ID'
+      ),
+      'context_id' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Context ID.',
+      ),
+      'primary_role' => array(
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+        'description' => 'Indicates if this is primary role'
+      ),
+    ),
+    'primary key' => array('role_id'),
+  );
+
+  return $schema;
+}

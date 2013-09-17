@@ -1,0 +1,221 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define("ASCO_GENERAL_NEWS_TABLE", "asco_general_news_content");
+
+define("ASCO_GENERAL_NEWS_MODULE_NAME", "asco_general_news");
+
+define("ASCO_GENERAL_NEWS_NODE_TYPE", "asco_general_news_node");
+
+define("ASCO_GENERAL_NEWS_BLOCK", "asco_general_news_block");
+
+define("ASCO_GENERAL_NEWS_BLOCK_THEME", "asco_general_news_block_theme");
+
+/**
+ * Implements hook_node_info().
+ */
+function asco_general_news_node_info() {
+    return array(
+        ASCO_GENERAL_NEWS_NODE_TYPE => array(
+            'name' => t('ASCO General News'),
+            'base' => ASCO_GENERAL_NEWS_NODE_TYPE,
+            'description' => t('General news'),
+            'title_label' => t('News Title')
+        ),
+    );
+}
+
+/**
+ * Implements hook_form().
+ */
+function asco_general_news_node_form($node, &$form_state) {
+
+    $form = node_content_form($node, $form_state);
+
+    $form['title']['#required'] = false;
+
+    $form['content'] = array(
+        '#type' => 'text_format',
+        '#title' => t('News Content'),
+        '#default_value' => $node->content,
+        '#rows' => 10,
+        '#description' => t('News content'),
+        '#required' => true,
+    );
+
+    return $form;
+}
+
+/**
+ * Implements hook_prepare().
+ */
+function asco_general_news_node_prepare($node) {
+    if (!isset($node->content)) {
+        $node->content = '';
+    }
+}
+
+/**
+ * Implements hook_load().
+ */
+function asco_general_news_node_load($nodes) {
+    if (empty($nodes)) {
+        return;
+    }
+    foreach ($nodes as &$node) {
+        $result = db_select(ASCO_GENERAL_NEWS_TABLE, 'gn')
+            ->fields('gn', array('content'))
+            ->condition('nid', $node->nid)
+            ->execute()
+            ->fetchObject();
+        if (!empty($result)) {
+            $node->content = $result->content;
+        }
+    }
+}
+
+/**
+ * Implements hook_insert().
+ */
+function asco_general_news_node_insert($node) {
+    $existingInfo = db_select(ASCO_GENERAL_NEWS_TABLE, 'gn')
+        ->fields('gn', array('content'))
+        ->condition('nid', $node->nid)
+        ->execute()
+        ->fetchObject();
+    if (empty($existingInfo)) {
+        $content = $node->content;
+        if (is_array($content)) {
+            $content = $content['value'];
+        }
+        $record = array(
+            'nid' => $node->nid,
+            'content' => $content
+        );
+        drupal_write_record(ASCO_GENERAL_NEWS_TABLE, $record);
+    }
+    if (!isset($node->not_admin_form)) {
+        $_GET['destination'] = 'admin/content';
+    }
+}
+
+/**
+ * Implements hook_update().
+ */
+function asco_general_news_node_update($node) {
+    $content = $node->content;
+    if (is_array($content)) {
+        $content = $content['value'];
+    }
+    $record = array(
+        'nid' => $node->nid,
+        'content' => $content
+    );
+    drupal_write_record(ASCO_GENERAL_NEWS_TABLE, $record, 'nid');
+}
+
+/**
+ * Implements hook_delete().
+ */
+function asco_general_news_node_delete($node) {
+    db_delete(ASCO_GENERAL_NEWS_TABLE)
+        ->condition('nid', $node->nid)
+        ->execute();
+}
+
+
+/**
+ * Implementation of hook_theme().
+ */
+function asco_general_news_theme() {
+    $path = drupal_get_path('module', ASCO_GENERAL_NEWS_MODULE_NAME);
+
+    return array(
+        ASCO_GENERAL_NEWS_BLOCK_THEME => array(
+            'template' => 'asco_general_news_block_content',
+            'variables' => array(
+                'practiceStatusInfo' => NULL,
+                'newsNodes' => NULL
+            ),
+            'path' => $path . '/tpl',
+        ),
+    );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function asco_general_news_block_info() {
+    $blocks = array();
+
+    $blocks[ASCO_GENERAL_NEWS_BLOCK]['info'] = t('ASCO General News Block');
+    $blocks[ASCO_GENERAL_NEWS_BLOCK]['cache'] = DRUPAL_NO_CACHE;
+
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function asco_general_news_block_view($delta = '') {
+    $block = array();
+    switch ($delta) {
+        case ASCO_GENERAL_NEWS_BLOCK:
+            $block['subject'] = '';
+            $block['content'] = 'content';
+            return $block;
+    }
+}
+
+/**
+ * Implements hook_preprocess_HOOK()
+ */
+function asco_general_news_preprocess_block(&$vars) {
+    $blcok = $vars['block'];
+    if ($blcok->module == ASCO_GENERAL_NEWS_MODULE_NAME) {
+        $content = '';
+        if ($blcok->delta == ASCO_GENERAL_NEWS_BLOCK) {
+            $content = asco_general_news_block_content();
+        }
+        $vars['content'] = $content;
+    }
+}
+
+/**
+ * Prepares ASCO Genreal News block content
+ * @see asco_general_news_get_all_news_nodes()
+ * @see nror_facilities_get_user_facility()
+ * @see nror_facilities_get_practice_status()
+ * @return string
+ */
+function asco_general_news_block_content() {
+    global $user;
+    $facility = nror_facilities_get_user_facility($user->uid);
+    $practiceStatusInfo = nror_facilities_get_practice_status($facility->fid);
+
+    $newsNodes = asco_general_news_get_all_news_nodes();
+
+    return theme(ASCO_GENERAL_NEWS_BLOCK_THEME, array(
+        'practiceStatusInfo' => $practiceStatusInfo,
+        'newsNodes' => $newsNodes
+    ));
+}
+
+/**
+ * Returns all General News Nodes
+ * @return null|array
+ */
+function asco_general_news_get_all_news_nodes() {
+    $nids = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('n.type', ASCO_GENERAL_NEWS_NODE_TYPE)
+        ->execute()
+        ->fetchCol();
+
+    return node_load_multiple($nids);
+}

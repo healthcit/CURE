@@ -1,0 +1,13 @@
+; Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+; Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+; Proprietary and confidential
+
+; $Id $
+name = "CURE PDF"
+description = "CURE PDF module provide to generate PDF files."
+version = "7.x-2.6.dev"
+core = "7.x"
+project = "tXFormsest"
+package = "CURE package"
+
+dependencies[] = "cacure_api"

@@ -1,0 +1,367 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('LICENSE_AGREEMENT_TABLE', 'license_agreement_audit');
+define('LICENSE_AGREEMENT_SETTINGS', 'license_agreement_settings');
+define('LICENSE_AGREEMENT_SETTINGS_COUNTRY_ROLE', 'license_agreement_country_role');
+
+define('LICENSE_AGREEMENT_BLOCK_DELTA', 'license_agreement_block_delta');
+
+define('LICENSE_AGREEMENT_COUNTRY', 'license_agreement_country');
+define('LICENSE_AGREEMENT_ROLE', 'license_agreement_role');
+define('LICENSE_AGREEMENT_PAGE_VAR', 'license_agreement_page_var');
+define('LICENSE_AGREEMENT_SUBMIT_LABEL_VAR', 'license_agreement_submit_label');
+define('LICENSE_AGREEMENT_ERROR_MESSAGE_VAR', 'license_agreement_error_message');
+define('LICENSE_AGREEMENT_LABEL_VAR', 'license_agreement_label');
+
+define('CURE_COUNTRIES_TABLE', 'cure_countries');
+define('CURE_COUNTRIES_USERS_TABLE', 'cure_countries_users');
+
+module_load_include('inc', 'license_agreement', 'license_agreement.db');
+
+/**
+ * Implementation of hook_user_init().
+ */
+function license_agreement_init() {
+
+    if (user_is_logged_in()) {
+        global $user;
+        $block = _license_agreement_get_module_block();
+
+        $country = license_agreement_get_user_country($user->uid);
+        $roles = $user->roles;
+        //$roleId=1;
+
+        foreach ($roles as $rid => $role) {
+            if (cure_contexts_get_role_context($rid)) {
+                $roleId = $rid;
+            }
+        }
+        if (!empty($country) && !empty($roleId)) {
+            $settings = license_agreement_get_license_agreement_settings($country->id, $roleId);
+            if (!empty($settings)) {
+                $agreementPage = $settings->url;
+                if ($block->region != BLOCK_REGION_NONE && !empty($agreementPage) && $user->uid != 1) {
+                    $path = $_SERVER['REQUEST_URI'];
+                    $userId = $user->uid;
+                    if (!license_agreement_user_has_agreed($userId)
+                        && !strpos($path, 'logout')
+                        && !strpos($path, $agreementPage)
+                    ) {
+                        drupal_goto($agreementPage);
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+/**
+ * Implementation of hook_permission().
+ */
+function license_agreement_permission(){
+    return array(
+        'access license_agreement settings' => array(
+            'title' => t('Access License Agreement configuration page'),
+        ),
+    );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function license_agreement_menu() {
+    $items = array();
+
+    $items['admin/config/license_agreement'] = array(
+        'title' => 'License Agreement configuration page',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('license_agreement_config_form'),
+        'access arguments' => array('access license_agreement settings'),
+        'description' => '',
+    );
+
+    return $items;
+}
+
+/**
+ * Module configuration form
+ * @see license_agreement_menu()
+ */
+function license_agreement_config_form($form, &$form_state) {
+    $form = array();
+
+    $countries = license_agreement_prepare_country_list();
+    $roles = user_roles(true);
+
+    foreach ($roles as $rid => $role) {
+        if (!cure_contexts_get_role_context($rid)) {
+            unset($roles[$rid]);
+        }
+    }
+    if (isset($form_state['values'][LICENSE_AGREEMENT_COUNTRY])) {
+        $defaultCountry = $form_state['values'][LICENSE_AGREEMENT_COUNTRY];
+    }else if (isset($form[LICENSE_AGREEMENT_COUNTRY]['#default_value'])) {
+        $defaultCountry = $form[LICENSE_AGREEMENT_COUNTRY]['#default_value'];
+    }
+    if (empty($defaultCountry)) {
+        $countryKeys = array_keys($countries);
+        $defaultCountry = $countryKeys[0];
+    }
+
+    if (isset($form_state['values'][LICENSE_AGREEMENT_ROLE])) {
+        $defaultRole = $form_state['values'][LICENSE_AGREEMENT_ROLE];
+    }else if (isset($form[LICENSE_AGREEMENT_ROLE]['#default_value'])) {
+        $defaultRole = $form[LICENSE_AGREEMENT_ROLE]['#default_value'];
+    }
+    if (empty($defaultRole)) {
+        $roleKeys = array_keys($roles);
+        $defaultRole = $roleKeys[0];
+    }
+
+    $settings = license_agreement_get_license_agreement_settings($defaultCountry, $defaultRole);
+
+    $form[LICENSE_AGREEMENT_COUNTRY] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#description' => t('Select the country.'),
+        '#required' => true,
+        '#options' => $countries,
+        '#default_value' => $defaultCountry,
+        '#ajax' => array(
+            'callback' => 'license_agreement_settings',
+            'wrapper' => 'settings_table',
+            'method' => 'replace',
+        )
+    );
+
+    $form[LICENSE_AGREEMENT_ROLE] = array(
+        '#type' => 'select',
+        '#title' => t('Role'),
+        '#description' => t('Select user role.'),
+        '#required' => true,
+        '#options' => $roles,
+        '#default_value' => $defaultRole,
+        '#ajax' => array(
+            'callback' => 'license_agreement_settings',
+            'wrapper' => 'settings_table',
+            'method' => 'replace',
+        )
+    );
+
+    $form['settings'] = array(
+        '#prefix' => '<div id="settings_table">',
+        '#suffix' => '</div>',
+        '#type' => 'container',
+    );
+
+    unset($form_state['input'][LICENSE_AGREEMENT_PAGE_VAR]);
+    unset($form_state['input'][LICENSE_AGREEMENT_LABEL_VAR]);
+    unset($form_state['input'][LICENSE_AGREEMENT_SUBMIT_LABEL_VAR]);
+    unset($form_state['input'][LICENSE_AGREEMENT_ERROR_MESSAGE_VAR]);
+
+    $form['settings'][LICENSE_AGREEMENT_PAGE_VAR] = array(
+        '#prefix' => '<div id="settings_table">',
+        '#suffix' => '</div>',
+        '#title' => 'URL of Terms And Conditions page ',
+        '#type' => 'textfield',
+        '#required' => true,
+        '#default_value' => !empty($settings->url) ? $settings->url: '',
+    );
+
+    $form['settings'][LICENSE_AGREEMENT_LABEL_VAR] = array(
+        '#title' => 'License Agreement checkbox label',
+        '#type' => 'textfield',
+        '#required' => true,
+        '#default_value' => !empty($settings->checkbox_label) ? $settings->checkbox_label: 'I agree to terms of service',
+    );
+
+    $form['settings'][LICENSE_AGREEMENT_SUBMIT_LABEL_VAR] = array(
+        '#title' => 'License Agreement submit label',
+        '#type' => 'textfield',
+        '#required' => true,
+        '#default_value' => !empty($settings->button_label) ? $settings->button_label: 'Agree',
+    );
+
+    $form['settings'][LICENSE_AGREEMENT_ERROR_MESSAGE_VAR] = array(
+        '#title' => 'Message displayed in case of not choosing checkbox',
+        '#type' => 'textfield',
+        '#required' => true,
+        '#default_value' => !empty($settings->message) ? $settings->message: 'You should agree to terms and conditions',
+    );
+
+    $form['save'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#name' => 'save'
+    );
+
+    return $form;
+}
+
+function license_agreement_settings($form, $form_state) {
+   return  $form['settings'];
+}
+
+function license_agreement_config_form_submit($form, &$form_state) {
+    $op = $form_state['triggering_element']['#name'];
+    if ($op == 'save' ) {
+        $data = $form_state['values'];
+        $settingId = license_agreement_save_settings($data);
+        license_agreement_save_setting_country_role($settingId, $form_state['values'][LICENSE_AGREEMENT_COUNTRY], $form_state['values'][LICENSE_AGREEMENT_ROLE]);
+    }
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function license_agreement_block_info() {
+    $blocks = array();
+
+    $blocks[LICENSE_AGREEMENT_BLOCK_DELTA]['info'] = t('License Agreement form');
+    $blocks[LICENSE_AGREEMENT_BLOCK_DELTA]['cache'] = DRUPAL_NO_CACHE;
+
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function license_agreement_block_view($delta = '') {
+    $block = array();
+    switch ($delta) {
+        case LICENSE_AGREEMENT_BLOCK_DELTA:
+            $block['subject'] = '';
+            $block['content'] = drupal_get_form('license_agreement_block_form');
+            return $block;
+    }
+}
+
+function license_agreement_block_form($form, $form_state) {
+    global $user;
+
+    $country = license_agreement_get_user_country($user->uid);
+    $roles = $user->roles;
+    $roleKeys = array_keys($roles);
+    $settings = license_agreement_get_license_agreement_settings($country->id, $roleKeys[1]);
+    $checkBoxLabel = $settings->checkbox_label;
+    $submitButtonValue = $settings->button_label;
+
+    $form = array();
+
+    $form['agreeCheckBox'] = array(
+        '#type' => 'checkbox',
+        '#title' => t($checkBoxLabel),
+    );
+
+    $form['userId'] = array(
+        '#type' => 'hidden',
+        '#value' => $user->uid,
+    );
+
+    $form['agree'] = array(
+        '#type' => 'submit',
+        '#value' => t($submitButtonValue),
+        '#name' => 'agree'
+    );
+
+    return $form;
+
+}
+
+function license_agreement_block_form_validate($form, &$form_state) {
+    $values = $form_state['values'];
+
+    global $user;
+    $country = license_agreement_get_user_country($user->uid);
+    $roles = $user->roles;
+    $roleKeys = array_keys($roles);
+    $settings = license_agreement_get_license_agreement_settings($country->id, $roleKeys[1]);
+    $errorMessage = $settings->message;
+    if (!$values['agreeCheckBox']) {
+        form_set_error('agreeCheckBox', $errorMessage);
+    }
+}
+
+function license_agreement_block_form_submit($form, &$form_state) {
+    $values = $form_state['values'];
+    $userId = $values['userId'];
+    license_agreement_set_user_has_agreed($userId);
+    drupal_goto();
+}
+
+/**
+ * Implementation of hook_process_page
+ */
+function license_agreement_process_page(&$vars) {
+    if (user_is_logged_in()) {
+        global $user;
+        $country = license_agreement_get_user_country($user->uid);
+        $roles = $user->roles;
+        $roleKeys = array_keys($roles);
+        $settings = license_agreement_get_license_agreement_settings($country->id, $roleKeys[1]);
+        $path = $_SERVER['REQUEST_URI'];
+        if (strpos($path, '?')) {
+            $path = substr($path, 0, strpos($path, '?'));
+        }
+        if ($settings) {
+            $agreementPage = $settings->url;
+            if (!empty($agreementPage) && trim($agreementPage, '/') != trim($path, '/')) {
+                $block = _license_agreement_get_module_block();
+                unset($vars['page'][$block->region]['license_agreement_'.LICENSE_AGREEMENT_BLOCK_DELTA]);
+            }
+        } else {
+            $block = _license_agreement_get_module_block();
+            unset($vars['page'][$block->region]['license_agreement_'.LICENSE_AGREEMENT_BLOCK_DELTA]);
+        }
+    } else {
+        $block = _license_agreement_get_module_block();
+        unset($vars['page'][$block->region]['license_agreement_'.LICENSE_AGREEMENT_BLOCK_DELTA]);
+    }
+
+}
+
+/**
+ * Implementation of hook_user_create().
+ */
+function license_agreement_user_create($edit, $account, $category) {
+    $userId = $account->uid;
+    license_agreement_create_user_record($userId);
+}
+
+/**
+ * Implementation of hook_user_delete().
+ */
+function license_agreement_user_delete($account) {
+    $userId = $account->uid;
+    license_agreement_delete_user_record($userId);
+    license_agreement_delete_country_user_relation($userId);
+}
+
+/**
+ * Implementation of hook_user_load().
+ */
+function license_agreement_user_load($users) {
+    foreach ($users as $user) {
+        $country = license_agreement_get_user_country($user->uid);
+        $user->country = $country->id;
+    }
+}
+
+function license_agreement_prepare_country_list() {
+    $countries = license_agreement_get_all_countries();
+
+    $result = array();
+    foreach ($countries as $country) {
+        $result[$country->id] = $country->long_name;
+    }
+
+    return $result;
+}

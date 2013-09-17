@@ -1,0 +1,5 @@
+name = "Notes"
+description = Allow authenticated users to create personal notes that display in a block for them only.
+package = "Hammertech (7 version)"
+version = "7.x-1.x.beta"
+core = "7.x"

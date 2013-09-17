@@ -1,0 +1,296 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function license_agreement_schema() {
+    $schema = array();
+
+    $schema[LICENSE_AGREEMENT_TABLE] = array(
+        'fields' => array(
+            'user_id' => array(
+                'description' => 'User Id',
+                'type' => 'int',
+                'length' => 11,
+            ),
+            'has_agreed' => array(
+                'description' => 'Indicates if user has agreed to license agreement',
+                'type' => 'int',
+                'length' => 1,
+            ),
+        ),
+        'primary key' => array('user_id'),
+    );
+
+    $schema[CURE_COUNTRIES_TABLE] = array(
+        'fields' => array(
+            'id' => array(
+                'description' => 'Country Id',
+                'type' => 'serial',
+                'length' => 11,
+            ),
+            'short_name' => array(
+                'description' => 'Short name',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'long_name' => array(
+                'description' => 'Long name',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema[CURE_COUNTRIES_USERS_TABLE] = array(
+        'fields' => array(
+             'id' => array(
+                'description' => 'Id',
+                'type' => 'serial',
+                'length' => 11,
+             ),
+             'user_id' => array(
+                'description' => 'User Id',
+                'type' => 'int',
+                'length' => 11,
+             ),
+             'country_id' => array(
+                'description' => 'Country Id',
+                'type' => 'int',
+                'length' => 11,
+             ),
+        ),
+        'primary key' => array('id'),
+        'foreign keys' => array(
+            'users' => array(
+                'table' => 'users',
+                'columns' => array('user_id' => 'uid'),
+            ),
+            'country' => array(
+                'table' => CURE_COUNTRIES_TABLE,
+                'columns' => array('country_id' => 'uid'),
+            ),
+        ),
+    );
+
+    $schema[LICENSE_AGREEMENT_SETTINGS] = array(
+            'fields' => array(
+                'id' => array(
+                    'description' => 'Id',
+                    'type' => 'serial',
+                    'length' => 11,
+                ),
+                'url' => array(
+                    'description' => 'URL of Terms And Conditions page',
+                    'type' => 'varchar',
+                    'length' => 255,
+                ),
+                'checkbox_label' => array(
+                    'description' => 'License Agreement checkbox label',
+                    'type' => 'varchar',
+                    'length' => 255,
+                ),
+                'button_label' => array(
+                    'description' => 'License Agreement button label',
+                    'type' => 'varchar',
+                    'length' => 255,
+                ),
+                'message' => array(
+                    'description' => 'License Agreement button label',
+                    'type' => 'varchar',
+                    'length' => 255,
+                ),
+            ),
+            'primary key' => array('id'),
+        );
+
+    $schema[LICENSE_AGREEMENT_SETTINGS_COUNTRY_ROLE] = array(
+            'fields' => array(
+                'id' => array(
+                    'description' => 'Id',
+                    'type' => 'serial',
+                    'length' => 11,
+                ),
+                'setting_id' => array(
+                    'description' => 'Settings Id',
+                    'type' => 'int',
+                    'length' => 11,
+                ),
+                'country_id' => array(
+                    'description' => 'Country Id',
+                    'type' => 'int',
+                    'length' => 11,
+                ),
+                'role_id' => array(
+                    'description' => 'Role Id',
+                    'type' => 'int',
+                    'length' => 11,
+                ),
+            ),
+            'primary key' => array('id'),
+            'foreign keys' => array(
+                'settings' => array(
+                    'table' => LICENSE_AGREEMENT_SETTINGS,
+                    'columns' => array('setting_id' => 'id'),
+                ),
+                'country' => array(
+                    'table' => CURE_COUNTRIES_TABLE,
+                    'columns' => array('country_id' => 'uid'),
+                ),
+                'country' => array(
+                    'table' => 'role',
+                    'columns' => array('role_id' => 'rid'),
+                ),
+            ),
+        );
+
+    return $schema;
+}
+
+function license_agreement_update_7006() {
+    $schema[CURE_COUNTRIES_TABLE] = array(
+        'fields' => array(
+            'id' => array(
+                'description' => 'Country Id',
+                'type' => 'serial',
+                'length' => 11,
+            ),
+            'short_name' => array(
+                'description' => 'Short name',
+                'type' => 'varchar',
+                'length' => 5,
+                'not null' => TRUE,
+            ),
+            'long_name' => array(
+                'description' => 'Long name',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    db_create_table(CURE_COUNTRIES_TABLE, $schema[CURE_COUNTRIES_TABLE]);
+}
+
+function license_agreement_update_7007() {
+    $schema[CURE_COUNTRIES_USERS_TABLE] = array(
+        'fields' => array(
+            'id' => array(
+                'description' => 'Id',
+                'type' => 'serial',
+                'length' => 11,
+            ),
+                 'user_id' => array(
+                    'description' => 'User Id',
+                    'type' => 'int',
+                    'length' => 11,
+                 ),
+                 'country_id' => array(
+                    'description' => 'Country Id',
+                    'type' => 'int',
+                    'length' => 11,
+                 ),
+            ),
+            'primary key' => array('id'),
+            'foreign keys' => array(
+                'users' => array(
+                    'table' => 'users',
+                    'columns' => array('user_id' => 'uid'),
+                ),
+                'country' => array(
+                    'table' => CURE_COUNTRIES_TABLE,
+                    'columns' => array('country_id' => 'uid'),
+                ),
+            ),
+        );
+    db_create_table(CURE_COUNTRIES_USERS_TABLE, $schema[CURE_COUNTRIES_USERS_TABLE]);
+}
+
+function license_agreement_update_7014() {
+    $schema[LICENSE_AGREEMENT_SETTINGS] = array(
+        'fields' => array(
+            'id' => array(
+                'description' => 'Id',
+                'type' => 'serial',
+                'length' => 11,
+            ),
+            'url' => array(
+                'description' => 'URL of Terms And Conditions page',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'checkbox_label' => array(
+                'description' => 'License Agreement checkbox label',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'button_label' => array(
+                'description' => 'License Agreement button label',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'message' => array(
+                'description' => 'License Agreement button label',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    db_create_table(LICENSE_AGREEMENT_SETTINGS, $schema[LICENSE_AGREEMENT_SETTINGS]);
+
+
+    $schema[LICENSE_AGREEMENT_SETTINGS_COUNTRY_ROLE] = array(
+        'fields' => array(
+            'id' => array(
+                'description' => 'Id',
+                'type' => 'serial',
+                'length' => 11,
+            ),
+            'setting_id' => array(
+                'description' => 'Settings Id',
+                'type' => 'int',
+                'length' => 11,
+            ),
+            'country_id' => array(
+                'description' => 'Country Id',
+                'type' => 'int',
+                'length' => 11,
+            ),
+            'role_id' => array(
+                'description' => 'Role Id',
+                'type' => 'int',
+                'length' => 11,
+            ),
+        ),
+        'primary key' => array('id'),
+        'foreign keys' => array(
+            'settings' => array(
+                'table' => LICENSE_AGREEMENT_SETTINGS,
+                'columns' => array('setting_id' => 'id'),
+            ),
+            'country' => array(
+                'table' => CURE_COUNTRIES_TABLE,
+                'columns' => array('country_id' => 'uid'),
+            ),
+            'country' => array(
+                'table' => 'role',
+                'columns' => array('role_id' => 'rid'),
+            ),
+        ),
+    );
+
+    db_create_table(LICENSE_AGREEMENT_SETTINGS_COUNTRY_ROLE, $schema[LICENSE_AGREEMENT_SETTINGS_COUNTRY_ROLE]);
+
+}

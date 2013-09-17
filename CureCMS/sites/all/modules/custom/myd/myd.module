@@ -1,0 +1,29 @@
+<?php 
+if (!function_exists('myd'))
+{
+  require_once 'CVarDumper.php';
+  function myd()
+  { 
+      $args = func_get_args();
+      $count = count($args);
+      echo '<div style="background:#fff">';
+      for ($i = 0; $i < $count; $i++)
+      {
+          $content = $args[$i];
+          if (is_string($content))
+          {
+              echo '<pre>'; $content ? print_r($content) : var_dump($content); echo '</pre>';
+          }
+          else
+          {
+              CVarDumper::dump($content, 10, true);
+          }
+          echo '<br />';
+      }
+
+      $trace = debug_backtrace();
+      echo '<div style="font-size:8pt"><b>location:</b> <i>' . $trace[0]['file'] . ':' . $trace[0]['line'] . '</i></div>';
+      echo '</div>';
+      return func_get_arg(0);
+  }
+}

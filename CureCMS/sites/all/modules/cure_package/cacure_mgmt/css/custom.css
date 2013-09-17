@@ -1,0 +1,74 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/*-----------------Status--------------------------------------------------*/
+div.approved {background-image: url(images/approved-status.png); background-position: left;}
+div.in-progress {background-image: url(images/in-progress-status.png); background-position: left;}
+div.submitted {background-image: url(images/submitted-status.png); background-position: left;}
+/*-----------------Header Styles To Grid16-16-------------------------------------------------*/
+.header-group-wrapper .header-group.grid16-16 {width: 1024px;}
+/*-----------------generic-intro--------------------------- -----------------------*/
+.main-group.grid16-16 .content #generic-intro {background: url(images/box-big-blue-w1000.png) no-repeat; width: 1000px; overflow: hidden;}
+.main-group.grid16-16 .content #generic-intro h2{max-width: 980px; width: 980px;}
+.main-group.grid16-16 .content #general-instructions {width: 960px; max-width: 960px;  border-bottom: 1px solid #ccc;}
+.main-group.grid16-16 .content #general-instructions #left, .main-group.grid16-16 .content #general-instructions #right{width: 460px}
+
+div.element-header div.module-name{color: #38306E;float: none;font-size: 14px;font-weight: bold;height: 30px;line-height: 30px;margin: 0;padding-left: 10px;border-bottom: 1px dotted #CCCCCC;}
+
+div.form-element div.text, div.form-element div.edit {float: left;font-size: 12px;font-weight: bold;line-height: 22px;padding-left: 10px;}
+
+#block-cacure_mgmt-current_questionnaires_block .health-element .form-element-list .form-element .text {padding-left: 0;width: 500px;background-position: right center;}
+
+#block-cacure_mgmt-questionnaire_sidebar_block .form-element .text {padding-left: 20px;}
+
+p.finish{margin: 0; max-width: 98%; overflow: hidden; padding: 0 10px; width: 98%; border-top: 1px dotted #ccc;}
+
+p.finish a, p.finish a:focus, p.finish a:hover {font-weight:bold;color: #f1362b}
+
+.health-element {margin-top: 12px;}
+
+.submitted-modules {margin-bottom: 10px;}
+
+.submitted-modules tr td {border: 1px #CCCCCC outset;  font-weight: bold; padding-left: 10px;}
+
+.submitted-modules tr td.module-name {color: #38306E; font-size: 14px;}
+
+.instance-tab {display: none;}
+
+.form-link {margin-right: 4px;}
+
+p.form-title-active {font-weight: bold; color: #20591e; padding: 5px 5px 0 5px; border-bottom: 1px solid #D6DDB9; margin: 0 0 10px 0;}
+.add-instance-link {background: url(images/ico-add.png); width: 16px; display: inline-block; overflow: hidden; text-indent: -10000px; height: 16px; background-position: left top; background-repeat: no-repeat;}
+.add-instance-link:hover {background-position: left bottom;}
+.module-title {margin-bottom: 0}
+.module-element {margin-bottom: 10px;}
+
+.xform-page div#main {width: auto;}
+.xform-page div#main #sidebar-first { margin: 0 20px; max-width: 420px; width: auto;}
+
+.instance-group {margin-left: 10px; margin-top: 10px;}
+
+/*vkarenko 21.12.2012*/
+a.instance-tab-expand, a.instance-tab-expand-active { margin: 0 0px; display: inline-block; width: 10px; height: 15px; background: url(images/drop-arrws-green.png) scroll 1px -8px no-repeat; text-indent: -50000px;  }
+a.instance-tab-expand.tab-opened,  a.instance-tab-expand-active.tab-opened { background-position: 1px 8px; }
+span.instance-tab-empty { margin: 0 0px; display: inline-block; width: 10px; height: 15px; text-indent: -50000px; }
+p.form-title {font-weight: bold; border-bottom: 1px solid #D6DDB9; padding: 5px 5px 0px 5px; margin: 0px 0 10px 0px; }
+p.form-title a.add-instance-link, p.form-title-active a.add-instance-link { position: relative; top: 4px; left: 5px;  }
+div.instance-tab { margin: -2px 0 0 4px; padding: 0 0 0 10px; border-left: 1px dotted #ccc; /*background: url("http://nror-dev.healthcit.com/sites/all/modules/cure_package/cacure_mgmt/css/images/dotted-bordr-gr.png") repeat-y scroll 0px 0px;*/ }
+
+/*vkarenko 04.01.2013*/
+div.module-element-list {width: 100%; }
+div.form-element-list { width: auto; }
+div.form-element-list > div { padding-bottom: 5px; }
+a.instance-link-active span { padding: 5px; color: #2e3b5d !important; background-color: #EED489;}
+a.instance-link span {padding: 5px;}
+a.instance-link.submitted, a.instance-link-active.submitted, p.form-title.submitted, p.form-title-active.submitted { padding-left: 20px; background-image: url(images/form-title-green.png); background-repeat: no-repeat; background-position: 3px center; color: #70a028; }
+a.instance-link.new, a.instance-link-active.new, p.form-title.new, p.form-title-active.new { padding-left: 20px; background-image: url(images/form-title-red.png); background-repeat: no-repeat; background-position: 3px center; white-space: normal; }
+a.instance-link.in-progress, a.instance-link-active.in-progress, p.form-title.in-progress, p.form-title-active.in-progress { padding-left: 20px; background-image: url(images/form-title-yellow.png); background-repeat: no-repeat; background-position: 3px center; color: #ffc001; }
+
+
+
+

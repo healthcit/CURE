@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function asco_general_news_uninstall() {
+    $nids = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('type', ASCO_GENERAL_NEWS_NODE_TYPE)
+        ->execute()
+        ->fetchCol();
+    node_delete_multiple($nids);
+
+    drupal_uninstall_schema(ASCO_GENERAL_NEWS_TABLE);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function asco_general_news_schema() {
+    $schema = array();
+
+    $schema[ASCO_GENERAL_NEWS_TABLE] = array(
+        'description' => 'ASCO General News node\' content.',
+        'fields' => array(
+            'nid' => array(
+                'description' => 'Node nid.',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'content' => array(
+                'type' => 'text',
+            ),
+        ),
+        'primary key' => array('nid'),
+    );
+
+    return $schema;
+}

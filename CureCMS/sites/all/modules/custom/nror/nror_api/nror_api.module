@@ -1,0 +1,287 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+function nror_api_menu() {
+  $items = array();
+
+  $items['nror/api/GetExternalId'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_external_id',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetEntityId'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_entity_id',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetPatientInfo'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_patient_info',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetPhysicianIdByNPI'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_physician_id_by_npi',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetPhysicianIdByOwnerId'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_physician_id_by_owner_id',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetPatientIdByOwnerId'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_patient_id_by_owner_id',
+    'access callback' => true,
+  );
+
+  $items['nror/api/GetFacilityIdByOwnerId'] = array(
+    'title' => '',
+    'page callback' => 'nror_api_get_facility_id_by_owner_id',
+    'access callback' => true,
+  );
+
+  return $items;
+}
+
+function nror_api_get_physician_id_by_npi() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  $result = '';
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $patientId = $HTTP_RAW_POST_DATA;
+    try {
+      $patient = user_load_by_name($patientId);
+      if (!empty($patient) && nror_patients_is_patient($patient)) {
+        $result = $patient->physician;
+      }
+    } catch (Exception $e) {
+      header('HTTP/1.1 500 Internal Server Error');
+    }
+  }
+  echo $result;
+  die;
+}
+
+function nror_api_get_physician_id_by_owner_id() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  $result = '';
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $ownerId = $HTTP_RAW_POST_DATA;
+    try {
+      $patientId = cure_groups_get_group_name($ownerId);
+      if (!empty($patientId)) {
+        $patient = user_load_by_name($patientId);
+        if (!empty($patient) && nror_patients_is_patient($patient)) {
+          $result = $patient->physician;
+        }
+      }
+    } catch (Exception $e) {
+      header('HTTP/1.1 500 Internal Server Error');
+    }
+  }
+  echo $result;
+  die;
+}
+
+function nror_api_get_patient_id_by_owner_id() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  $result = '';
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $ownerId = $HTTP_RAW_POST_DATA;
+    try {
+      $patientId = cure_groups_get_group_name($ownerId);
+      if (!empty($patientId)) {
+        $result = $patientId;
+      }
+    } catch (Exception $e) {
+      header('HTTP/1.1 500 Internal Server Error');
+    }
+  }
+  echo $result;
+  die;
+}
+
+function nror_api_get_facility_id_by_owner_id() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  $result = '';
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $ownerId = $HTTP_RAW_POST_DATA;
+    try {
+      $patientId = cure_groups_get_group_name($ownerId);
+      if (!empty($patientId)) {
+        $patient = user_load_by_name($patientId);
+        if (!empty($patient) && nror_patients_is_patient($patient)) {
+          $result = $patient->facility;
+        }
+      }
+    } catch (Exception $e) {
+      header('HTTP/1.1 500 Internal Server Error');
+    }
+  }
+  echo $result;
+  die;
+}
+
+function nror_api_get_external_id() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $xml = $HTTP_RAW_POST_DATA;
+    $result = array();
+    $reader = new XMLReader();
+    $reader->XML($xml);
+    while ($reader->read()) {
+      $entityId = $reader->getAttribute('entityId');
+      if (!empty($entityId)) {
+        $externalId = '';
+        $userId = cure_users_get_id($entityId);
+        if (!empty($userId)) {
+          $user = user_load($userId);
+          if (!empty($user) && nror_patients_is_patient($user)) {
+            $externalId = $user->name;
+          }
+        }
+        $externalIdArr = explode('-', $externalId);
+        unset($externalIdArr[0]);
+        $externalId = implode('-', $externalIdArr);
+        $result[] = array(
+          'entityId' => $entityId,
+          'externalId' => $externalId
+        );
+      }
+    }
+    echo _nror_api_entity_info_response($result);
+  }
+  die;
+}
+
+function nror_api_get_entity_id() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $xml = $HTTP_RAW_POST_DATA;
+    $result = array();
+    $reader = new XMLReader();
+    $reader->XML($xml);
+    while ($reader->read()) {
+      $externalId = $reader->getAttribute('externalId');
+      if (!empty($externalId)) {
+        $entityId = '';
+        $user = user_load_by_name($externalId);
+        if (!empty($user) && nror_patients_is_patient($user)) {
+          $entityId = $user->entityId;
+        }
+        $externalIdArr = explode('-', $externalId);
+        unset($externalIdArr[0]);
+        $externalId = implode('-', $externalIdArr);
+        $result[] = array(
+          'entityId' => $entityId,
+          'externalId' => $externalId
+        );
+      }
+    }
+    echo _nror_api_entity_info_response($result);
+  }
+  die;
+}
+
+function nror_api_get_patient_info() {
+  global $HTTP_RAW_POST_DATA;
+  _nror_api_check_access();
+  if (!empty($HTTP_RAW_POST_DATA)) {
+    $xml = $HTTP_RAW_POST_DATA;
+    $result = array();
+    $reader = new XMLReader();
+    $reader->XML($xml);
+    while ($reader->read()) {
+      $id = $reader->getAttribute('id');
+      if (!empty($id)) {
+        $externalId = '';
+        $entityId = '';
+        $user = user_load_by_name($id);
+        if (!empty($user) && nror_patients_is_patient($user)) {
+          $externalId = $id;
+          $entityId = $user->entityId;
+        } else {
+          $userId = cure_users_get_id($id);
+          if (!empty($userId)) {
+            $user = user_load($userId);
+            if (!empty($user) && nror_patients_is_patient($user)) {
+              $entityId = $id;
+              $externalId = $user->name;
+            }
+          }
+        }
+        $externalIdArr = explode('-', $externalId);
+        unset($externalIdArr[0]);
+        $externalId = implode('-', $externalIdArr);
+        $result[] = array(
+          'entityId' => $entityId,
+          'externalId' => $externalId,
+          'id' => $id
+        );
+      }
+    }
+    echo _nror_api_entity_info_response($result);
+  }
+  die;
+}
+
+function _nror_api_entity_info_response($entities) {
+  $xmlWriter = new XMLWriter;
+  $xmlWriter->openMemory();
+  $xmlWriter->startDocument('1.0', 'utf-8');
+  $xmlWriter->startElement('entities');
+  foreach ($entities as $entity) {
+    $entityId = $entity['entityId'];
+    $externalId = $entity['externalId'];
+    $xmlWriter->startElement('entity');
+    $xmlWriter->writeAttribute('externalId', $externalId);
+    $xmlWriter->writeAttribute('entityId', $entityId);
+    if (isset($entity['id'])) {
+      $xmlWriter->writeAttribute('id', $entity['id']);
+    }
+    $xmlWriter->endElement();
+  }
+  $xmlWriter->endElement();
+  $xmlWriter->endDocument();
+
+  $result = $xmlWriter->outputMemory();
+  return $result;
+}
+
+function _nror_api_check_access() {
+  if (!_nror_api_check_ip_is_allowed()) {
+    drupal_add_http_header('Status', '403 Forbidden');
+    die;
+  }
+}
+
+
+function _nror_api_check_ip_is_allowed() {
+  $ip = $_SERVER['REMOTE_ADDR'];
+  $config = file_get_contents(dirname(__FILE__) . '/config.xml');
+  $addresses = SimpleXmlParser::toArray($config);
+
+  if (!is_array($addresses['allowedIp']['ip'])) {
+    $addresses['allowedIp']['ip'] = array($addresses['allowedIp']['ip']);
+  }
+
+  if (in_array($ip, $addresses['allowedIp']['ip'])) {
+    return true;
+  }
+  return false;
+}

@@ -1,0 +1,204 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+body {
+    text-align: left;
+}
+
+.xforms-group {
+    padding-left: 10px;
+}
+
+.xforms-submit {
+    width: auto;
+    height: 25px;
+}
+
+.hcit-group-input-dropdown select {
+    display: block;
+    margin: 5px 0;
+}
+
+.xforms-label {
+    display: inline;
+}
+
+.hcit-label-input-radio {
+    padding: 0 10px;
+}
+
+/*TABLES*/
+
+.delete-table-row {
+    background-image: url(../xsltforms/delete-row.png);
+    background-repeat:no-repeat;
+    display: block;
+    height:15px;
+    width: 15px;
+}
+
+.insert-table-row {
+    background-image: url(../xsltforms/add-row.png);
+    background-repeat:no-repeat;
+    display: block;
+    height:15px;
+    width:15px;
+}
+
+.hcitComplexTable {
+    overflow: visible;
+    width: auto;
+}
+
+.hcitSimpleTable {
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+.hcitSimpleTable .hcitHeaderCrossCell {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+}
+
+.hcitSimpleTable .hcitColumnHeadingsCell {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+    padding: 5px;
+    width: 80px;
+}
+
+.hcitSimpleTable .xforms-item {
+    display: table-cell;
+    margin: 0;
+    padding: 5px;
+    width: 80px;
+}
+
+.hcitSimpleTable tbody > tr:nth-child(2n+1), .hcitSimpleTable tbody > tr:nth-child(2n+1) * {
+    background: none repeat scroll 0 0 #F8F8F8;
+}
+
+/*END OF TABLES*/
+
+/*SUBMIT BUTTONS*/
+
+.hcit-save-back-group,
+.hcit-save-for-later-group,
+.hcit-save-next-group {
+    clear: none;
+    width: auto;
+    float: left;
+    margin: 0 7px 0 0;
+}
+
+.hcit-save-back-group .xforms-group-content,
+.hcit-save-for-later-group .xforms-group-content,
+.hcit-save-next-group .xforms-group-content {
+    margin: 0!important;
+    width: 100%;
+}
+
+.hcit-save-back-group button,
+.hcit-save-for-later-group button,
+.hcit-save-next-group button,
+.hcit-submit-action-group button {
+    background: #80A0B0; /* old browsers */
+  	background: -moz-linear-gradient(top, #80A0B0 0%, #316189 100%); /* firefox */
+  	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#80A0B0), color-stop(100%,#316189)); /* webkit */
+  	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80A0B0', endColorstr='#316189',GradientType=0 ); /* ie */
+  	background: -o-linear-gradient(top, #80A0B0 0%, #316189 100%); /* opera */ 	
+	outline: 1px solid #004478;
+	color: #fff;
+    font-weight: bold;    
+    text-transform: uppercase;
+    font-size: 0.95em;
+    display: inline;
+}
+
+.hcit-save-back-group button:hover,
+.hcit-save-for-later-group button:hover,
+.hcit-save-next-group button:hover,
+.hcit-submit-action-group button:hover {
+    background: #316189; /* old browsers */
+  	background: -moz-linear-gradient(top, #316189 0%, #80A0B0 100%); /* firefox */
+  	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#80A0B0), color-stop(100%,#80A0B0)); /* webkit */
+  	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#316189', endColorstr='#80A0B0',GradientType=0 ); /* ie */
+  	background: -o-linear-gradient(top, #316189 0%, #70a028 100%); /* opera */ 
+	color: #fff;
+    font-weight: bold;    
+    text-transform: uppercase;  
+	font-size: 0.95em;
+}
+
+/*END OF SUBMIT BUTTONS*/
+
+/*ERRORS*/
+
+.errorsClass {
+    color: #E31931;
+    background-color: #F7B4AB;
+    padding: 5px;
+    font-weight: bold;
+    display: block;
+}
+
+/*END OF ERRORS*/
+
+.xforms-group .learnmoretext {
+    overflow: auto;
+    padding-left : 5px;
+    background: #F7F7A8;
+    font-size: 11px;
+    border: 1px solid #F29A41;
+    font-family: Times;
+}
+
+/*CALENDAR*/
+
+table.calendar {
+    width: auto;
+}
+
+/*END OF CALENDAR*/
+
+.xform-page div#main h1.title {
+    border-bottom: none;
+    padding-left: 5px;
+    padding-bottom: 0;
+}
+.xform-page div#main .hcit-form-title {
+	margin: 5px 10px 15px 10px;
+}
+
+.xform-page div#xform-block {
+    border: solid 2px #316189;
+    padding: 5px;
+    margin-bottom: 10px;
+    width: auto;
+}
+
+.warningheader {
+    background: none repeat scroll 0 0 #EED489;
+    color: #595959;
+}
+
+#dialog-content {
+    border-color: #C5A524 #C5A524 #C5A524;
+    color: #595959;
+}
+
+.hcit-label-input-checkbox {
+    padding-left: 10px;
+}
+
+
+
+
+
+

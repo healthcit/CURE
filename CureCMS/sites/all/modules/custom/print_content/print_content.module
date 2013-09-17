@@ -1,0 +1,66 @@
+<?php
+$module_path = drupal_get_path('module', 'print_content');
+define('PRINT_CONTENT_DEFAULT_LINK_TYPE', 'image');
+define('PRINT_CONTENT_DEFAULT_LINK_TEXT', 'Print this page');
+define('PRINT_CONTENT_DEFAULT_LINK_IMAGE', '/'.$module_path.'/images/print_icon.gif');
+define('PRINT_CONTENT_LINK_IMAGE', 'image');
+define('PRINT_CONTENT_LINK_TEXT', 'text');
+define('PRINT_CONTENT_LINK_BOTH', 'both');
+
+function print_content_permission() {
+  return array(
+    'administer print content module' => array(
+      'title' => t('Administer Print content module'),
+      'description' => t('Access to module configuration page.'),
+    ),
+  );
+}
+
+function print_content_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/print_content'] = array(
+    'title' => 'Print content',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('print_content_config_form'),
+    'access arguments'  => array('administer print content module'),
+    'file' => 'print_content.admin.inc',
+  );
+  return $items;
+}
+
+function print_content_block_info() {
+  $blocks['print_link'] = array(
+    'info' => t('Print content link'),
+    'cache' => DRUPAL_CACHE_PER_PAGE
+  );
+  return $blocks;
+}
+
+function print_content_block_view($delta) {
+  $block = array();
+  switch ($delta) {
+    case 'print_link':
+      $block['subject'] = t('');
+      $block['content'] = print_content_render_link();
+      break;
+    default:
+      break;
+  }
+  return $block;
+}
+
+function print_content_render_link() {
+  $path = drupal_get_path('module', 'print_content');
+  drupal_add_css($path.'/print-content-styles.css', 'file');
+  return theme('print_content_link');
+}
+
+function print_content_theme($existing, $type, $theme, $path) {
+  return array(
+    'print_content_link' => array(
+      'template' => 'print_content.link'
+    ),
+  );
+}
+

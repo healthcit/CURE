@@ -1,0 +1,8 @@
+name = "Autologout module"
+description = "Performs on browser tab/window close logging out functionality."
+core = "7.x"
+version = "7.x-1.0"
+package = CURE custom modules
+
+dependencies[] = cure_tools
+

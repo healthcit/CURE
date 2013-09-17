@@ -1,0 +1,49 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+div#block-cacure_mgmt-1 div.status-help {
+    height:25px;
+}
+
+div#block-cacure_mgmt-1 div.status-help div.status-progress {
+    float:left;
+    margin-right:10px;
+}
+
+div#bblock-cacure_mgmt-1 div.status-help div.status-finished {
+    float:left;
+}
+
+div#block-cacure_mgmt-1 div.element-header {
+    height:25px;
+}
+
+div#block-cacure_mgmt-1 div.element-header div.module-name{
+    float:left;
+    margin-right:10px;
+    font-weight:bold;
+}
+
+div#block-cacure_mgmt-1 div.element-header div.status-help{
+    float:right;
+}
+
+div#block-cacure_mgmt-1 div.form-element {
+    border-bottom:1px solid #596e7a;
+    height:30px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+div#block-cacure_mgmt-1 div.form-element div.image {
+    margin-right:10px;
+    margin-top:3px;
+}
+
+div#block-cacure_mgmt-1 div.form-element div.text,
+div#block-cacure_mgmt-1 div.form-element div.edit {
+    line-height:30px;
+}

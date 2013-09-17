@@ -1,0 +1,12 @@
+; Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+; Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+; Proprietary and confidential
+
+; $Id $
+name = "CURE module for client overrides"
+description = "All custom overrides should be implemented in this module."
+version = "7.x-1.0"
+core = "7.x"
+project = "tXFormsest"
+package = CURE custom modules
+datestamp = "1223218820"

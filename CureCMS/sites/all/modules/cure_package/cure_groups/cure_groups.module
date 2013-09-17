@@ -1,0 +1,254 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Gets group ID by name
+ * @param string $name Group name
+ * @return string
+ */
+function cure_groups_get_group_id($name) {
+  $result = db_select('cure_groups', 'cg')->fields('cg')->condition('cg.name', $name)->execute()->fetch();
+  if (empty($result)) {
+    return false;
+  }
+  return $result->group_id;
+}
+
+/**
+ * Returns group name by ID
+ * @param string $groupId Group ID
+ * @return string
+ */
+function cure_groups_get_group_name($groupId) {
+  $result = db_select('cure_groups', 'cg')->fields('cg')->condition('cg.group_id', $groupId)->execute()->fetch();
+  if (empty($result)) {
+    return false;
+  }
+  return $result->name;
+}
+
+/**
+ * Returns all groups
+ * @return array
+ */
+function cure_groups_get_all_groups() {
+  $rows = db_select('cure_groups', 'cg')->fields('cg')->execute()->fetchAll();
+  if (empty($rows)) {
+    return false;
+  }
+  $result = array();
+  foreach ($rows as $row) {
+    $result[$row->group_id] = $row;
+  }
+  return $result;
+}
+
+/**
+ * Assigns minor users entity to major user group
+ * @see RestCall::assignEntityToGroup()
+ * @param string $eid Entity Id
+ * @param string $groupId Group ID
+ * @return bool
+ */
+function cure_groups_assign_entity_to_gorup($eid, $groupId) {
+  $call = RestCall::getInstance();
+  $response = $call->assignEntityToGroup($eid, $groupId);
+  if ($response == RestCall::REST_RESPONSE_OK) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Deletes entity from group
+ * @see RestCall::deleteEntityFromGroup()
+ * @param string $eid Entity Id
+ * @param string $grid Group ID
+ * @return bool
+ */
+function cure_groups_delete_entity_from_group($eid, $grid) {
+  $call = RestCall::getInstance();
+  $response = $call->deleteEntityFromGroup($eid, $grid);
+  if ($response == RestCall::REST_RESPONSE_OK) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Gets all groups with related metadata
+ * @see RestCall::getAllSharingGroups()
+ * @return array|null|string
+ */
+function cure_groups_get_all_groups_metadata() {
+  $call = RestCall::getInstance();
+  $groups = $call->getAllSharingGroups();
+  return SimpleXmlParser::toArray($groups);
+}
+
+/**
+ * Returns entities assigned to specified group
+ * @param string $groupId Group ID
+ * @return array
+ */
+function cure_groups_get_group_entities($groupId) {
+  $result = array();
+  $call = RestCall::getInstance();
+  $entities = SimpleXmlParser::toArray($call->getEntitiesForSharingGroup($groupId));
+  if (!empty($entities['entities'])) {
+    if (isset($entities['entities']['entity']['@attributes'])) {
+      $entities['entities']['entity'] = array($entities['entities']['entity']);
+    }
+    foreach ($entities['entities']['entity'] as $entity) {
+      $result[] = $entity['@attributes']['id'];
+    }
+  }
+  return $result;
+}
+
+/**
+ * Creates new entity within new group.
+ * @param string $groupName Group name
+ * @return bool|string Entity Id on success, false on failure
+ */
+function cure_groups_new_entity_in_group($groupName) {
+  $restcall = RestCall::getInstance();
+  $groupId = $restcall->getGroupId($groupName);
+  if (!empty($groupId)) {
+    $entityId = $restcall->getNewEntityInGroup($groupId);
+  }
+  else {
+    $entityId = $restcall->getNewEntityInNewGroup($groupName);
+    $groupId = $restcall->getGroupId($groupName);
+  }
+  if (empty($entityId)) {
+    return false;
+  }
+  if (!empty($groupId)) {
+    if (!cure_groups_get_group_id($groupName)) {
+      _cure_gorups_save_group($groupName, $groupId);
+    }
+  }
+  return $entityId;
+}
+
+/**
+ * Rename sharing group.
+ * @param string $oldName Old group name
+ * @param string $newName New group name
+ * @return boolean
+ */
+function cure_groups_rename_group($oldName, $newName) {
+  $call = RestCall::getInstance();
+  $groupId = cure_groups_get_group_id($oldName);
+  if (empty($groupId)) {
+    $groupId = $call->getGroupId($oldName);
+  }
+  if (empty($groupId)) {
+    return false;
+  }
+  $result = $call->renameSharingGroup($oldName, $newName);
+  if ($result == 'OK') {
+    cure_groups_delete_group($oldName);
+    _cure_gorups_save_group($newName, $groupId);
+    $result = true;
+  }
+  else {
+    $result = false;
+  }
+  return $result;
+}
+
+/**
+ * Creates new sharing group.
+ * @param string $groupName Group name
+ * @return string Group ID
+ */
+function cure_groups_create_group($groupName) {
+  $groupId = cure_groups_get_group_id($groupName);
+  if (empty($groupId)) {
+    $call = RestCall::getInstance();
+    $groupId = $call->getGroupId($groupName);
+    if (empty($groupId)) {
+      $groupId = $call->createNewSharingGroup($groupName);
+    }
+    if (empty($groupId)) {
+      return false;
+    }
+    _cure_gorups_save_group($groupName, $groupId);
+  }
+  return $groupId;
+}
+
+/**
+ * Deletes group record from db.
+ * @param string $name Group name
+ * @return DatabaseStatementInterface
+ */
+function cure_groups_delete_group($name) {
+  return db_delete('cure_groups')->condition('name', $name)->execute();
+}
+
+/**
+ * Deletes group record from db by group ID.
+ * @param string $groupId Group ID
+ * @return DatabaseStatementInterface
+ */
+function cure_groups_delete_group_by_id($groupId) {
+  return db_delete('cure_groups')->condition('group_id', $groupId)->execute();
+}
+
+/**
+ * Returns ID of current active group
+ * @param null|string $default Group name to be used if no active group was found
+ * @return string
+ */
+function cure_groups_get_active_group($default = null) {
+  $groupId = !empty($_SESSION[CURE_ACTIVE_GROUP]) ? $_SESSION[CURE_ACTIVE_GROUP] : '';
+  if (empty($groupId) && !empty($default)) {
+     $groupId = cure_groups_set_active_group($default);
+  }
+  return $groupId;
+}
+
+/**
+ * Sets active group ID
+ * @param string $groupName Group name
+ * @return string
+ */
+function cure_groups_set_active_group($groupName) {
+  $groupId = cure_groups_get_group_id($groupName);
+  if (!empty($groupId)) {
+    $_SESSION[CURE_ACTIVE_GROUP] = $groupId;
+  }
+  return $groupId;
+}
+
+/**
+ * Saves group record to db
+ * @param string $groupName Group name
+ * @param string $groupId Group ID
+ * @return bool|int
+ */
+function _cure_gorups_save_group($groupName, $groupId) {
+  $record = array(
+    'name' => $groupName,
+    'group_id' => $groupId
+  );
+  return drupal_write_record('cure_groups', $record);
+}
+
+function cure_groups_get_cure_group_id($groupName) {
+  $call = RestCall::getInstance();
+  $groupId = $call->getGroupId($groupName);
+  if (!empty($groupId)) {
+    return $groupId;
+  }
+  else {
+    return '';
+  }  
+}

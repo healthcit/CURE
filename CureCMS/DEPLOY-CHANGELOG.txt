@@ -1,0 +1,276 @@
+2013-04-09
+----------
+Kirill Kolesnik : Facility codes update :
+1. Log in as admin
+2. Run update.php
+3. There could be some requirements problems, quite likely php-mbstring extension is missing.
+   They should be resolved (by installing extension or setting permissions on requested directories for example).
+4. Click Update
+5. Go to "admin/config/development/maintenance"
+6. Un select "Put site into maintenance mode" if it is chosen
+7. Click "Save configuration"
+
+2013-04-02
+----------
+Kirill Kolesnik : How to change service email (sender email in service emails) :
+1. Log in as admin
+2. Go to "admin/config/system/site-information"
+3. Change "E-mail address"
+4. Click "Save configuration"
+
+2013-04-01
+----------
+Kirill Kolesnik : Give permissions on Cure forms log report to NROR admin :
+1. Log in as admin
+2. Go to "admin/people/permissions"
+3. Choose checkbox "Access CURE form logs" in "NROR ADMIN" column
+4. Click "Save configuration"
+
+
+2013-03-28
+----------
+Kirill Kolesnik : Install and configure Form logs module :
+1. Log in as admin
+2. Go to "admin/modules"
+3. Check CURE forms logs
+4. Save
+5. Go to "admin/config/cacure_settings/forms-log"
+6. Check Enabled and choose needed module
+7. Save configuration
+
+
+2013-02-05
+----------
+Kirill Kolesnik : Add available for NROR admin "Reports" tab :
+1. Log in as admin
+2. Clear Drupal cache
+3. Go to "admin/structure/menu/manage/menu-footer-links"
+4. Click "Add link"
+5. Set fields:
+       Menu link title: Reports
+       Path: admin/reports/CURE
+       Description: Reports
+       Parent link: Footer links (default choice)
+6. Click "Save"
+7. Drag "Reports" and move it under the "Dashboard" link
+8. Go to "admin/people/permissions"
+9. Choose checkboxes in "NROR ADMIN" column for this permissions:
+       - Access CURE form report module
+       - Access submission status report
+       - Access CURE reports page
+10. Click "Save configuration"
+
+2012-12-05
+----------
+Kirill Kolesnik : Core modules update, CURE tools module activation :
+1. Log in as admin
+2. Go to "admin->modules"
+3. Check CURE tools module
+4. Save
+
+2012-12-05
+----------
+Kirill Kolesnik : Core modules update, CURE blocks configuration :
+1. Log in as admin
+2. Go to "admin->structure->block"
+3. Click configure link beside "Questionnaires sidebar block"
+4. Configure it:
+  Acquia Marina (default theme) : sidebar first
+  Pages tab : Only listed pages radio, text (below radios) - form/*
+5. Save it
+
+
+2012-08-28
+----------
+Kirill Kolesnik : Add "Assign patients to physicians" tab to menu :
+1. Log in as admin
+2. Go to "admin->structure->menus->main-menu->add"
+3. Set fields:
+    Menu link title: Assign patients to physicians
+    Path: nror/patients/assign
+    Description: Assign patients to physicians
+    Parent link: Patients (Under Administration tab)
+    Weight : -48
+4. Save
+
+2012-08-09
+----------
+Kirill Kolesnik : Remove questions block from account :
+1. Log in as admin
+2. Go to "admin->config->people->profile"
+3. Delete all fields under Questions category (use delete link to the right)
+4. Clear Drupal cash (Notice from 2012-07-31)
+
+2012-08-09
+----------
+Kirill Kolesnik : Add sidebar containing current questionnaire (rendered on form page):
+1. Log in as admin
+2. Go to "admin->structure->block"
+3. Find "My Questionaire sidebar"
+4. Set region to "Sidebar first"
+5. Click "Save blocks"
+
+2012-08-06
+----------
+Kirill Kolesnik : Add coordinators forms menu tab to dashboard :
+1. Go to "admin->structure->menus->main-menu->add"
+2. Set fields:
+    Menu link title: Registry coordinators
+    Path: dashboard/coordinators
+    Description: Registry coordinators.
+    Parent link: Dashboard
+3. Save
+4. Drag "Registry coordinators" and move it above the "Attending physicians" link
+5. Click "Save configuration"
+
+2012-08-06
+----------
+Kirill Kolesnik : Menu paths for dashboard were changed :
+1. After updating server clear Drupal cash (Notice from 2012-07-31)
+2. Go to "admin->structure->menu->manage->main-menu"
+3. Find "Dashboard" link and click "edit"
+4. Change path from "nror/dashboard" to "dashboard" and click "save"
+5. Find "Attending physicians" under "Dashboard" -> "edit"
+6. Change path from "nror/dashboard/attending_physicians" to "dashboard/attending_physicians" and click "save"
+7. Find "Patients" under "Dashboard" -> "edit"
+8. Change path from "nror/dashboard/patientss" to "dashboard/patients" and click "save"
+9. Go to "admin->config->front->settings"
+10. "Front Page for Patient." - "path" = "dashboard/user/forms"
+    "Front Page for RegistryCoordinator." - "path" = "dashboard"
+    "Front Page for administrator." - "path" = "dashboard"
+    "Front Page for AttendingPhysician." - "path" = "dashboard"
+11. Click "Save settings"
+
+2012-08-06
+----------
+Kirill Kolesnik : Add NROR contexts :
+1. Login as admin
+2. Go to "admin->people->permissions->roles"
+3. Delete roles : Patient, RegistryCoordinator, AttendingPhysician
+4. Steps to delete role : "edit role"->"Delete role"->"Delete"
+5. Go to "admin->config->cacure_settings->contexts"
+6. Click "Add new context"
+7. Fill required fields :
+ Fields :
+    Patient's context :
+    Context - "patient", Drupal role - "Patient", Short description - "Context for patient"
+
+    Registry coordinator's context :
+    Context - "facility", Drupal role - "RegistryCoordinator", Short description - "Context for registry coordinator"
+
+    Attending physician's context :
+    Context - "physician", Drupal role - "AttendingPhysician", Short description - "Context for attending physician"
+8. Click Save
+9. Repeat steps 6-8 to create all contexts (Patient, Registry coordinator, Attending physician).
+
+2012-08-02
+----------
+Kirill Kolesnik : SpiraTeam #001039 : Please hide the Register button from the log in page :
+1. Login as admin
+2. Go to "admin->structure->menu->manage->main-menu"
+3. Find Register link and uncheck enabled.
+4. Click "Save configuration"
+
+2012-08-02
+----------
+Kirill Kolesnik : SpiraTeam #001036 : Modify the email text sent by system :
+1. Login as admin
+2. Go to "admin->config->people->accounts"
+3. Click "Welcome (new user created by administrator)" under E-mails field
+4. Change the content with the following (without quotes) :
+
+"[user:name],
+
+A site administrator has created an account for you with the following username:
+
+username: [user:name]
+
+You may log in by clicking on this link or copying and pasting it in your browser:
+
+[user:one-time-login-url]
+
+This is a one-time login, so it can be used only once.
+
+After logging in, you will be asked to change your password.
+
+--  [site:name] team"
+
+5. Save
+
+2012-08-02
+----------
+Kirill Kolesnik : SpiraTeam #001032 : Registration page should allow only physicians to register them selves
+1. Login as admin
+2. Go to "admin->config->people->autoassignrole->user"
+3. Uncheck all roles except "AttendingPhysician under" Roles field
+4. Save
+
+2012-07-31
+----------
+Kirill Kolesnik : Notice : After ever updating the system You should clear Drupal cash data
+1. Update system from svn
+2. Go to "admin->config->development->performance"
+3. Click "Clear cash data"
+
+2012-07-30
+----------
+Kirill Kolesnik : SpiraTeam #001024: Order should be same as it is in listed menu during mouse hover
+1. Go to "admin->structure->menus->main-menu"
+2. CLick "Show row weights"
+3. Set weights:
+  - Attending physician : "-50"
+  - Facility : "-49"
+  - Facilities : "-48"
+  - Patients : "-47"
+  - RegistryCoordinators : "-46"
+4. Save configuration
+5 Click "Hide row weights"
+
+2012-07-27
+----------
+Olga Tovmazova: SpiraTeam #001029: Functionality is missing to add physicians in the Attending Physicians page.
+  Adding "Preregister Attending Physician" tab to main menu
+
+1. Go to "admin->structure->menus->main-menu->add"
+2. Set fields: 
+    Menu link title: Preregister Attending Physician
+    Path: nror/attending_physicians/new
+    Description: Create new Attending Physicians account
+    Parent link: Attending Physicians
+3. Save
+
+2012-07-26
+----------
+Kirill Kolesnik: Configure Print module.
+
+1. Go to "admin->modules"
+2. Install Printer module and uninstall Printer-friendly pages
+3. Go to "admin->structure->block"
+4. Set region "Corner-top-left" for "Print content link" block
+
+2012-07-26
+----------
+Kirill Kolesnik: System update.
+
+1. Update project from svn
+2. Go to "admin->config->development->performance"
+3. Clear cash data
+4. Go to "admin->modules"
+5. Fully uninstall CURE contexts module (with all dependent modules)
+6. Install back CURE contexts module and previously uninstalled dependent modules
+
+
+2011-10-03
+----------------------
+Leonid Kagan: SpiraTeam #234: Deployment process does not support deployment of configuration changes
+	This is a sample of how all instructions must be organized
+	You can and encouraged to use multiple lines for each item, and can format it in any way
+	as long asgeneral rules are obeyed:
+		1. First line is "Name: Issue ID: Issue description"
+		2. Items within a single day are ordered in a sequence
+		3. And separated by an empty line
+
+Leonid Kagan: From e-mail: This is also a sample
+	1. Login into Drupal as admin
+	2. Go to "Config->modules>users"
+	3. Uncheck "something or other" checkbox

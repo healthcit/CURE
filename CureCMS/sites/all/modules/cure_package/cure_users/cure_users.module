@@ -1,0 +1,203 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+module_load_include('inc', 'cure_users', 'cure_users');
+
+/**
+ * Implements hook_init()
+ */
+function cure_users_init() {
+  global $user;
+  $path = arg();
+  if (in_array('logout', $path) && $user->uid == 0) {
+    drupal_goto();
+  }
+  if ($user->uid > 0) {
+    $user->entityId = cure_users_get_entity_id($user->uid);
+  }
+}
+
+/**
+ * Implements hook_menu()
+ */
+function cure_users_menu() {
+  $items =array();
+
+  $items['admin/people/cure/accounts'] = array(
+    'title' => 'CURE accounts',
+    'description' => t('CURE accounts'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_users_admin_form'),
+    'access arguments' => array('administrator')
+  );
+  return $items;
+}
+
+/**
+ * Menu callback
+ * @see cure_users_menu()
+ */
+function cure_users_admin_form($form, $form_state) {
+  $form = array();
+
+  $form['check'] = array(
+    '#type' => 'submit',
+    '#value' => t('Check accounts'),
+    '#name' => 'check'
+  );
+
+  return $form;
+}
+
+/**
+ * cure_users_admin_form() submit funciton
+ * @see cure_users_admin_form()
+ */
+function cure_users_admin_form_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'check') {
+    $users = cure_users_get_all_users();
+    unset($users[0]);
+
+    $entities = cure_users_get_all_entities();
+    if (!empty($entities)) {
+      foreach ($entities as $uid => $entityId) {
+        if (!isset($users[$uid])) {
+          cure_users_delete_user($uid);
+        }
+      }
+    }
+
+    foreach ($users as $user) {
+      if(empty($user->entityId)){
+        cure_users_create_entity($user, array());
+      }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_user_load().
+ */
+function cure_users_user_load($users) {
+  $entities = cure_users_get_all_entities();
+  foreach ($users as $user) {
+    if (isset($entities[$user->uid])) {
+      $user->entityId = $entities[$user->uid];
+    }
+  }
+ }
+
+/**
+ * Implementation of hook_user_insert().
+ */
+function cure_users_user_insert(&$edit, $account, $category) {
+  cure_users_create_entity($account, $edit);
+}
+
+/**
+ * Implementation of hook_user_update().
+ */
+function cure_users_user_update($edit, $account, $category) {
+  if (!empty($account->original)) {
+    $original = $account->original;
+    if ($account->name != $original->name) {
+      $old_groupId = cure_groups_get_group_id($original->name);
+      $new_groupId = cure_groups_get_group_id($account->name);
+      if (empty($new_groupId)) {
+        $new_groupId = cure_groups_create_group($account->name);
+      }
+
+      if (!empty($new_groupId)) {
+        $group_entities = cure_groups_get_group_entities($old_groupId);
+        foreach ($group_entities as $eid) {
+          cure_groups_delete_entity_from_group($eid, $old_groupId);
+          cure_groups_assign_entity_to_gorup($eid, $new_groupId);
+        }
+      }
+      cure_groups_delete_group_by_id($old_groupId);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_user_delete().
+ */
+function cure_users_user_delete($account) {
+  $groupId = cure_groups_get_group_id($account->name);
+  $group_entities = cure_groups_get_group_entities($groupId);
+  foreach ($group_entities as $eid) {
+    cure_groups_delete_entity_from_group($eid, $groupId);
+  }
+  cure_groups_rename_group($account->name, $groupId);
+  cure_users_delete_user($account->uid);
+  cure_groups_delete_group_by_id($groupId);
+}
+
+/**
+ * Implementation of hook_form_FORM_ID_alter().
+ */
+function cure_users_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'user_register_form' || $form_id == 'user_profile_form') {
+    $form['#validate'][] = 'cure_users_validate_profile_info';
+    $form['#validate'][] = 'cure_users_user_form_validate';
+  }
+}
+
+/**
+ * Custom user_register_form validate function
+ * Checks whether the user has chosen only one CURE role.
+ */
+function cure_users_user_form_validate($form, &$form_state) {
+  $cure_roles = cure_contexts_get_all_roles();
+  $cnt = 0;
+  $edit_roles = $form_state['values']['roles'];
+  if (!empty($edit_roles)) {
+    helpers_filter_checkboxes($edit_roles);
+  }
+  foreach ($cure_roles as $value) {
+    if (!empty($edit_roles[$value['role_id']])) {
+      $cnt++;
+    }
+  }
+  if ($cnt > 1) {
+    $message = t('You have chosen more than one CURE related user role.');
+    form_set_error('roles', $message);
+  }
+}
+
+/**
+ * Custom validate function
+ * @see cure_users_form_alter()
+ */
+function cure_users_validate_profile_info($form, $form_state) {
+  $first_name = $form_state['values']['profile_first_name'];
+  $last_name = $form_state['values']['profile_last_name'];
+  $phone = $form_state['values']['profile_phone_number'];
+  if (!empty($first_name) && cure_users_validate_name($first_name)) {
+    form_set_error('profile_first_name', t('Invalid format. Must contain only upper and lower case letters, dashes and spaces.'));
+  }
+  if (!empty($last_name) && cure_users_validate_name($last_name)) {
+    form_set_error('profile_last_name', t('Invalid format. Must contain only upper and lower case letters, dashes and spaces.'));
+  }
+  if (!empty($phone) && !preg_match('/^(0|[1-9][0-9]*)$/', $phone)) {
+    form_set_error('profile_phone_number', t('Phone number should contain only numbers.'));
+  }
+}
+
+function cure_users_validate_name($value) {
+  return preg_match('/[^a-zA-Z-. ]/', trim($value));
+}
+
+
+
+
+
+
+
+
+

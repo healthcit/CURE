@@ -1,0 +1,139 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+function cure_groups_ui_permission() {
+  return array(
+    'access cure groups' => array(
+      'title' => t('Access CURE groups module')
+    )
+  );
+}
+
+function cure_groups_ui_theme($existing, $type, $theme, $path) {
+  return array(
+    'cure_groups_ui_admin_main' => array(
+      'render element' => 'form'
+    )
+  );
+}
+
+function cure_groups_ui_menu() {
+  $items = array();
+
+  $items['admin/people/cure/cure_groups'] = array(
+    'title' => 'CURE groups',
+    'description' => t('UI for managing CURE groups'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_groups_ui_admin_main'),
+    'access arguments' => array('access cure groups'),
+  );
+
+  return $items;
+}
+
+function cure_groups_ui_admin_main($form, $form_state) {
+  $groups = _cure_groups_ui_get_groups();
+  $cure_users = cure_users_get_all_entities();
+  if (empty($groups)) {
+    return array();
+  }
+  $groups_names= $groups['groups_names'];
+  $groups_entities = $groups['groups_entities'];
+
+  $form = array();
+  $form['groups_names'] = array(
+    '#type' => 'value',
+    '#value' => $groups_names
+  );
+  $form['cure_users'] = array(
+    '#type' => 'value',
+    '#value' => $cure_users
+  );
+  $default = array();
+  $options = array();
+  foreach ($groups_entities as $group_id => $entities) {
+    foreach ($cure_users as $cure_user) {
+      $entityId = $cure_user->entityId;
+      $options[$group_id.':'.$entityId] = '';
+      if (in_array($entityId, $entities)) {
+        $default[$group_id.':'.$entityId] = $group_id.':'.$entityId;
+      }
+    }
+  }
+  $form['checkboxes'] = array('#type' => 'checkboxes', '#options' => $options, '#default_value' => $default);
+  $form['save'] = array('#type' => 'submit', '#value' => t('Save'));
+
+  return $form;
+}
+
+function cure_groups_ui_admin_main_submit($form, $form_state) {
+  $values = $form_state['values'];
+  $groups = _cure_groups_ui_get_groups();
+  $groups_entities = $groups['groups_entities'];
+  $cure_users = $values['cure_users'];
+  $checkboxes = $values['checkboxes'];
+  foreach ($groups_entities as $groupId => $entities) {
+    foreach ($cure_users as $cure_user) {
+      $entityId = $cure_user->entityId;
+      if (in_array($entityId, $entities) && $checkboxes[$groupId.':'.$entityId] == false) {
+        cure_groups_delete_entity_from_group($entityId, $groupId);
+      } else if (!in_array($entityId, $entities) && $checkboxes[$groupId.':'.$entityId] != false) {
+        cure_groups_assign_entity_to_gorup($entityId, $groupId);
+      }
+    }
+  }
+}
+
+function theme_cure_groups_ui_admin_main($vars) {
+  $form = $vars['form'];
+
+  $checkboxes = &$form['checkboxes'];
+  $groups_names = $form['groups_names']['#value'];
+  $cure_users = $form['cure_users']['#value'];
+
+  $header = array();
+  $rows = array();
+
+  $header[] = array('data' => t('User'));
+  foreach ($cure_users as $cure_user) {
+    $user = user_load($cure_user->uid);
+    $row = array();
+    $row[] = array('data' => $user->profile_first_name);
+    foreach ($groups_names as $grpid => $grpname) {
+      if (is_array($checkboxes[$grpid.':'.$cure_user->entityId])) {
+        $row[] = array('data' => drupal_render($checkboxes[$grpid.':'.$cure_user->entityId]));
+      }
+    }
+    $rows[] = $row;
+  }
+  foreach ($groups_names as $grpid => $grpname) {
+    $header[] = array('data' => $grpname);
+  }
+
+  $output = theme('table', array('header' => $header, 'rows' => $rows));
+  $output .= drupal_render($form['save']);
+  $output .= drupal_render_children($form);
+  return $output;
+}
+
+/**
+ * Returns parsed
+ * @return array
+ */
+function _cure_groups_ui_get_groups() {
+  $groups = cure_groups_get_all_groups();
+  if (empty($groups)) {
+    return array();
+  }
+  $groups_names= array();
+  $groups_entities = array();
+  foreach ($groups as $group) {
+    $groups_names[$group->group_id] = $group->name;
+    $groups_entities[$group->group_id] = cure_groups_get_group_entities($group->group_id);
+  }
+  return array('groups_names' => $groups_names, 'groups_entities' => $groups_entities);
+}

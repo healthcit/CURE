@@ -1,0 +1,6 @@
+name = "Print page content"
+description = "Adds a block with print link."
+core=7.x
+version = 7.x-1.x.dev
+package = "Print page"
+configure = admin/config/user-interface/print_content

@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * Implements hook_preprocess_HOOK()
+ */
+function my_autologout_process_page(&$vars) {
+  $path = drupal_get_path('module', 'my_autologout');
+  drupal_add_js($path.'/my_autologout.js', 'file');
+
+  $url = arg();
+  if (_my_autologout_cookies_enabled()) {
+    if (user_is_logged_in()) {
+      if (!_my_autologout_user_logged_in_cookie_exists()) {
+        _my_autologout_set_user_logged_in_cookie();
+        _my_autologout_set_fresh_loggedin();
+      }
+      elseif (!_my_autologout_is_fresh_login() && !_my_autologout_pages_opened() && $url[1] != 'logout' && !strpos($_SERVER['HTTP_REFERER'], 'form/')) {
+        drupal_goto('user/logout');
+      }
+      else {
+        _my_autologout_unset_fresh_loggedin();
+      }
+    }
+    else {
+      _my_autologout_unset_user_logged_in_cookie();
+    }
+  }
+}
+
+function _my_autologout_pages_opened() {
+  foreach ($_COOKIE as $name => $value) {
+    if (preg_match('|System_page_+|', $name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function _my_autologout_cookies_enabled() {
+  return !empty($_COOKIE);
+}
+
+function _my_autologout_is_fresh_login() {
+  return isset($_COOKIE['System_fresh']);
+}
+
+function _my_autologout_user_logged_in_cookie_exists() {
+  return isset($_COOKIE['System_user']);
+}
+
+function _my_autologout_set_user_logged_in_cookie() {
+  setrawcookie('System.user', '1', null, '/');
+}
+
+function _my_autologout_set_fresh_loggedin() {
+  setrawcookie('System.fresh', '1', null, '/');
+}
+
+function _my_autologout_unset_user_logged_in_cookie() {
+  setrawcookie('System.user', '', -1, '/');
+}
+
+function _my_autologout_unset_fresh_loggedin() {
+  setrawcookie('System.fresh', '', -1, '/');
+}
+

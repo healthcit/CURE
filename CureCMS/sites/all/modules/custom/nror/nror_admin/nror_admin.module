@@ -1,0 +1,410 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_menu()
+ */
+function nror_admin_menu() {
+  $items = array();
+
+  $items['admin/people/nror_admin'] = array(
+    'title' => 'ASCO admin',
+    'description' => t('ASCO admin'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_admin_main_form'),
+    'access callback' => 'nror_check_is_admin',
+    'weight' => 5
+  );
+
+  $items['admin/people/nror_admin/add'] = array(
+    'title' => 'Add ASCO admin',
+    'description' => t('Add ASCO admin'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_admin_admin_form'),
+    'access callback' => 'nror_check_is_admin'
+  );
+
+  $items['admin/people/nror_admin/%user/edit'] = array(
+    'title' => 'Edit ASCO admin',
+    'description' => t('Edit ASCO admin'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_admin_admin_form', 3),
+    'access callback' => 'nror_check_is_admin'
+  );
+  
+  $items['admin/people/nror_admin/%user/delete'] = array(
+    'title' => 'Delete ASCO admin',
+    'description' => t('Delete ASCO admin'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_admin_delete_admin', 3),
+    'access callback' => 'nror_check_is_admin'
+  );
+  
+  $items['admin/people/nror_admin/%user/status'] = array(
+    'title' => 'Change ASCO admin status',
+    'page callback' => 'nror_admin_change_status',
+    'page arguments' =>array(3),
+    'access callback' => 'nror_check_is_admin'
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_admin_menu()
+ */
+function nror_admin_main_form($form, $form_state) {
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['admins'];
+    helpers_filter_checkboxes($uids);
+    return drupal_get_form('nror_admin_delete_multiple', $uids);
+  }
+
+  $form = array();
+  $header = array();
+  
+  $header['name'] = array('data' => t('Username'));
+  $header['first_name'] = array('data' => t('First Name'));
+  $header['last_name'] = array('data' => t('Last Name'));
+  $header['status'] = array('data' => t('Status'));  
+  $header['operations'] = array('data' => t('Actions'), 'attributes' => array('colspan' => 2),  'class' => 'actions');
+  
+  $admins = nror_admin_get_all_admins();
+  $options = array();
+
+  if (!empty($admins)) {
+    foreach($admins as $uid => $admin) {
+      $options[$uid] = array();
+      $options[$uid]['name'] = $admin->name;
+      $options[$uid]['first_name'] = $admin->profile_first_name;
+      $options[$uid]['last_name'] = $admin->profile_last_name;
+      $options[$uid]['status'] = $admin->status == 1 ? t('active') : t('blocked');
+      $options[$uid]['operations'] = array();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'admin/people/nror_admin/' . $uid . '/edit',
+      );
+      $operations['status'] = array(
+        'title' => $admin->status == 1 ? t('Block') : t('Activate'),
+        'href' => 'admin/people/nror_admin/' . $uid . '/status',
+      );
+      $operations['delete'] = array(
+        'title' => t('Delete'),
+        'href' => 'admin/people/nror_admin/' . $uid . '/delete',
+      );
+      $options[$uid]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );
+    }
+  }
+  
+  $form['actions'] = array(
+    '#type' => 'container',
+  );
+  
+  $form['actions']['preregister'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Add ASCO Admin'),
+    '#name' => 'preregister',
+  );
+  
+  $form['admins'] = array(
+    '#type'    => 'tableselect',
+    '#header'  => $header,
+    '#options' => $options,
+    '#empty' => t('No ASCO administrators found'),
+  );
+
+  if (!empty($admins)) {
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+      '#name' => 'delete',
+    );
+    $form['status'] = array(
+      '#type' => 'submit',
+      '#value' => t('Change status'),
+      '#name' => 'status',
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * nror_admin_main_form() submit function
+ * @see nror_admin_main_form()
+ */
+function nror_admin_main_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'preregister') {
+    drupal_goto('admin/people/nror_admin/add');
+  }
+  else if ($form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['admins'];
+    helpers_filter_checkboxes($uids);
+    if (!empty($uids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+  else if ($form_state['triggering_element']['#name'] == 'status') {
+    $uids = $form_state['values']['admins'];
+    helpers_filter_checkboxes($uids);
+    nror_change_status_multiple($uids);
+    drupal_goto('admin/people/nror_admin');
+  }
+}
+
+/**
+ * Alternative form used in nror_admin_main_form()
+ * @see nror_admin_main_form()
+ */
+function nror_admin_delete_multiple($form, $form_state, $uids) {
+  $form = array();
+  
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want delete these users?').'</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    $form['list'][$uid] = array(
+      '#type' => 'hidden',
+      '#value' => $uid,
+      '#prefix' => '<li>',
+      '#suffix' => check_plain($user->profile_first_name . ' ' . $user->profile_last_name) . "</li>\n",
+    );
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_admin_delete_multiple() submit function
+ * @see user_delete_multiple()
+ * @see nror_admin_delete_multiple()
+ */
+function nror_admin_delete_multiple_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    user_delete_multiple($form_state['values']['list']);
+    drupal_set_message(t('Users were successfully deleted.'));
+  }
+  drupal_goto('admin/people/nror_admin');
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_admin_menu()
+ */
+function nror_admin_delete_admin($form, &$form_state, $user) {
+  $form = array();
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete ASCO admin %u?', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)).'</p>');
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_admin_delete_admin() submit function
+ * @see user_delete()
+ * @see nror_admin_delete_admin()
+ */
+function nror_admin_delete_admin_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    $user = user_load($form_state['values']['uid']);
+    user_delete($form_state['values']['uid']);
+    drupal_set_message(t('ASCO admin %u was deleted successfully.', array('%u' => $user->profile_first_name . ' '. $user->profile_last_name)));
+  }
+  drupal_goto('admin/people/nror_admin');
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_admin_menu()
+ */
+function nror_admin_admin_form($form, $form_state, $admin = null) {
+  $form= array();
+
+  if (empty($admin)) {
+    $form['#user'] = drupal_anonymous_user();
+  }
+  else {
+    $form['#user'] = $admin;
+  }
+
+  $form['name'] = array(
+    '#title' => 'Username',
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#description' => t('ASCO admin username'),
+    '#maxlength' => 50,
+    '#default_value' => isset($admin->name) ? $admin->name : ''
+  );
+  
+  $form['profile_first_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#description' => t('ASCO admin first name'),
+    '#required' => true,
+    '#maxlength' => 50,
+    '#default_value' => isset($admin->profile_first_name) ? $admin->profile_first_name : ''
+  );
+
+  $form['profile_last_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Last Name'),
+    '#description' => t('ASCO admin last name'),
+    '#required' => true,
+    '#maxlength' => 50,
+    '#default_value' => isset($admin->profile_last_name) ? $admin->profile_last_name : ''
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#required' => true,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+    '#default_value' => isset($admin->mail) ? $admin->mail : ''
+  );
+
+  autoassignrole_form_user_register_form_alter($form, $form_state);
+
+  $role = user_role_load_by_name(NROR_USER_ROLE_ADMIN);
+
+  $form['account']['status'] = array(
+    '#type' => 'value',
+    '#value' => 1
+  );
+
+  $form['autoassignrole_user']['user_roles']['#value'] = $role->rid;
+  $form['autoassignrole_user']['user_roles']['#default_value'][] = $role->rid;
+  $form['autoassignrole_user']['#attributes'] = array(
+    'style' => 'display: none'
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_admin_admin_form_submit')
+  );
+
+  return $form;
+}
+
+/**
+ * nror_admin_admin_form() validate function
+ * @see nror_admin_admin_form()
+ */
+function nror_admin_admin_form_validate($form, $form_state) {
+  $mail = $form_state['values']['mail'];
+  nror_validate_profile_info($form, $form_state);
+  if (!nror_validate_mail($mail, $form['#user']->uid)) {
+    form_set_error('mail', t('The e-mail address %m is already taken', array('%m' => $mail)));
+  }
+  
+  if (!nror_user_name_unique($form_state['values']['name']) && $form['#user']->uid != nror_get_uid_by_name($form_state['values']['name'])) {
+    form_set_error('name', t('User with name %i is already registered.', array('%i' => $form_state['values']['name'])));
+  }
+  
+  $mail_validate = user_validate_mail($mail);
+  if(!empty($mail_validate)) {
+    form_set_error('mail', $mail_validate);
+  }
+}
+
+/**
+ * nror_admin_admin_form() submit function
+ * @see nror_admin_admin_form()
+ */
+function nror_admin_admin_form_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = clone $form['#user'];
+    $data = $form_state['values'];
+    if (user_save($account, $data)) {
+      profile_save_profile($data, $account, 'Personal Info');
+      if ($form['#user']->uid > 0) {
+        if ($form['#user']->mail != $data['mail']) {
+          $params['account'] = $account;
+          drupal_mail('nror', 'notification', $account->mail, user_preferred_language($form['#user']), $params);
+        }
+        $message = t('Changes were saved successfully');
+      }
+      else {
+        _user_mail_notify('register_admin_created', $account);
+        $message = t('ASCO admin was registered successfully');
+      }
+      drupal_set_message($message);
+    }
+  }
+  drupal_goto('admin/people/nror_admin');
+}
+
+/**
+ * Menu callback
+ * Activates or blocks NROR admin
+ * @see nror_change_status()
+ * @see nror_admin_menu()
+ */
+function nror_admin_change_status($user) {
+  nror_change_status($user);
+  drupal_goto('admin/people/nror_admin');
+}
+
+/**
+ * Gets all NROR administrators
+ * @return array
+ */
+function nror_admin_get_all_admins() {
+  $role = user_role_load_by_name(NROR_USER_ROLE_ADMIN);
+  $result = nror_get_users_by_role_id($role->rid);
+
+  return $result;
+}

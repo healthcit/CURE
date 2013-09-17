@@ -1,0 +1,198 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+function cacure_report_init() {
+  $path = drupal_get_path('module', 'cacure_report');
+  drupal_add_http_header('CacheControl', 'no-cache');
+  drupal_add_http_header('Pragma', 'no-cache');
+  drupal_add_http_header('Expires', '-1');
+  drupal_add_css($path . '/css/list.css');
+  drupal_add_js($path . '/js/list.js');
+}
+/**
+ * Implementation of hook_permission(). 
+ */
+function cacure_report_permission(){
+  return array(
+    'access submission status report' => array(
+      'title' => t('Access submission status report'),
+    )
+  );
+}
+/**
+ * Implementation of hook_menu(). 
+ */
+function cacure_report_menu() {
+  $items = array();
+  $items['admin/reports/CURE/submission-status'] = array(
+    'title' => t('Submission status report'),
+    'description' => 'CURE submission status report.',
+    'page callback' => 'cacure_report_callback',
+    'access arguments' => array('access submission status report'),
+  );
+  return $items;
+}
+
+function cacure_report_callback() {
+  $restcall  = RestCall::getInstance();
+  $modulesXml = $restcall->allModules();
+  $groupsXml = $restcall->getAllSharingGroups();
+  
+  // In case of failed request to REST server
+  if (empty($modulesXml) || empty($groupsXml)) {
+    return '';
+  }
+
+  $modules = SimpleXmlParser::toArray($modulesXml);
+  $groups  = SimpleXmlParser::toArray($groupsXml);
+
+  $modulesInfo = array();
+
+  if (isset($modules['module']['@attributes'])) {
+    $modules['module'] = array($modules['module']);
+  }
+
+  foreach ($modules['module'] as $m) {
+    $modulesInfo[] = array('module_id' => $m['@attributes']['id'], 'module_name' => $m['@attributes']['name']);
+  }
+
+  $moduleId = null;
+
+  if (isset($_GET['module_id'])) {
+    foreach ($modulesInfo as $moduleInfo) {
+      if ($_GET['module_id'] == $moduleInfo['module_id']) {
+        $moduleId = $moduleInfo['module_id'];
+      }
+    }
+  }
+
+  if (empty($moduleId)) {
+    $moduleId = $modulesInfo[0]['module_id'];
+  }
+
+  $groupsList = array();
+  if (isset($groups['sharingGroups']['group']['@attributes'])) {
+    $groups['sharingGroups']['group'] = array($groups['sharingGroups']['group']);
+  }
+  foreach ($groups['sharingGroups']['group'] as $group) {
+    $groupsList[$group['@attributes']['id']] = $group['name'];
+  }
+	
+  //Getting list of assigned users
+  $query  = 'SELECT c.entity_id, c.uid, u.name FROM cure_users c LEFT JOIN users u ON c.uid=u.uid WHERE c.entity_id <> \'\' AND u.name <> \'\'';
+  $result = db_query($query);
+  $cure_users = $result->fetch();
+  foreach ($cure_users as $user) {
+    $users[$user->entity_id] = $user->name;
+  }
+
+  $moduleXml = $restcall->getModuleStatusByOwner($moduleId);
+
+  // In case of failed request to REST server
+  if (empty($moduleXml)) {
+    return '';
+  }
+  
+  $module = SimpleXmlParser::toArray($moduleXml);
+
+  $filteredModules = array();
+  if (isset($module['module']['@attributes'])) {
+    $module['module'] = array($module['module']);
+  }
+  foreach ($module['module'] as $i => $m) {
+    if (isset($groupsList[$m['@attributes']['owner']])) {
+      $module['module'][$i]['@attributes']['name'] = $groupsList[$m['@attributes']['owner']];
+    }
+    $filteredModules[] = $module['module'][$i];
+  }
+
+  return theme_cacure_report(array('listing' => $modulesInfo, 'modules' => $filteredModules, 'module_id' => $moduleId, 'users' => $users));
+}
+
+function theme_cacure_report($result) {
+  $output = '<div style="margin-bottom: 10px;">Please, select module:&nbsp;&nbsp;';
+  $output .= '<select name="module_id" onchange="parent.window.location.href=\'/admin/reports/CURE/submission-status?module_id=\'+this.value;">';
+  foreach ($result['listing'] as $item) {
+    $output .= '<option value="'.$item['module_id'].'"'.(($item['module_id'] == $result['module_id'])?' selected':'').'>'.$item['module_name'].'</option>';
+  }
+  $output .= '</select><br /></div>';
+  $header = array(
+    array('data' => 'Group Name'),
+    array('data' => 'Module Status'),
+    array('data' => 'Modified On'),
+    array('data' => 'Modified By'),
+  );
+  $rows = array();
+  foreach ($result['modules'] as $i => $item) {
+    $row = array();
+    $row[] = array('data' => '<a class="sh_link_'.$i.' showhidelink" href="#" id="'.$i.'">+</a>'.$item['@attributes']['name']);
+
+    switch($item['@attributes']['status']) {
+      case 'new': $status = '<span style="color: black;">'.$item['@attributes']['status'].'</span>'; break;
+      case 'in-progress': $status = '<span style="color: #FFCA00;">'.$item['@attributes']['status'].'</span>'; break;
+      case 'completed': $status = '<span style="color: #00B050;">'.$item['@attributes']['status'].'</span>'; break;
+      default: $status = ''.$item['@attributes']['status'].''; break;
+    }
+    $row[] = array('data' => $status);
+    $row[] = array('data' => substr($item['@attributes']['dateModified'], 0, 10).' '.substr($item['@attributes']['dateModified'], 11, 5));
+
+    if (isset($item['@attributes']['updatedBy']) && isset($result['users'][$item['@attributes']['updatedBy']])) {
+      $row[] = array('data' => $result['users'][$item['@attributes']['updatedBy']]);
+    } 
+    else {
+      $row[] = array('data' => '&nbsp');
+    }
+
+    $subTableHeader = array();
+
+    $subTableRows = _cacure_report_forms_table($item['form']);
+
+
+    $subTable = theme('table', array('header' => $subTableHeader, 'rows' => $subTableRows));
+    $rowHidden = array(array('data' => $subTable, 'colspan' => 4));
+
+    $rows[] = array('data' => $row);
+    $rows[] = array('data' => $rowHidden, 'class' => array('hide_form_result', 'module_forms_'.$i));
+  }
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));;
+  return $output;
+}
+
+function _cacure_report_forms_table($forms) {
+  $subTableRows = array();
+  if (isset($forms['@attributes'])) {
+    $forms = array($forms);
+  }
+  foreach ($forms as $form) {
+    $subTableRow = array();
+    switch($form['@attributes']['status']) {
+      case 'new': $status = '<span style="color: black;">'.$form['@attributes']['status'].'</span>'; break;
+      case 'in-progress': $status = '<span style="color: #FF003A;">'.$form['@attributes']['status'].'</span>'; break;
+      case 'submitted': $status = '<span style="color: #FFCA00;">'.$form['@attributes']['status'].'</span>'; break;
+      case 'approved': $status = '<span style="color: #00B050;">'.$form['@attributes']['status'].'</span>'; break;
+      default: $status = ''.$form['@attributes']['status'].''; break;
+    }
+    $subTableRow[] = array('data' => $form['@attributes']['name']);
+    $subTableRow[] = array('data' => $status);
+    $subTableRow[] = array('data' => substr($form['@attributes']['dateModified'], 0, 10).' '.substr($form['@attributes']['dateModified'], 11, 5));
+    if (isset($form['@attributes']['lastUpdatedBy']) && isset($result['users'][$form['@attributes']['lastUpdatedBy']])) {
+      $subTableRow[] = array('data' => $result['users'][$form['@attributes']['lastUpdatedBy']]);
+    }
+    else {
+      $subTableRow[] = array('data' => '&nbsp');
+    }
+    $subTableRows[] = $subTableRow;
+    if (isset($form['form'])) {
+      $subFormRows = _cacure_report_forms_table($form['form']);
+      foreach ($subFormRows as $row) {
+        $subTableRows[] = $row;
+      }
+    }
+  }
+
+  return $subTableRows;
+}

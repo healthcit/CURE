@@ -1,0 +1,5 @@
+name = Custom User Edit
+description = Adds user edit page to path user/edit
+package = "Hammertech (7 version)"
+version = "7.x-1.x.beta"
+core = "7.x"

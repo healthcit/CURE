@@ -1,0 +1,5 @@
+name = "Withdraw"
+description = "Custom Cancel Account Page."
+package = "Hammertech (7 version)"
+version = "7.x-1.x.beta"
+core = "7.x"

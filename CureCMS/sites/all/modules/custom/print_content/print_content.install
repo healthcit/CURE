@@ -1,0 +1,9 @@
+<?php
+
+function print_content_uninstall() {
+  variable_del('print_content_preview_mode');
+  variable_del('print_content_link_type');
+  variable_del('print_content_custom_css');
+  variable_del('print_content_link_text');
+}
+

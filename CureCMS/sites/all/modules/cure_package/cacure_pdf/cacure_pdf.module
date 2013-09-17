@@ -1,0 +1,298 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+module_load_include('php', 'cacure_pdf', 'fpdf/fpdf');
+module_load_include('php', 'cacure_pdf', 'PDFT');
+
+/**
+ * Implementation of hook_menu().
+ */
+function cacure_pdf_menu() {
+  $items = array();
+  
+  $items['files/form/%'] = array(
+    'page callback' => 'cacure_pdf_load_callback',
+    'page arguments' => array(2),
+    'access callback' => true,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['files/module/%'] = array(
+    'page callback' => 'cacure_pdf_load_module_callback',
+    'page arguments' => array(2),
+    'access callback' => true,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback.
+ */
+function cacure_pdf_load_module_callback($arg) {
+  global $user;
+  $user_inf = user_load($user->uid);
+
+  $about = array(
+    'Patient name' => $user_inf->profile_last_name . ', ' . $user_inf->profile_first_name,
+    'Phone number' => $user_inf->profile_phone_number,
+    'Email' => $user_inf->mail,
+//    'Country of Residence' => $user_inf->profile_country,
+//    'Country Born' => $user_inf->profile_country_born,
+//    'Years living in US' => $user_inf->profile_years_living_in_us,
+//    'Province' => $user->profile_province,
+//    'Address' => $user_inf->profile_street_address,
+//    'City, State, Zip' => $user_inf->profile_city . ', ' . $user_inf->profile_state . ', ' . $user_inf->profile_zip_code,
+  );
+
+  $alternate_info = array(
+    'First name' => $user_inf->profile_contact_first_name,
+    'Middle Initial' => $user_inf->profile_contact_middle_name,
+    'Last name' => $user_inf->profile_contact_last_name,
+    'Country' => $user_inf->profile_contact_country,
+    'Address' => $user_inf->profile_contact_street_address,
+    'City' => $user_inf->profile_contact_city,
+    'State' => $user_inf->profile_contact_state,
+    'Province' => $user_inf->profile_contact_province,
+    'ZIP Code' => $user_inf->profile_contact_zip_code,
+    'Phone Number' => $user_inf->profile_contact_phone_number,
+  );
+
+  $pdf = new PDFT();
+  $forms_ar = array();
+  $restcall = RestCall::getInstance();
+
+  $groupId = cure_groups_get_active_group($user->name);
+
+  $xml = $restcall->getAllUserModules($user->entityId, $groupId, $arg);
+  
+  if (empty($xml)) {
+    return '';
+  }
+
+  $modules = SimpleXmlParser::toArray($xml);
+
+  if (!is_array($modules)) {
+    return;
+  }
+  if ($user->uid == 0) {
+    drupal_goto();
+  }
+
+  if(isset($_GET['param']) && $_GET['param'] == 'print') {
+    $pdf->script = 'print("true");';
+  }
+  
+  if (isset($modules['module']['form']['@attributes']['status'])) {
+    $forms[] = $modules['module']['form'];
+  }
+  else {
+    $forms = $modules['module']['form'];
+  }
+  foreach ($forms as $form) {
+    $xml = $restcall->getFormData($form['@attributes']['id'], RestCall::FORM_DATA_FORMAT_XML);
+
+    if (empty($xml)) {
+      continue;
+    }
+
+    $data = xml2array($xml);
+    if (empty($data['form']['question'])) {
+      continue;
+    }
+    $forms_ar[] = $data;
+  }
+  if (empty($forms_ar)) {
+    drupal_goto('<front>');
+  }
+
+  $pdf->setCount(sizeof($forms_ar) + 1);
+
+  $pdf->SetFont('Arial', '', 6);
+
+  $pdf->AddPage();
+  $pdf->setSimpleTitle('Personal Information');
+  $pdf->aboutTable($about, array());
+
+  foreach ($forms_ar as $data) {
+    $pdf->loadData($data);
+    $pdf->SetFont('Arial', '', 6);
+    $pdf->AddPage();
+    $pdf->setFormTitle();
+    $pdf->showData();
+  }
+  
+  $pdf->AutoPrint(true);
+  header("Content-type: application/pdf");
+  $pdf->Output();
+}
+
+/** 
+ * xml2array() will convert the given XML text to an array in the XML structure. 
+ * Link: http://www.bin-co.com/php/scripts/xml2array/ 
+ * Arguments : $contents - The XML text 
+ *                $get_attributes - 1 or 0. If this is 1 the function will get the attributes as well as the tag values - this results in a different array structure in the return value.
+ *                $priority - Can be 'tag' or 'attribute'. This will change the way the resulting array sturcture. For 'tag', the tags are given more importance.
+ * Return: The parsed XML in an array form. Use print_r() to see the resulting array structure. 
+ * Examples: $array =  xml2array(file_get_contents('feed.xml')); 
+ *              $array =  xml2array(file_get_contents('feed.xml', 1, 'attribute')); 
+ */ 
+function xml2array($contents, $get_attributes=1, $priority = 'tag') { 
+  if(!$contents) {
+    return array();
+  }
+
+  if(!function_exists('xml_parser_create')) { 
+    //print "'xml_parser_create()' function not found!"; 
+    return array(); 
+  } 
+
+  //Get the XML parser of PHP - PHP must have this module for the parser to work 
+  $parser = xml_parser_create(''); 
+  xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8"); # http://minutillo.com/steve/weblog/2004/6/17/php-xml-and-character-encodings-a-tale-of-sadness-rage-and-data-loss 
+  xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0); 
+  xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1); 
+  xml_parse_into_struct($parser, trim($contents), $xml_values); 
+  xml_parser_free($parser); 
+
+  if(!$xml_values) {
+    return ;
+  }
+
+  //Initializations 
+  $xml_array = array(); 
+  $parents = array(); 
+  $opened_tags = array(); 
+  $arr = array(); 
+
+  $current = &$xml_array; //Refference 
+
+  //Go through the tags. 
+  $repeated_tag_index = array();//Multiple tags with same name will be turned into an array 
+  foreach($xml_values as $data) { 
+    unset($attributes,$value);//Remove existing values, or there will be trouble 
+    //This command will extract these variables into the foreach scope 
+    // tag(string), type(string), level(int), attributes(array). 
+    extract($data);//We could use the array by itself, but this cooler. 
+
+    $result = array(); 
+    $attributes_data = array(); 
+         
+    if(isset($value)) { 
+      if($priority == 'tag') {
+        $result = $value; 
+      }
+      else {$result['value'] = $value; //Put the value in a assoc array if we are in the 'Attribute' mode 
+      }
+    } 
+
+    //Set the attributes too. 
+    if(isset($attributes) and $get_attributes) { 
+      foreach($attributes as $attr => $val) { 
+        if($priority == 'tag') $attributes_data[$attr] = $val; 
+        else $result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr' 
+      } 
+    } 
+
+    //See tag status and do the needed. 
+    if($type == "open") {//The starting of the tag '<tag>' 
+      $parent[$level-1] = &$current; 
+      if(!is_array($current) or (!in_array($tag, array_keys($current)))) { //Insert New tag 
+        $current[$tag] = $result; 
+        if($attributes_data) $current[$tag. '_attr'] = $attributes_data; 
+          $repeated_tag_index[$tag.'_'.$level] = 1; 
+
+          $current = &$current[$tag]; 
+
+        }
+        else { //There was another element with the same tag name 
+          if(isset($current[$tag][0])) {//If there is a 0th element it is already an array 
+            $current[$tag][$repeated_tag_index[$tag.'_'.$level]] = $result; 
+            $repeated_tag_index[$tag.'_'.$level]++; 
+          } 
+          else {
+            ////This section will make the value an array if multiple tags with the same name appear together 
+            $current[$tag] = array($current[$tag],$result);//This will combine the existing item and the new item together to make an array
+            $repeated_tag_index[$tag.'_'.$level] = 2; 
+                     
+            if(isset($current[$tag.'_attr'])) { //The attribute of the last(0th) tag must be moved as well 
+              $current[$tag]['0_attr'] = $current[$tag.'_attr']; 
+              unset($current[$tag.'_attr']); 
+            } 
+           } 
+           $last_item_index = $repeated_tag_index[$tag.'_'.$level]-1; 
+           $current = &$current[$tag][$last_item_index]; 
+         }
+         
+     }
+     elseif($type == "complete") { 
+       ////Tags that ends in 1 line '<tag />' 
+       //See if the key is already taken. 
+       if(!isset($current[$tag])) { //New Key 
+         $current[$tag] = $result; 
+         $repeated_tag_index[$tag.'_'.$level] = 1; 
+           if($priority == 'tag' and $attributes_data) $current[$tag. '_attr'] = $attributes_data; 
+       }
+       else { 
+         ////If taken, put all things inside a list(array) 
+         if(isset($current[$tag][0]) and is_array($current[$tag])) {//If it is already an array... 
+           // ...push the new element into that array. 
+           $current[$tag][$repeated_tag_index[$tag.'_'.$level]] = $result; 
+           if($priority == 'tag' and $get_attributes and $attributes_data) { 
+             $current[$tag][$repeated_tag_index[$tag.'_'.$level] . '_attr'] = $attributes_data; 
+           } 
+           $repeated_tag_index[$tag.'_'.$level]++; 
+         } else { 
+           ////If it is not an array... 
+           $current[$tag] = array($current[$tag],$result); //...Make it an array using using the existing value and the new value
+           $repeated_tag_index[$tag.'_'.$level] = 1; 
+             if($priority == 'tag' and $get_attributes) { 
+               if(isset($current[$tag.'_attr'])) {
+                 //The attribute of the last(0th) tag must be moved as well 
+                 $current[$tag]['0_attr'] = $current[$tag.'_attr']; 
+                 unset($current[$tag.'_attr']); 
+               } 
+               if($attributes_data) { 
+                 $current[$tag][$repeated_tag_index[$tag.'_'.$level] . '_attr'] = $attributes_data; 
+               } 
+             } 
+             $repeated_tag_index[$tag.'_'.$level]++; //0 and 1 index is already taken 
+          } 
+        } 
+
+      } elseif($type == 'close') { //End of tag '</tag>' 
+            $current = &$parent[$level-1]; 
+      } 
+    } 
+  return($xml_array); 
+}  
+
+/**   
+ * Helper function for strings.
+ * @param  $str
+ * @return mixed
+ */
+function cacure_pdf_prepare_string($str) {
+  static $le;
+  if(empty($le)) {
+    $le = array(':', '?', '.');
+  }
+
+  if(in_array($str[strlen($str)-1], $le)) {
+    return substr_replace($str,"",-1);
+  }
+  return $str;
+}
+
+/**
+ * Menu callback.
+ * Maybe we will implement it in future.
+ */
+function cacure_pdf_load_callback($form) {
+  return '';
+}

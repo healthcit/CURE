@@ -1,0 +1,1188 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('NROR_PATIENTS_ASSIGN_SESSION_VAR', 'nror_patients_for_assignment');
+
+require_once dirname(__FILE__).'/nror_patients.db.inc';
+
+define('NROR_PATIENTS_TMP_DIR', DRUPAL_ROOT . '/sites/default/files/tmp');
+
+define('NROR_PATIENTS_WELCOME_BLOCK_DELTA', 'nror_patient_welcome_block_delta');
+define('NROR_PATIENTS_WELCOME_BLOCK_TITLE', 'nror_patient_welcome_block_title');
+define('NROR_PATIENTS_WELCOME_BLOCK_CONTENT', 'nror_patient_welcome_block_content');
+
+/**
+ * Implements hook_menu()
+ */
+function nror_patients_menu() {
+  $items = array();
+
+  $items['patients'] = array(
+    'title' => 'Patients',
+    'description' => t('Patients main table'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_main'),
+    'access callback' => 'nror_rc_access',
+    'weight' => 4
+  );
+
+  $items['patients/new'] = array(
+    'title' => 'Add new patient',
+    'description' => t('Create new patients account'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_new'),
+    'access callback' => 'nror_rc_access',
+    'weight' => 1
+  );
+
+  $items['patients/%user/edit'] = array(
+    'title' => 'Edit patients info',
+    'description' => t('Edit patient\'s account info'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_edit_patient', 1),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['patients/%user/status'] = array(
+    'title' => 'Change patient status',
+    'description' => t('Activate/Inactive patients account'),
+    'page callback' => 'nror_patients_status',
+    'page arguments' => array(1),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['patients/%user/delete'] = array(
+    'title' => 'Delete patient',
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_patients_delete_patient', 1),
+    'access callback' => 'nror_rc_access',
+  );
+
+
+  $items['patients/import'] = array(
+    'title' => 'Bulk patient import',
+    'description' => t('Create patient accounts from file'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_bulk_import_form'),
+    'access callback' => 'nror_rc_access',
+    'file' => 'nror_patients.bulk_import.inc',
+    'weight' => 2,
+  );
+
+   $items['patients/multiple'] = array(
+    'title' => 'Delete patients',
+    'description' => t('Delete patients'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_delete_multiple'),
+    'access callback' => 'nror_rc_access',
+    'weight' => 4
+  );
+   
+  $items['patients/data_loader'] = array(
+    'title' => 'Data file upload',
+    'description' => t('Ability for user to upload a data file.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_data_loader_form'),
+    'access callback' => 'nror_rc_access',
+    'file' => 'nror_patients.data_loader.inc',
+    'weight' => 2,
+  );
+  
+  $items['admin/reports/CURE/nror-patients-report'] = array(
+    'title' => 'ASCO Patients data report',
+    'description' => '',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patients_report_form'),
+    'access callback' => 'nror_check_is_admin',
+    'file' => 'nror_patients.report.inc',
+  );
+
+  $items['admin/config/welcome_block'] = array(
+    'title' => 'Patient welcome block',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_patient_config_welcome_form'),
+    'access callback' => 'nror_check_is_admin',
+    'description' => '',
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback
+ * @see nror_patients_menu()
+ */
+function nror_patients_main($form, $form_state) {
+  global $user;
+  
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['patients'];
+    helpers_filter_checkboxes($uids);
+    $_SESSION['uids'] = $uids;
+    drupal_goto('patients/multiple');
+  }
+
+  $form = array();
+  
+  $header = array();
+  if (nror_check_is_admin()) {
+    $header['facility'] = array('data' => '<p class="header-sort">'. t('Practice') . '</p>');
+  }
+  $header['name'] = array('data' => '<p class="header-sort">'. t('Chart ID') . '</p>');
+  if (!nror_physicians_is_physician($user)) {
+    $header['physician'] = array('data' => '<p class="header-sort">' . t('Provider') . '</p>');
+  }
+  $header['form_status'] = array('data' => '<p class="header-sort">' . t('Status') . '</p>');
+  $header['submission_date'] = array('data' => '<p class="header-sort">' . t('Submission date') . '</p>');
+  $header['operations'] = array('data' => t('Account Management'), 'class' => 'actions');
+  
+  $facility = nror_facilities_get_user_facility($user->uid);
+  
+  if (nror_check_is_admin()) {
+    $patients = nror_patients_get_table_data(null);
+  }
+  else if (!empty($facility)) {
+    $patients = nror_patients_get_table_data($facility->fid);
+  }
+
+  $param = 'module_status';
+  $sort = true;
+  
+  $patients_out = helpers_sort_two_level_array(nror_prepare_data($patients, NROR_DATA_PATIENTS), $param, $sort);
+  $options = array();
+  
+  if (!empty($patients_out)) {
+    foreach ($patients_out as $uid => $patient) {
+      $options[$uid] = array();
+      
+      $options[$uid] = $patient;
+
+      if (!empty($facility)) {
+        $options[$uid]['name'] = nror_patients_prepare_patient_name($patient['name']);
+      }
+      $options[$uid]['name'] = $options[$uid]['name'] .  '<br/><span style="font-size: 75%">' . $patient['entityId'] . '</span>';
+
+      $module_status = array_search($patient['module_status'], cacure_x_form_statuses());
+      if (empty($module_status) || !isset($patient['form_path'])) {
+        $options[$uid]['form_status'] = 'No forms available';
+      }
+      else {
+        $links = nror_table_form_action_links($patient);
+        if ($module_status == CACURE_X_FORMS_STATUS_COMPLETED) {
+          $module_status = 'followup';
+        }
+        $options[$uid]['form_status'] = ucfirst($module_status) . $links;
+      }
+      $options[$uid]['operations'] = array();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'patients/' . $uid . '/edit',
+      );
+      $operations['status'] = array(
+        'title' => strtolower($patient['status']) == 'active' ? t('Inactive') : t('Activate'),
+        'href' => 'patients/' . $uid . '/status',
+      );
+      
+      if (!nror_rc_is_coordinator($user)) {
+        $operations['delete'] = array(
+          'title' => t('Delete'),
+          'href' => 'patients/' . $uid . '/delete',
+        );
+      }
+      $options[$uid]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );       
+    }
+  }
+  
+  $form['find'] = array('#markup' => '<div class="search">Search: <input type="text" class="search-box" ></div>');
+  
+    
+  $form['actions'] = array(
+    '#type' => 'container',
+    '#weight' => 0
+  );
+  
+  $form['actions']['preregister'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Add patient'),
+    '#name' => 'preregister',
+  );
+  
+  $form['actions']['import'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Bulk patient import'),
+    '#name' => 'import',
+  );
+ 
+  if (!empty($patients_out)) {
+    if (nror_rc_is_coordinator($user)) {
+      $form['actions']['upload'] = array(
+        '#type' => 'submit', 
+        '#value' => t('Data file upload'),
+        '#name' => 'upload',
+      );
+    } 
+    
+  }
+
+  $form['patients'] = array(
+    '#prefix' => '<div class="dashboard-table">',
+    '#suffix' => '</div>',
+    '#type'    => 'tableselect',
+    '#header'  => $header,
+    '#options' => $options,
+    '#empty' => t('No patients found'),
+    '#attributes' => array(
+      'class' => array(
+        'nror_administration',
+        'tablesorter',
+        'users-table'
+      ),
+    ),    
+  );
+
+  if (!empty($patients)) {
+    if (!nror_rc_is_coordinator($user)) {
+      $form['delete'] = array(
+        '#type' => 'submit',
+        '#value' => t('Delete'),
+        '#name' => 'delete',
+        '#attributes' => array(
+          'class' => array(
+            'nror_button'
+          ),
+        ),
+      );
+    }
+
+    $form['status'] = array(
+      '#type' => 'submit',
+      '#value' => t('Change status'),
+      '#name' => 'status',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * nror_patients_main() submit function
+ * @see nror_patients_main()
+ */
+function nror_patients_main_submit($form, &$form_state) {
+  $uids = $form_state['values']['patients'];
+  helpers_filter_checkboxes($uids);
+  if ($form_state['triggering_element']['#name'] == 'preregister') {
+    drupal_goto('patients/new');
+  }
+  else if ($form_state['triggering_element']['#name'] == 'import') {
+    drupal_goto('patients/import');
+  }
+  else if ($form_state['triggering_element']['#name'] == 'upload') {
+    drupal_goto('patients/data_loader');
+  }
+  else if ($form_state['triggering_element']['#name'] == 'delete') {
+    if (!empty($uids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+  else if ($form_state['triggering_element']['#name'] == 'status') {
+    nror_change_status_multiple($uids);
+    drupal_goto('dashboard');
+  }
+}
+
+/**
+ * Alternative form used in nror_rc_main_form()
+ * @see nror_patients_main()
+ */
+function nror_patients_delete_multiple($form, $form_state) {
+  $form = array();
+
+  $uids = isset($_SESSION['uids']) ? $_SESSION['uids'] : null;
+  
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want delete these users?').'</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    $form['list'][$uid] = array(
+      '#type' => 'hidden',
+      '#value' => $uid,
+      '#prefix' => '<li>',
+      '#suffix' => check_plain($user->profile_first_name . ' ' . $user->profile_last_name) . "</li>\n",
+    );
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_patients_delete_multiple() submit function
+ * @see user_delete_multiple()
+ * @see nror_patients_delete_multiple()
+ */
+function nror_patients_delete_multiple_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    user_delete_multiple($form_state['values']['list']);
+    drupal_set_message(t('Users were successfully deleted.'));
+    unset($_SESSION['uids']);
+  }
+  drupal_goto(NROR_DASHBOARD_PATIENTS_TAB_URL);
+}
+
+/**
+ * Menu callback
+ * Activates or blocks patient
+ * @see nror_change_status()
+ * @see nror_patients_menu()
+ */
+function nror_patients_status($user) {
+  nror_change_status($user);
+  drupal_goto(NROR_DASHBOARD_PATIENTS_TAB_URL);
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_patients_menu()
+ */
+function nror_patients_delete_patient($form, &$form_state, $user) {
+  $form = array();
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete patient %u?', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)).'</p>');
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_rc_delete_coordinator() submit function
+ * @see user_delete()
+ * @see nror_patients_delete_patient()
+ */
+function nror_patients_delete_patient_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    $user = user_load($form_state['values']['uid']);
+    user_delete($form_state['values']['uid']);
+    drupal_set_message(t('Patient %u was deleted successfully.', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)));
+  }
+  drupal_goto(NROR_DASHBOARD_PATIENTS_TAB_URL);
+}
+
+/**
+ * Menu callback
+ * @see nror_patients_menu()
+ */
+function nror_patients_new($form, &$form_state) {
+  $form = array();
+
+  $form['#user'] = drupal_anonymous_user();
+  
+  $form['name'] = array(
+    '#title' => 'External ID',
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#description' => t('Patient\'s external ID'),
+    '#maxlength' => 50,
+  );
+
+  $form['profile_first_name'] = array(
+    '#title' => 'First Name',
+    '#type' => 'textfield',
+    '#description' => t('Patient\'s first name'),
+    '#maxlength' => 50,
+  );
+  
+  $form['profile_last_name'] = array(
+    '#title' => 'Last Name',
+    '#type' => 'textfield',
+    '#description' => t('Patient\'s last name'),
+    '#maxlength' => 50,
+  );
+  
+  $form['mail'] = array(
+    '#title' => 'Email',
+    '#type' => 'textfield',
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+  $countries = license_agreement_prepare_country_list();
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+  $form['country']['country'] = array(
+    '#type' => 'select',
+    '#title' => t('Country'),
+    '#description' => t('Select the country.'),
+    '#required' => true,
+    '#options' => $countries
+  );
+  
+  autoassignrole_form_user_register_form_alter($form, $form_state);
+
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+
+  _nror_patients_check_attending_physicians();
+
+  $role = user_role_load_by_name(NROR_USER_ROLE_PATIENT);
+
+  $form['account']['status'] = array(
+    '#type' => 'value',
+    '#value' => 1
+  );
+
+  $form['autoassignrole_user']['user_roles']['#value'] = $role->rid;
+  $form['autoassignrole_user']['user_roles']['#default_value'][] = $role->rid;
+  $form['autoassignrole_user']['#attributes'] = array(
+    'style' => 'display: none'
+  );
+
+  nror_patients_add_form_elemts($form, $form_state);
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_patients_new_submit')
+  );
+
+  return $form;
+}
+
+/**
+ * nror_patients_new() validate function
+ * @see nror_patients_new()
+ */
+function nror_patients_new_validate($form, $form_state) {
+  $mail = $form_state['values']['mail'];
+  if (!empty($mail)) {
+    nror_validate_profile_info($form, $form_state);
+    $mail_validate = user_validate_mail($mail);
+    if (!empty($mail_validate)) {
+      form_set_error('mail', $mail_validate);
+    }
+    if (user_load_by_mail($mail) != false || user_load_by_name($mail) != false) {
+      form_set_error('mail', t('User with email address %m is already registered.', array('%m' => $mail)));
+    }
+  }
+  $facility = nror_facilities_get($form_state['values']['facility']);
+  if (!empty($facility->code)) {
+    $user_name = $facility->code . '-' . $form_state['values']['name'];
+  } else {
+    $user_name = $form_state['values']['name'];
+  }
+  if (!nror_user_name_unique($user_name)) {
+    form_set_error('name', t('User with external ID %i is already registered.', array('%i' => $form_state['values']['name'])));
+  }
+}
+
+/**
+ * nror_patients_new() submit function
+ * @see nror_patients_new()
+ */
+function nror_patients_new_submit($form, &$form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    nror_trim_values($form_state['values']);
+    
+    $facility = nror_facilities_get($form_state['values']['facility']);
+    if (!empty($facility->code)) {
+      $form_state['values']['name'] = $facility->code . '-' . $form_state['values']['name'];
+    }
+    _nror_patients_save_patient($form['#user'], $form_state['values']);
+  }
+  drupal_goto(NROR_DASHBOARD_PATIENTS_TAB_URL);
+}
+
+function nror_patients_edit_patient($form, $form_state, $patient) {
+  global $user;
+  $facility = nror_facilities_get_user_facility($user->uid);
+  if (!nror_patients_is_patient($patient)) {
+    drupal_set_message(t('User is not patient'));
+    drupal_goto('dashboard');
+  }
+
+  $form = array();
+  
+  $form['#user'] = $patient;
+
+  if (!empty($facility)) {
+    $userName = nror_patients_prepare_patient_name($patient->name);
+  } else {
+    $userName = $patient->name;
+  }
+
+  $form['info'] = array('#markup' => 
+    '<div class="nror-profile">
+      <div class="title">External ID</div><div class="value">' . $userName . '</div>
+    </div>'
+  );
+  
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => !empty($patient->name) ? $patient->name : '',
+  );
+
+  $form['profile_first_name'] = array(
+    '#title' => 'First name',
+    '#type' => 'textfield',
+    '#default_value' => !empty($patient->profile_first_name) ? $patient->profile_first_name : '',
+  );
+
+  $form['profile_last_name'] = array(
+    '#title' => 'Last name',
+    '#type' => 'textfield',
+    '#default_value' => !empty($patient->profile_last_name) ? $patient->profile_last_name : '',
+  );
+  
+  $form['mail'] = array(
+    '#title' => 'Email',
+    '#type' => 'textfield',
+    '#default_value' => !empty($patient->mail) ? $patient->mail : '',
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+  $countries = license_agreement_prepare_country_list();
+
+  $userCountry = license_agreement_get_user_country($patient->uid);
+  $keys = array_keys($countries);
+  $defaultCountry = !empty($userCountry->id) ? $userCountry->id : $keys[0];
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+  $form['country']['country'] = array(
+      '#type' => 'select',
+      '#title' => t('Country'),
+      '#description' => t('Select the country.'),
+      '#required' => true,
+      '#options' => $countries,
+      '#default_value' => $defaultCountry,
+  );
+
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+  nror_patients_add_form_elemts($form, $form_state);
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+  
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_patients_edit_patient_submit')
+  );
+
+  $form['#attributes'] = array(
+    'class' => 'nror-form'
+  );
+
+  return $form;
+}
+
+function nror_patients_edit_patient_validate($form, $form_state) {
+  $patient = $form['#user'];
+  $values = $form_state['values'];
+  
+  if ($patient->mail != $values['mail']) {
+    $mail = $values['mail'];
+    if (!empty($mail)) {
+      $mail_validate = user_validate_mail($mail);
+      if (!empty($mail_validate)) {
+        form_set_error('mail', $mail_validate);
+      }
+      $user = user_load_by_mail($mail);
+      if ($user != false && $user->uid != $patient->uid) {
+        form_set_error('mail', t('User with email address %m is already registered.', array('%m' => $mail)));
+      }
+    }
+  }
+}
+
+function nror_patients_edit_patient_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = clone $form['#user']; 
+    $data = $form_state['values'];
+    nror_trim_values($data);
+    if (user_save($form['#user'], $data)) {
+      profile_save_profile($data, $form['#user'], 'Personal Info');
+      if ($account->physician != $data['physician']) {
+        nror_patients_assign_patient_to_doctor($account->uid, $data['physician']);
+      }
+
+      $country_id = $data['country'];
+      if (!empty($country_id)) {
+        license_agreement_bind_country_to_user($account->uid, $country_id);
+      }
+//      if ($account->mail != $data['mail']) {
+//        $params['account'] = $form['#user'];
+//        drupal_mail('nror', 'notification', $form['#user']->mail, user_preferred_language($form['#user']), $params);
+//      }
+      
+      drupal_set_message(t('Changes were saved.'));
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_PATIENTS_TAB_URL);
+}
+
+function nror_patients_add_form_elemts(&$form, &$form_state) {
+  global $user;
+  $form['account']['physicians'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Physicians'),
+  );
+
+  $options = array();
+
+  $facilities = &$form['account']['facilities']['facility']['#options'];
+  foreach ($facilities as $fid => $facility) {
+    $aph = nror_physicians_get_all($fid);
+    if (empty($aph)) {
+      unset($facilities[$fid]);
+    }
+  }
+
+  if (nror_rc_is_coordinator($user)) {
+    $facility = nror_facilities_get_user_facility($user->uid);
+    $fid = $facility->fid;
+    unset($form['account']['facilities']);
+    $form['account']['facility'] = array(
+      '#type' => 'hidden',
+      '#value' => $fid
+    );
+  } else {
+    $form['account']['facilities']['facility']['#ajax'] = array(
+      'callback' => 'nror_patients_ajax_select',
+      'wrapper' => 'ajax-select',
+    );
+    $form['account']['facilities']['facility']['#description'] = t('Select the facility patient belongs to.');
+
+    $form['account']['physicians']['#prefix'] = '<div id="ajax-select">';
+    $form['account']['physicians']['#suffix'] = '</div>';
+
+    if (isset($form_state['values']['facility'])) {
+      $fid = $form_state['values']['facility'];
+    } else if (isset($form['account']['facilities']['facility']['#default_value'])) {
+      $fid = $form['account']['facilities']['facility']['#default_value'];
+    }
+  }
+
+  $physicians = nror_physicians_get_all($fid);
+
+  foreach ($physicians as $physician) {
+    if ($physician->status == 1) {
+      $options[$physician->uid] = $physician->profile_first_name.' '.$physician->profile_last_name.', '.$physician->degree;
+    }
+  }
+  $keys = array_keys($physicians);
+  $default = isset($physicians[$keys[0]]->uid) ? $physicians[$keys[0]]->uid : '';
+  if (isset($form['#user']) && !empty($form['#user']->physician)) {
+    $default = $form['#user']->physician;
+  }
+  
+  $form['account']['physicians']['physician'] = array(
+    '#type' => 'select',
+    '#title' => t('Provider'),
+    '#description' => t('Select patient\'s provider.'),
+    '#options' => $options,
+    '#required' => true,
+    '#default_value' => $default
+  );
+}
+
+/**
+ * Ajax callback
+ * @see nror_patients_new()
+ */
+function nror_patients_ajax_select($form, $form_state) {
+  return  $form['account']['physicians'];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_patients_form_user_register_form_alter(&$form, &$form_state) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_PATIENT);
+  unset($form['account']['roles']['#options'][$role->rid]);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+
+function nror_patients_form_nror_physicians_delete_form_alter(&$form, &$form_state) {
+  $form['#validate'][] = 'nror_patients_attending_physicians_delete_form_validate';
+}
+
+function nror_patients_attending_physicians_delete_form_validate($form, &$form_state) {
+  $user = user_load($form_state['values']['uid']);
+  if (nror_physicians_is_physician($user)) {
+    if (nror_patients_get_all_by_physician($user->uid)) {
+      form_set_error('delete', t('This provider has assigned patients'));
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_patients_form_nror_physicians_delete_multiple_alter(&$form, &$form_state) {
+  $form['#validate'][] = 'nror_patients_attending_physicians_delete_multiple_validate';
+}
+
+function nror_patients_attending_physicians_delete_multiple_validate($form, &$form_state) {
+  $uids = $form_state['values']['list'];
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    if (nror_physicians_is_physician($user)) {
+      if (nror_patients_get_all_by_physician($user->uid)) {
+        form_set_error('delete', t('Provider %u has assigned patients', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)));
+      }
+    }
+  }  
+}
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_patients_form_nror_physicians_edit_form_alter(&$form, &$form_state) {
+  $form['#validate'][] = 'nror_patients_attending_physicians_edit_form_validate';
+}
+
+function nror_patients_attending_physicians_edit_form_validate($form, &$form_state) {
+  $user = $form['#user'];
+  $facility = $form_state['values']['facility'];
+  if (nror_physicians_is_physician($user) && $user->facility != $facility) {
+    if (nror_patients_get_all_by_physician($user->uid)) {
+      form_set_error('save', t('This provider has assigned patients'));
+    }
+  }
+}
+
+
+/**
+ * Implements hook_user_load()
+ */
+function nror_patients_user_load($users) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_PATIENT);
+  foreach ($users as $user) {
+    if (isset($user->roles[$role->rid])) {
+      $doctor = nror_patients_get_patient_doctor($user->uid);
+      $user->physician = $doctor;
+    }
+  }
+}
+
+/**
+ * Implements hook_user_delete()
+ */
+function nror_patients_user_delete($account) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_PATIENT);
+  if (isset($account->roles[$role->rid])) {
+    $doctor = user_load($account->physician);
+    nror_patients_clear_doctor_patient_relation($account, $doctor);
+  }
+  elseif (nror_physicians_is_physician($account)) {
+    $patients = nror_patients_get_all_by_physician($account->uid);
+    foreach ($patients as $patient) {
+      nror_patients_clear_doctor_patient_relation($patient, $account);
+    }
+    nror_physicians_delete_all_degrees($account->uid);
+  }
+}
+
+/**
+ * Helper function.
+ * Prepares user accounts data and creates user.
+ */
+function _nror_patients_save_patient($account, $data) {
+  if (user_save($account, $data)) {
+    nror_patients_assign_patient_to_doctor($account->uid, $account->physician);
+    nror_rc_assign_coordinator_to_new_group($account);
+    $country_id = $data['country'];
+    if (!empty($country_id)) {
+      license_agreement_bind_country_to_user($account->uid, $country_id);
+    }
+//    _user_mail_notify('register_admin_created', $account);
+    drupal_set_message(t('Patient %p was registered successfully', array('%p' => $data['profile_first_name'] . ' ' . $data['profile_last_name'])));
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Helper function.
+ * Checks whether at least one attending physician registered
+ */
+function _nror_patients_check_attending_physicians() {
+  global $user;
+  $fid = null;
+  if (nror_rc_is_coordinator($user)) {
+    $facility = nror_facilities_get_user_facility($user->uid);
+    $fid = $facility->fid;
+  }
+  $attending_physicians = nror_physicians_get_all($fid);
+  if (empty($attending_physicians)) {
+    if(nror_check_is_admin() || nror_rc_is_coordinator($user) == true) {
+      drupal_set_message(t('To register patients accounts at least one provider required.'), 'error');
+      drupal_goto('dashboard');
+    }
+    else if (user_is_anonymous()) {
+      drupal_set_message(t('Sorry, registration is not available at the moment. Please, try again later.'));
+      drupal_goto('<front>');
+    }
+  }
+}
+
+function nror_patients_assignment_form($form, $form_state) {
+  global $user;
+  $form = array();
+
+  if (nror_check_is_admin()) {
+    $patients = nror_patients_get_table_data(null);
+  }
+  else {
+    $facility = nror_facilities_get_user_facility($user->uid);
+    $patients = nror_patients_get_table_data($facility->fid);
+  }
+
+  if (!empty($_SESSION[NROR_PATIENTS_ASSIGN_SESSION_VAR])) {
+    $patientsChecked = $_SESSION[NROR_PATIENTS_ASSIGN_SESSION_VAR];
+    foreach ($patients as $key => $patient) {
+      if (!in_array($patient->uid, $patientsChecked)) {
+        unset($patients[$key]);
+      }
+    }
+  }
+
+  if (!empty($patients)) {
+    $form['patients'] = array(
+      '#type' => 'container',
+      '#tree' => true,
+    );
+    $physicians = array();
+    foreach($patients as $patient) {
+      $doctor_select = array();
+      if (empty($physicians[$patient->facility_id])) {
+        $physicians[$patient->facility_id] = nror_physicians_get_all($patient->facility_id);
+      }
+      $profile = nror_profile_user($patient->uid);
+      $current_doctor = nror_patients_get_patient_doctor($patient->uid);
+      foreach ($physicians[$patient->facility_id] as $doctor) {
+        if ($doctor->status == 1) {
+          $doctor_profile = nror_profile_user($doctor->uid);
+          $doctor_select[$doctor->uid] = t($doctor_profile->profile_first_name . ' ' . $doctor_profile->profile_last_name . ', ' . $doctor->degree);
+        }
+      }
+
+      $form['patients'][$patient->uid] = array(
+        '#type' => 'select',
+        '#options' => $doctor_select,
+        '#default_value'=> $current_doctor,
+        '#user' => t($profile->profile_first_name . ' ' . $profile->profile_last_name),
+        '#facility' => $patient->facility
+      );
+
+
+    }
+  }
+
+  if (!empty($patients)) {
+    $form['save'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#name' => 'save',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+
+    $form['back'] = array(
+      '#type' => 'submit',
+      '#value' => t('Back'),
+      '#name' => 'back',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+function nror_patients_assignment_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'back') {
+    drupal_goto('dashboard');
+  }
+  else {
+    $data = $form_state['values']['patients'];
+    foreach ($data as $patient_id => $physician_id) {
+      $patient = user_load($patient_id);
+      if ($patient->physician != $physician_id) {
+        nror_patients_assign_patient_to_doctor($patient_id, $physician_id);
+      }
+    }
+  }
+  drupal_goto('dashboard');
+}
+
+function theme_nror_patients_assignment_form(&$vars) {
+  $output = '';
+  $form = &$vars['form'];
+  $patientsElement = &$form['patients'];
+  $header = array();
+  $header[] = array('data' => t('Patient'));
+  $header[] = array('data' => t('Facility'));
+  $header[] = array('data' => t('Physician'));
+
+  $rows = array();
+  if(!empty($patientsElement)) {
+    $patients = element_children($patientsElement);
+    foreach ($patients as $el_key) {
+      $rows[] = array(
+        array('data' => $patientsElement[$el_key]['#user']),
+        array('data' => $patientsElement[$el_key]['#facility']),
+        array('data' => drupal_render($patientsElement[$el_key]))
+      );
+    }
+  }
+  ;
+  $output .= theme('table', array('header' => $header, 'rows' => $rows, 'empty' => t('No patients found')));
+
+  $output .= drupal_render_children($form);
+
+  return $output;
+}
+
+/**
+ * Implementation of hook_theme().
+ * @return type
+ */
+function nror_patients_theme($existing, $type, $theme, $path) {
+  return array(
+    'nror_patients_assignment_form' => array(
+      'render element' => 'form'
+    )
+  );
+}
+
+function nror_patients_dashboard_table() {
+  global $user;
+  
+  $output = '';
+  
+  $header = array();
+  
+  $header[] = '<p class="header-sort">' . t('ID') . '</p>';
+  $header[] = '<p class="header-sort">' . t('Name') . '</p>';
+  $header[] = '<p class="header-sort">' . t('Data') . '</p>';
+  
+  $patients = nror_patients_get_all_by_physician($user->uid);
+    
+  $param = 'form_status';
+  $sort = true;
+
+  $patients_out = helpers_sort_two_level_array(nror_prepare_data($patients, NROR_DATA_PATIENTS), $param, $sort);
+  $rows = array();
+  if (!empty($patients_out)) {
+    foreach ($patients_out as $patient) {
+      $row = array();
+      $row[] = array('data' => $patient['name']);
+      $row[] = array('data' => $patient['full_name']);
+      $form_status = array_search($patient['module_status'], cacure_x_form_statuses());
+      if (empty($form_status) || !isset($patient['form_path'])) {
+        $row[] = array('data' =>'No forms available');
+      }
+      else {
+        $links = ' (';
+        $links .= l('edit', 'form/' . $patient['form_path']);
+        $links .= ')';
+        $row[] = array('data' => $form_status . $links);
+      }     
+      $rows[] = $row;     
+    }
+  }
+  $output .= '<div class="search">Search: <input type="text" class="search-box"></div>';
+  $output .= '<div class="dashboard-table">';
+  $output .= theme('table', 
+    array(
+      'header' => $header, 
+      'rows' => $rows, 
+      'empty' => t('No patients found'),
+      'attributes' => array(
+        'class' => array(
+          'nror_administration',
+          'tablesorter',
+          'users-table'
+        )
+      )
+    )
+  );
+  $output .= '</div>';
+ 
+  return $output;
+}
+
+function nror_patients_nror_facility_delete_event($fid) {
+  $patients = nror_facilities_get_facility_users_by_role($fid, NROR_USER_ROLE_PATIENT);
+  $physicians = nror_facilities_get_facility_users_by_role($fid, NROR_USER_ROLE_PHYSICIAN);
+  if (!empty($patients)) {
+    foreach ($patients as $user) {
+      user_delete($user);
+    }
+  }   
+  
+  if (!empty($physicians)) {
+    foreach ($physicians as $user) {
+      user_delete($user);
+    }
+  }    
+}
+
+function nror_patients_check_tmp_dir($dirName) {
+  if (!is_dir($dirName)) {
+    mkdir($dirName, 0777);
+  }
+  if (!is_writable($dirName)) {
+    drupal_set_message('Temporary directory ' . $dirName . ' should be writable', 'error');
+    return array();
+  }
+}
+
+function nror_patients_prepare_patient_name($patientName) {
+  $nameArr = explode('-', $patientName);
+  if (count($nameArr) > 1) {
+    unset($nameArr[0]);
+  }
+  $name = implode('-', $nameArr);
+  return $name;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function nror_patients_block_info() {
+  $blocks = array();
+
+  $blocks[NROR_PATIENTS_WELCOME_BLOCK_DELTA]['info'] = t('Patient welcome block');
+  $blocks[NROR_PATIENTS_WELCOME_BLOCK_DELTA]['cache'] = DRUPAL_NO_CACHE;
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function nror_patients_block_view($delta = '') {
+  $block = array();
+  $settings = nror_patient_get_welcome_block_settings();
+  switch ($delta) {
+    case NROR_PATIENTS_WELCOME_BLOCK_DELTA:
+      $block['subject'] = $settings['title'];
+      $block['content'] = $settings['content']['value'];
+      return $block;
+  }
+}
+
+function nror_patient_config_welcome_form($form, $form_state) {
+  $form = array();
+
+  $settings = nror_patient_get_welcome_block_settings();
+
+  $form[NROR_PATIENTS_WELCOME_BLOCK_TITLE] = array(
+    '#type' => 'textfield',
+    '#title' => t('Patient welcome block title'),
+    '#default_value' => $settings['title'],
+  );
+
+  $form[NROR_PATIENTS_WELCOME_BLOCK_CONTENT] = array(
+    '#type' => 'text_format',
+    '#format' => $settings['content']['format'],
+    '#title' => 'Patient welcome block content',
+    '#default_value'  => $settings['content']['value'],
+  );
+
+  return system_settings_form($form);
+
+}
+
+/**
+ * Gets settings from drupal variables
+ * @return array
+ */
+function nror_patient_get_welcome_block_settings() {
+  $defaults = array(
+    'value' => '',
+    'format' => filter_default_format(),
+  );
+
+  return array(
+    'title' => variable_get(NROR_PATIENTS_WELCOME_BLOCK_TITLE, ''),
+    'content' => variable_get(NROR_PATIENTS_WELCOME_BLOCK_CONTENT, $defaults)
+  );
+}

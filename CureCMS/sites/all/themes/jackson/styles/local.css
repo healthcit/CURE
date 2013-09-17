@@ -1,0 +1,311 @@
+.addtoany_list a span {
+  display: none;
+}
+
+a#context-block-region-superfish_menu,
+#block-addtoany-addtoany-button h2,
+#block-menu-secondary-menu h2,
+#block-menu-menu-external-links h2,
+#block-menu-menu-diabetes-external-links h2 {
+  display: none;
+}
+
+#block-menu-secondary-menu ul.menu {
+  float: right;
+}
+
+#block-menu-secondary-menu ul.menu li {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  float: left;
+}
+
+#block-menu-secondary-menu ul.menu li a {
+  border-left: medium none;
+  border-right: 1px solid #B3B3B7;
+  padding: 0 10px;
+  height: 10px;
+  color: #CF710C;
+  text-decoration: none;
+}
+
+#block-menu-secondary-menu ul.menu li a:hover {
+  color: #CF710C;
+  text-decoration: underline;
+}
+
+#block-addtoany-addtoany-button {
+  float: right;
+  font-size: 12px;
+  position: relative;
+}
+
+#block-addtoany-addtoany-button a {
+  padding: 0 10px;
+}
+
+#block-menu-menu-diabetes-external-links ul.menu,
+#block-menu-menu-external-links ul.menu {
+  float: right;
+  padding: 10px 0;
+}
+
+#block-menu-menu-external-links ul.menu li a,
+#block-menu-menu-diabetes-external-links ul.menu li a {
+  border-left: medium none;
+  border-right: 1px solid #B3B3B7;
+  height: 10px;
+  padding: 0 10px;
+  color: #CF710C;
+}
+
+#block-menu-menu-external-links ul.menu li.last,
+#block-menu-menu-diabetes-external-links ul.menu li.last,
+#block-menu-menu-external-links ul.menu li.last a,
+#block-menu-menu-diabetes-external-links ul.menu li.last a {
+  border: medium none;
+  padding-right: 0;
+}
+
+#block-menu-menu-external-links, #block-menu-menu-diabetes-external-links {
+  margin: -20px 0 0;
+}
+
+#block-menu-menu-external-links ul.menu li, #block-menu-menu-diabetes-external-links ul.menu li {
+  display: inline-block;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+#top-menu li a.active{
+  color: #fff;
+}
+
+#top-menu-wrap {
+  background: url("../images/main-sprite.png") repeat-x scroll center -90px transparent;
+  height: 30px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+#top-menu {
+  height: 45px;
+  position: relative;
+  z-index: 100;
+  width: 960px;
+  margin: auto;
+}
+
+#top-menu .top-user-name {
+  color: #B3B3B7;
+  float: left;
+  width: 300px;
+  padding-left: 10px;
+}
+#header {
+  height: 190px;
+  background: url("../images/header-bg.gif") repeat-x scroll 0 0 #193F3B;
+  width: 100%;
+  padding-top: 20px;
+ }
+.header {
+    height: 190px;
+    padding-top: 8px;
+ }
+
+/*MAIN MENU*/
+
+div.region-superfish-menu {
+  background: url("../images/main-sprite.png") repeat-x scroll left top transparent;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 10px;
+  float: right;
+  bottom: 0;
+  width: 100%;
+  
+}
+li a.hover {
+    color: #CF710C;
+}
+#block-superfish-12 h2{
+  display: none;  
+  
+}
+
+#block-superfish-12 {
+  float: left;
+  bottom: 0;
+  height: 44px;
+  width:100%;
+}
+
+ul#superfish-12 {
+  float: left;
+  height: 45px;
+  line-height: 1;
+  list-style: none outside none;
+  margin: 0 auto;
+  width:100%; 
+  padding: 0;
+  
+}
+ul#superfish-12 a {
+    border: none;
+    padding: 0.75em 1em;
+    text-decoration: none;
+}
+ul#superfish-12 li {
+  float: left;
+  width: auto;
+  position: relative;
+  background: url("../images/main-sprite.png") repeat-x scroll left top transparent;
+  text-align: left;
+}
+
+ul#superfish-12 a,
+ul#superfish-12 a:visited {
+  color: #FFFFFF;
+  font-size: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.sidebar .gutter {
+  background: transparent;
+  border: 0;
+}
+#block-cacure-change-role-0 {
+  background-color: white;
+  border: 2px solid #DCDADA;
+  border-radius: 3px 3px 3px 3px;
+  margin-top: 15px;
+  min-height: 0;
+  padding: 0 5px 5px;
+}
+
+ul#superfish-12 li ul {
+  margin-top: 11px;
+}
+ul#superfish-12 li ul li ul {
+  margin-top: 0;
+}
+#block-superfish-12 li{
+  height: 44px;
+}
+#superfish-12 li:hover,
+#superfish-12 li.sfHover,
+#superfish-12 a:focus,
+#superfish-12 a:hover,
+#superfish-12 a:active {
+    background: none repeat scroll 0 0 #CF710C;
+    outline: 0 none;
+}
+#block-menu-menu-footer-links h2 {
+  display: none;
+}
+#block-block-77{
+  text-align: center;
+  margin-bottom: 20px;
+}
+#block-superfish-7 {
+  overflow-x: visible;
+  display: inline-block;
+  width: 100%;
+}
+#main ul li {
+    list-style: none;
+    margin-left: 0px;
+}
+
+.sf-menu a, .sf-menu a:visited {
+  color: #ffffff;
+  border: 1px outset #000000;
+}
+
+.sf-menu li, .sf-menu li li, .sf-menu li li li, .sf-navbar {
+    background: none repeat scroll 0 0 #1A403C;
+}
+.sf-menu li:hover, .sf-menu li.sfHover, .sf-menu li.active a, .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active, .sf-navbar li li {
+    background: none repeat scroll 0 0 #CF710C;
+    color: #FFFFFF !important;
+}
+.one-sidebar .first-sidebar {
+    float: left;
+    width: 220px;
+    
+ }
+ .sidebar-first .page-content {
+    float: right;
+    width: 710px;
+}
+ #block-superfish-11 {
+   width: 100%;
+   position: relative;
+   left: -21px;
+ }
+ #block-superfish-6{
+   width: 100%;
+   position: relative;
+   left: -21px;
+ }
+ .sf-vertical, .sf-vertical li {
+    width: 17em;
+}
+#block-switchtheme-switch-form {
+  background-color: white;
+    border: 2px solid #DCDADA;
+    border-radius: 3px 3px 3px 3px;
+    margin-top: 15px;
+    min-height: 0;
+    padding: 0 5px 5px;
+}
+#footer {
+  margin-top: 45px;
+} 
+#superfish-7, #superfish-10 {
+  margin-left: -20px;
+}
+#block-superfish-7 h2 {
+  display: none;
+}
+#block-cacure-change-role-0 {
+    background-color: white;
+    border: 2px solid #DCDADA;
+    border-radius: 3px 3px 3px 3px;
+    margin-top: 15px;
+    padding: 0 5px 5px;
+    
+}
+#panels-divider-hor {
+  background: url("../images/panel-divider.png") no-repeat scroll left top transparent;
+  
+}
+#main .item-list ul li {
+  list-style: disc outside none;
+  margin-left: 20px;
+}
+#widgetbox_widget_parent_0, #widgetbox_widget_parent_1 {
+  left: -14px;
+  position: relative;
+}
+
+#switchtheme-switch-form #edit-actions {
+  margin-top: 1em;
+  display: block;
+}
+
+#block-cacure_mgmt-6 div.quest-title  {
+  display: none;
+}
+
+div.faq .field-type-taxonomy-term-reference {
+  display: none;
+}
+div.warning {
+    background-image: none;
+}

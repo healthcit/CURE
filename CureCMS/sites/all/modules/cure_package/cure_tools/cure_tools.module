@@ -1,0 +1,17 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implementation of hook_init()
+ */
+function cure_tools_init() {
+  $path = drupal_get_path('module', 'cure_tools');
+  drupal_add_js($path.'/tools/js/helpers.js', 'file');
+  module_load_include('php', 'cure_tools', 'tools/SimpleXmlParser');
+  module_load_include('php', 'cure_tools', 'tools/helpers');
+}
+

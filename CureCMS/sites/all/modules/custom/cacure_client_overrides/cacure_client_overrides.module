@@ -1,0 +1,210 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implementation of hook_element_info().
+ */
+function cacure_client_overrides_element_info() {
+  $types['optionwidgets_buttons'] = array('#process' => array('remove_radio_na'));
+  return $types;
+}
+
+/**
+ * Unset the N/A option on option widget radio buttons.
+ */
+function remove_radio_na($element) {
+  unset($element['value']['#options']['']);
+  return $element;
+}
+/**
+ * Implementation of hook_preprocess_page();
+ */
+function cacure_client_overrides_preprocess_page(&$variables) {
+  $arg = arg();  
+  if ($arg[0] == 'node' && $arg[1] = '46') {
+    $scripts = drupal_add_js();   
+    $new_jquery = array('misc/jquery-1.4.2.min.js' => $scripts['misc/jquery.js']);
+    $scripts = array_merge($new_jquery, $scripts);
+    unset($scripts['misc/jquery.js']);
+
+    $variables['scripts'] = drupal_get_js('header', $scripts);
+  }
+}
+/**
+ * Implementation of hook_form_alter().
+ */
+function cacure_client_overrides_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'switchtheme_switch_form') {
+    unset($form['theme']['#options']['fusion_core'], $form['theme']['#options']['rootcandy_fixed'], $form['theme']['#options']['ninesixty']);
+  }
+
+  if($form_id == 'user_profile_form'){
+
+    $form['actions']['back'] = array(
+      '#type' => 'submit',
+      '#name' => 'back',
+      '#value' => t('Cancel'),
+      '#submit' => array('cacure_client_overrides_user_profile_back_redirect'),
+      '#limit_validation_errors' => array()
+    );
+  }
+
+  if ($form_id == 'user_login_block') {
+    if (variable_get('user_register', 1)) {
+      //$items[] = l(t('Register new practice'), 'user/register', array('attributes' => array('title' => t('Register new practice.'))));
+    }
+    $items[] = l(t('Request new password'), 'user/password', array('attributes' => array('title' => t('Request new password via e-mail.'))));
+    $form['links'] = array(
+      '#type' => 'item',
+      '#markup' => theme('item_list',array('items' => $items))
+    );
+
+    $form['actions']['register_new'] = array(
+        '#type' => 'submit',
+        '#value' => 'Register new practice',
+        '#id' => 'register-new-practice',
+        '#attributes' => array('id' => 'register_new_practice_link'),
+        '#limit_validation_errors' => array(),
+        '#name' => 'register-new-practice',
+        '#submit' => array('cacure_client_overrides_login_block_form_redirect')
+    );
+  }
+
+  if ($form_id == 'user_register') {
+    $form['account']['name']['#description'] = t('Username must be a minimum of 2 characters and contain at least one letter and one number. Punctuation and special characters are not allowed.');
+    $form['Personal Info']['#weight'] = 1;
+    $form['Personal Info']['au'] = $form['autoassignrole_user'];
+    $form['Personal Info']['au']['#weight'] = -1;
+    $form['account']['#attributes'] = array('class' => 'personal-info clearfix');
+    $form['Personal Info']['#attributes'] = array('class' => 'personal-info light-border clearfix');
+    $form['#validate'][] = 'cacure_client_overrides_form_validate';
+
+    unset($form['Personal Info']['profile_zip_code'], $form['autoassignrole_user']);
+
+    drupal_set_title(t('Create Account'));
+  }
+}
+
+function cacure_client_overrides_login_block_form_redirect($form, $form_state) {
+    $_GET["destination"] = "user/register";
+}
+
+function cacure_client_overrides_user_profile_back_redirect($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'back') {
+    drupal_goto('user');
+  }
+}
+
+/**
+ * Form validate function.
+ */
+function cacure_client_overrides_form_validate($form, &$form_state) {
+  $form_state['values']['profile_first_name'] = $form_state['clicked_button']['#post']['profile_first_name'];
+  $form_state['values']['profile_last_name'] = $form_state['clicked_button']['#post']['profile_last_name'];
+  $form_state['values']['profile_phone_number'] = $form_state['clicked_button']['#post']['profile_phone_number'];
+  $ur = $form_state['clicked_button']['#post']['user_roles'];
+  $form_state['values']['user_roles'] = $ur;
+}
+
+/**
+ * Implementation of hook_mail_alter().
+ */
+function cacure_client_overrides_mail_alter(&$message) {
+  if($message['id'] == 'user_password_reset') {
+    $user = user_load($message['params']['account']->uid);
+    $variables = array('!first_name' => $user->profile_first_name);
+    foreach($message['body'] as $key => $body) {
+      $message['body'][$key] = strtr($body, $variables);
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cacure_client_overrides_theme($existing, $type, $theme, $path) {
+  return array(
+    'box' => array(
+      'variables' => array('title' => '', 'content' => '')
+    ),
+  );
+}
+
+/**
+ * Drupal 6 ported theme_box() function .
+ */
+function theme_box($vars) {
+  $output = '<h2 class="title">'. $vars['title'] .'</h2><div>'. $vars['content'] .'</div>';
+  return $output;
+}
+
+function cacure_client_overrides_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+  if (!user_is_logged_in()) {
+    $role = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+
+    $countries = license_agreement_prepare_country_list();
+
+    $form['country'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Country'),
+    );
+
+    $form['country']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#description' => t('Select the country.'),
+        '#required' => true,
+        '#options' => $countries,
+
+    );
+
+    $form['autoassignrole_user']['user_roles']['#value'] = $role->rid;
+    $form['autoassignrole_user']['user_roles']['#default_value'][] = $role->rid;
+    $form['autoassignrole_user']['#attributes'] = array(
+        'style' => 'display: none'
+    );
+    
+    $form['account']['facilities'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Practices'),
+    );
+    
+    $form['account']['facilities']['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Title'),
+        '#maxlength'=> 255,
+        '#required' => true,
+    );
+  
+    $form['account']['facilities']['code'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Practice code'),
+        '#maxlength'=> 10,
+        '#required' => true
+    );
+    
+    $form['#validate'][] = 'nror_facilities_facility_form_validate';
+    $form['#submit'][] = 'cacure_client_overrides_user_register_submit';
+    
+  }  
+  
+}
+
+function cacure_client_overrides_user_register_submit($form, &$form_state) {
+    if (nror_facilities_save_facility($form_state['values'])) {
+      $facility = nror_facilities_get_by_title($form_state['values']['title']);
+      $account = $form['#user'];
+      $account->facility = $facility->fid;
+      if (user_save($account)) {
+        if (!empty($account->entityId)) {
+          _nror_rc_assign_coordinator_to_existing_group($account);
+        }
+        license_agreement_bind_country_to_user($account->uid, $form_state['values']['country']);
+      }
+    }
+}

@@ -1,0 +1,854 @@
+<?php
+
+require_once dirname(__FILE__) . '/nror_physicians.db.inc';
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function nror_physicians_menu()
+{
+  $items = array();
+
+  $items['physicians'] = array(
+    'title' => 'Providers',
+    'description' => t('Manage Provider accounts.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_physicians_main_form'),
+    'access callback' => 'nror_rc_access',
+    'weight' => 3
+  );
+
+  $items['physicians/new'] = array(
+    'title' => 'Add new provider',
+    'description' => t('Create new Providers account'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_physicians_preregister'),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['physicians/%user/status'] = array(
+    'title' => t('Change status'),
+    'description' => t('Change status.'),
+    'page callback' => 'nror_physicians_status',
+    'page arguments' => array(1),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['physicians/%user/delete'] = array(
+    'title' => t('Delete Provider'),
+    'description' => t('Delete Provider.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_physicians_delete_form', 1),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['physicians/%user/edit'] = array(
+    'title' => t('Edit Provider'),
+    'description' => t('Edit Provider.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_physicians_edit_form', 1),
+    'access callback' => 'nror_rc_access',
+  );
+
+  $items['physicians/multiple'] = array(
+    'title' => t('Delete Providers'),
+    'description' => t('Delete Providers.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_physicians_delete_multiple'),
+    'access callback' => 'nror_rc_access',
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_physicians_menu()
+ */
+function nror_physicians_main_form($form, $form_state)
+{
+  global $user;
+
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['attending_physicians'];
+    helpers_filter_checkboxes($uids);
+    $_SESSION['uids'] = $uids;
+    drupal_goto('physicians/multiple');
+  }
+
+  $form = array();
+
+  $header = array();
+  if (nror_check_is_admin()) {
+    $header['facility'] = array('data' => '<p class="header-sort">' . t('Practice') . '</p>');
+  }
+  $header['name'] = array('data' => '<p class="header-sort">' . t('NPI') . '</p>');
+  $header['full_name'] = array('data' => '<p class="header-sort">' . t('Name') . '</p>');
+  $header['degree'] = array('data' => '<p class="header-sort">' . t('Degrees') . '</p>');
+  $header['participation'] = array('data' => '<p class="header-sort">' . t('CME Participation') . '</p>');
+  $header['form_status'] = array('data' => '<p class="header-sort">' . t('Status') . '</p>');
+  $header['submission_date'] = array('data' => '<p class="header-sort">' . t('Submission date') . '</p>');
+  $header['operations'] = array('data' => t('Account Management'), 'class' => 'actions');
+
+  if (nror_check_is_admin()) {
+    $facility_users = nror_physicians_table_data(null);
+  } else {
+    $user_facility = nror_facilities_get_user_facility($user->uid);
+    $facility_users = nror_physicians_table_data($user_facility->fid);
+  }
+
+  $param = 'module_status';
+  $sort = true;
+
+  $physicians = helpers_sort_two_level_array(nror_prepare_data($facility_users, NROR_DATA_PHYSICIANS), $param, $sort);
+
+  $options = array();
+
+  if (!empty($physicians)) {
+    foreach ($physicians as $uid => $physician) {
+      $options[$uid] = array();
+
+      $options[$uid] = $physician;
+
+      $participationStatus = nror_physicians_get_provider_status($uid);
+      $participationLink = '';
+      if (!(empty($participationStatus))) {
+        if (!empty($participationStatus->link)) {
+          $participationLink = '<a href="' . $participationStatus->link . '">' . $participationStatus->status . '</a>';
+        } else {
+          $participationLink = $participationStatus->status;
+        }
+      }
+
+      $options[$uid]['participation'] = $participationLink;
+
+      $module_status = array_search($physician['module_status'], cacure_x_form_statuses());
+      if (empty($module_status) || !isset($physician['form_path'])) {
+        $options[$uid]['form_status'] = 'No forms available';
+      } else {
+        $links = nror_table_form_action_links($physician);
+        if ($module_status == CACURE_X_FORMS_STATUS_COMPLETED) {
+          $module_status = 'submitted';
+        }
+        $options[$uid]['form_status'] = ucfirst($module_status) . $links;
+      }
+
+      $options[$uid]['operations'] = array();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'physicians/' . $uid . '/edit',
+      );
+      $operations['status'] = array(
+        'title' => strtolower($physician['status']) == 'active' ? t('Inactive') : t('Activate'),
+        'href' => 'physicians/' . $uid . '/status',
+      );
+
+      if (!nror_rc_is_coordinator($user)) {
+        $operations['delete'] = array(
+          'title' => t('Delete'),
+          'href' => 'physicians/' . $uid . '/delete',
+        );
+      }
+      $options[$uid]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );
+    }
+  }
+  $form['find'] = array('#markup' => '<div class="search">Search: <input type="text" class="search-box"></div>');
+
+  $form['actions'] = array(
+    '#type' => 'container',
+  );
+
+  $form['actions']['preregister'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add Provider'),
+    '#name' => 'preregister',
+
+  );
+
+  $form['attending_physicians'] = array(
+    '#prefix' => '<div class="dashboard-table">',
+    '#suffix' => '</div>',
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $options,
+    '#empty' => 'No Providers found',
+    '#attributes' => array(
+      'class' => array(
+        'nror_administration',
+        'tablesorter',
+        'users-table'
+      ),
+    ),
+  );
+
+  if (!empty($facility_users)) {
+    if (!nror_rc_is_coordinator($user)) {
+      $form['delete'] = array(
+        '#type' => 'submit',
+        '#value' => t('Delete'),
+        '#name' => 'delete',
+        '#attributes' => array(
+          'class' => array(
+            'nror_button'
+          ),
+        ),
+      );
+    }
+
+    $form['status'] = array(
+      '#type' => 'submit',
+      '#value' => t('Change status'),
+      '#name' => 'status',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * nror_physicians_main_form() submit function
+ * @see nror_physicians_main_form()
+ */
+function nror_physicians_main_form_submit($form, &$form_state)
+{
+  $uids = $form_state['values']['attending_physicians'];
+  helpers_filter_checkboxes($uids);
+  if ($form_state['triggering_element']['#name'] == 'preregister') {
+    drupal_goto('physicians/new');
+  } else if ($form_state['triggering_element']['#name'] == 'status') {
+    nror_change_status_multiple($uids);
+    drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);;
+  } else if ($form_state['triggering_element']['#name'] == 'delete') {
+    if (!empty($uids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+}
+
+function nror_physicians_preregister($form, &$form_state)
+{
+  $form = array();
+
+  $form['#user'] = drupal_anonymous_user();
+
+  $form['name'] = array(
+    '#title' => 'NPI',
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#description' => t('Provider\'s NPI'),
+    '#maxlength' => 50,
+  );
+
+  $form['profile_first_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#description' => t('Provider\'s first name'),
+    '#required' => true,
+    '#maxlength' => 50,
+  );
+
+  $form['profile_last_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Last Name'),
+    '#description' => t('Provider\'s last name'),
+    '#required' => true,
+    '#maxlength' => 50,
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Provider\'s mail'),
+    '#required' => true,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+  $degrees = nror_physicians_get_all_degree();
+  foreach ($degrees as $degree) {
+    $degree_checks[$degree] = $degree;
+  }
+
+  $form['degree'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Provider degrees'),
+    '#attributes' => array('class' => array('container-inline')),
+    '#tree' => true,
+  );
+
+  foreach ($degree_checks as $degree) {
+    $form['degree'][$degree] = array(
+      '#type' => 'checkbox',
+      '#title' => t($degree),
+    );
+  }
+
+  $countries = license_agreement_prepare_country_list();
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+  $form['country']['country'] = array(
+    '#type' => 'select',
+    '#title' => t('Country'),
+    '#description' => t('Select the country.'),
+    '#required' => true,
+    '#options' => $countries
+  );
+
+  $statuses = nror_physicians_prepare_status_list();
+
+  $form['participation'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CME Participation'),
+  );
+
+  $form['participation']['participation'] = array(
+    '#type' => 'select',
+    '#title' => t('CME Participation'),
+    '#description' => t('Select CME Participation.'),
+    '#required' => true,
+    '#options' => $statuses,
+  );
+
+  autoassignrole_form_user_register_form_alter($form, $form_state);
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+
+  $role = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+
+  $form['account']['status'] = array(
+    '#type' => 'value',
+    '#value' => 1
+  );
+
+  $form['autoassignrole_user']['user_roles']['#value'] = $role->rid;
+  $form['autoassignrole_user']['user_roles']['#default_value'][] = $role->rid;
+  $form['autoassignrole_user']['#attributes'] = array(
+    'style' => 'display: none'
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_physicians_preregister_submit')
+  );
+
+  return $form;
+}
+
+
+function nror_physicians_preregister_validate($form, $form_state)
+{
+  nror_validate_profile_info($form, $form_state);
+  $values = $form_state['values'];
+
+  if (!nror_user_name_unique($values['name'])) {
+    form_set_error('name', t('User with NPI %i is already registered.', array('%i' => $values['name'])));
+  }
+
+  $mail = $values['mail'];
+
+  if (!nror_validate_mail($mail)) {
+    form_set_error('mail', t('The e-mail address %m is already taken', array('%m' => $mail)));
+  }
+  $mail_validate = user_validate_mail($mail);
+  if (!empty($mail_validate)) {
+    form_set_error('mail', $mail_validate);
+  }
+}
+
+function nror_physicians_preregister_submit($form, $form_state)
+{
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = $form['#user'];
+    $data = $form_state['values'];
+    nror_trim_values($data);
+    if (user_save($account, $data)) {
+      nror_rc_assign_coordinator_to_new_group($account);
+      nror_physicians_save_physician_degree($account->uid, $data['degree']);
+      $country_id = $data['country'];
+      if (!empty($country_id)) {
+        license_agreement_bind_country_to_user($account->uid, $country_id);
+      }
+      $status = $form_state['values']['participation'];
+      if (!empty($status)) {
+        nror_physicians_save_provider_status($account->uid, $status);
+      }
+//      _user_mail_notify('register_admin_created', $account);
+      drupal_set_message(t('Provider %p was registered successfully', array('%p' => $data['profile_first_name'] . ' ' . $form_state['values']['profile_last_name'])));
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);;
+}
+
+/**
+ * Alternative form used in nror_physicians_main_form()
+ * @see nror_physicians_main_form()
+ */
+function nror_physicians_delete_multiple($form, &$form_state)
+{
+  $form = array();
+
+  $uids = isset($_SESSION['uids']) ? $_SESSION['uids'] : null;
+
+  $form['message'] = array('#markup' => '<p>' . t('Are you sure you want delete these users?') . '</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    $form['list'][$uid] = array(
+      '#type' => 'hidden',
+      '#value' => $uid,
+      '#prefix' => '<li>',
+      '#suffix' => check_plain($user->profile_first_name . ' ' . $user->profile_last_name) . "</li>\n",
+    );
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_physicians_delete_multiple_submit')
+  );
+
+  return $form;
+}
+
+/**
+ * nror_physicians_delete_multiple() submit function
+ * @see nror_rc_main_form()
+ */
+function nror_physicians_delete_multiple_submit($form, &$form_state)
+{
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    foreach ($form_state['values']['list'] as $uid) {
+      user_delete($uid);
+    }
+    unset($_SESSION['uids']);
+  }
+  drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);;
+}
+
+/**
+ * Menu callback
+ * @see nror_physicians_menu()
+ */
+function nror_physicians_status($user)
+{
+  nror_change_status($user);
+  drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_physicians_menu()
+ */
+function nror_physicians_delete_form($form, &$form_state, $user)
+{
+  $form = array();
+  $form['message'] = array('#markup' => '<p>' . t('Are you sure you want to delete provider %u?', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)) . '</p>');
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid);
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_physicians_delete_form_submit')
+  );
+
+  return $form;
+}
+
+/**
+ * nror_physicians_delete_attending_physicians_form() submit function
+ * @see nror_rc_form()
+ */
+function nror_physicians_delete_form_submit($form, &$form_state)
+{
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    $user = user_load($form_state['values']['uid']);
+    user_delete($form_state['values']['uid']);
+    drupal_set_message(t('Provider %u was deleted successfully.', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)));
+  }
+  drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_physicians_menu()
+ */
+function nror_physicians_edit_form($form, &$form_state, $user)
+{
+  if (!nror_physicians_is_physician($user)) {
+    drupal_goto('dashboard');
+  }
+
+  $form = array();
+
+  $form['#user'] = $user;
+
+  $form['info'] = array('#markup' =>
+  '<div class="nror-profile">
+    <div class="title">NPI</div><div class="value">' . $user->name . '</div>
+    </div>'
+  );
+
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => !empty($user->name) ? $user->name : '',
+  );
+
+  $form['profile_first_name'] = array(
+    '#title' => 'First name',
+    '#type' => 'textfield',
+    '#required' => true,
+    '#default_value' => !empty($user->profile_first_name) ? $user->profile_first_name : '',
+  );
+
+  $form['profile_last_name'] = array(
+    '#title' => 'Last name',
+    '#type' => 'textfield',
+    '#required' => true,
+    '#default_value' => !empty($user->profile_last_name) ? $user->profile_last_name : '',
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#required' => true,
+    '#default_value' => $user->mail,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+  $degrees = nror_physicians_get_all_degree();
+
+  foreach ($degrees as $degree) {
+    $degree_checks[$degree] = $degree;
+  }
+
+  $default_degree = nror_physicians_default_degrees($user->uid);
+
+  $form['degree'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Provider degrees'),
+    '#attributes' => array('class' => array('container-inline')),
+    '#tree' => true,
+  );
+
+  foreach ($degree_checks as $degree) {
+    $form['degree'][$degree] = array(
+      '#type' => 'checkbox',
+      '#title' => t($degree),
+      '#default_value' => isset($default_degree[$degree]) ? 1 : 0,
+    );
+  }
+
+  $activeStatus = nror_physicians_get_provider_status($user->uid);
+  $statuses = nror_physicians_prepare_status_list();
+
+  if (isset($activeStatus) && !empty($activeStatus)) {
+    $defaultStatus = $activeStatus->id;
+  } else {
+    $defaultStatus = null;
+  }
+
+  $form['participation'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CME Participation'),
+  );
+
+  $form['participation']['participation'] = array(
+    '#type' => 'select',
+    '#title' => t('CME Participation'),
+    '#description' => t('Select CME Participation.'),
+    '#required' => true,
+    '#options' => $statuses,
+    '#default_value' => $defaultStatus,
+  );
+
+  $countries = license_agreement_prepare_country_list();
+
+  $userCountry = license_agreement_get_user_country($user->uid);
+  $keys = array_keys($countries);
+  $defaultCountry = !empty($userCountry->id) ? $userCountry->id : $keys[0];
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+  $form['country']['country'] = array(
+    '#type' => 'select',
+    '#title' => t('Country'),
+    '#description' => t('Select the country.'),
+    '#required' => true,
+    '#options' => $countries,
+    '#default_value' => $defaultCountry,
+  );
+
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_physicians_edit_form_submit')
+  );
+
+  $form['#attributes'] = array(
+    'class' => 'nror-form'
+  );
+
+  return $form;
+}
+
+function nror_physicians_edit_form_validate($form, &$form_state)
+{
+  $mail = $form_state['values']['mail'];
+  if (!nror_validate_mail($mail, $form['#user']->uid)) {
+    form_set_error('mail', t('The e-mail address %m is already taken', array('%m' => $mail)));
+  }
+  $mail_validate = user_validate_mail($mail);
+  if (!empty($mail_validate)) {
+    form_set_error('mail', $mail_validate);
+  }
+}
+
+function nror_physicians_edit_form_submit($form, $form_state)
+{
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = clone $form['#user'];
+    $data = $form_state['values'];
+    nror_trim_values($data);
+    if (user_save($form['#user'], $data)) {
+      profile_save_profile($data, $form['#user'], 'Personal Info');
+      nror_physicians_save_physician_degree($account->uid, $data['degree']);
+
+      $country_id = $data['country'];
+      if (!empty($country_id)) {
+        license_agreement_bind_country_to_user($account->uid, $country_id);
+      }
+
+      $status = $form_state['values']['participation'];
+      if (!empty($status)) {
+        nror_physicians_save_provider_status($account->uid, $status);
+      }
+//      if ($account->mail != $data['mail']) {
+//        $params['account'] = $form['#user'];
+//        drupal_mail('nror', 'notification', $form['#user']->mail, user_preferred_language($form['#user']), $params);
+//      }
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_PHYSICIANS_TAB_URL);
+}
+
+/**
+ * Gets all physicians
+ * @param null $fid
+ * @return array
+ */
+function nror_physicians_table_data($fid = null, $header = array())
+{
+  $role = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+  return nror_facilities_get_table_data($role->rid, $fid, $header);
+}
+
+function nror_physicians_get_all($fid = null)
+{
+  $role = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+  $result = nror_get_users_by_role_id($role->rid);
+
+  if (!empty($fid)) {
+    foreach ($result as $uid => $user) {
+      if ($user->facility != $fid) {
+        unset($result[$uid]);
+      }
+    }
+  }
+
+  return $result;
+}
+
+/**
+ * Gets attending physician by username
+ */
+function nror_physicians_get_by_name($name)
+{
+  return user_load_by_name($name);
+}
+
+function nror_physicians_is_physician($user)
+{
+  $role = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+  if (isset($user->roles[$role->rid])) {
+    return true;
+  }
+  return false;
+}
+
+function nror_physicians_get_all_degree()
+{
+  return array('MD', 'Ph.D.', 'MPH');
+}
+
+/**
+ * Implements hook_user_load()
+ */
+function nror_physicians_user_load($users)
+{
+  $role = user_role_load_by_name(NROR_USER_ROLE_PHYSICIAN);
+  foreach ($users as $user) {
+    if (isset($user->roles[$role->rid])) {
+      $doctor_degree = nror_physicians_get_doctor_degrees($user->uid);
+      $user->degree = $doctor_degree;
+    }
+  }
+}
+
+function nror_physicians_get_doctor_degrees($uid)
+{
+  $query = db_select('nror_physician_degree', 'pd')
+    ->fields('pd', array('degree'))
+    ->condition('pd.uid', $uid)
+    ->execute()->fetchAll();
+  $result = '';
+  $count = count($query);
+  $i = 0;
+  foreach ($query as $degree) {
+    $result .= $degree->degree;
+    if ($i < $count - 1) {
+      $result .= ', ';
+    }
+    $i++;
+  }
+
+  return $result;
+}
+
+function nror_physicians_save_physician_degree($uid, $degrees)
+{
+  foreach ($degrees as $degree => $val) {
+    $record = array(
+      'uid' => $uid,
+      'degree' => $degree
+    );
+    if ($val == 1) {
+      if (!nror_physicians_degree_exists($uid, $degree)) {
+        drupal_write_record('nror_physician_degree', $record);
+      }
+    } else if ($val == 0) {
+      if (nror_physicians_degree_exists($uid, $degree)) {
+        nror_physicians_delete_physician_degree($uid, $degree);
+      } else {
+        continue;
+      }
+    }
+  }
+}
+
+function nror_physicians_degree_exists($uid, $degree)
+{
+  $query = db_select('nror_physician_degree', 'pd')
+    ->fields('pd', array('degree'))
+    ->condition('pd.uid', $uid)
+    ->condition('pd.degree', $degree)
+    ->execute()->fetch();
+  if (!empty($query)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function nror_physicians_delete_physician_degree($uid, $degree)
+{
+  return db_delete('nror_physician_degree')
+    ->condition('uid', $uid)
+    ->condition('degree', $degree)
+    ->execute();
+}
+
+function nror_physicians_delete_all_degrees($uid)
+{
+  return db_delete('nror_physician_degree')->condition('uid', $uid)->execute();
+}
+
+function nror_physicians_default_degrees($uid)
+{
+  $query = db_select('nror_physician_degree', 'pd')
+    ->fields('pd', array('degree'))
+    ->condition('pd.uid', $uid)
+    ->execute()->fetchAll();
+
+  foreach ($query as $degree) {
+    $degree_def[$degree->degree] = 1;
+  }
+  return $degree_def;
+}
+
+function nror_physicians_prepare_status_list()
+{
+  $statuses = nror_physicians_get_all_provider_statuses();
+
+  $result = array();
+  foreach ($statuses as $status) {
+    $result[$status->id] = $status->status;
+  }
+
+  return $result;
+}
+

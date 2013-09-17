@@ -1,0 +1,492 @@
+
+#block-block-4, #block-block-5 {
+  float: right;
+  margin-bottom: 0;
+  margin-top: -15px;
+  overflow: hidden;
+  position: relative;
+  right: -15px;
+  width: 75%;
+}
+
+#block-menu-menu-footer-links {
+  margin: auto;
+  width: 250px;  
+  float: none;
+}
+
+#block-addtoany-addtoany_button a:hover,
+#block-menu-menu-footer-links a:hover,
+#block-menu-menu-diabetes-external-links a:hover,
+#block-menu-secondary-menu a:hover,
+#block-menu-menu-external-links a:hover {
+  text-decoration: underline;
+}
+
+#block-menu-secondary-menu /*Position for Secondary Links in Header Region */
+{
+  float: right;
+  height: 20px;
+  margin-bottom: .5em;
+  position: relative;
+  top: 3px;
+}
+
+#block-menu-secondary-menu li,
+ul.secondary-links li,
+#block-menu-menu-external-links li,
+div[ id$=terms-and-privacy] li,
+div[ id$=terms-and-privacy] li {
+  display: inline-block;
+  float: right;
+  height: 12px;
+  margin: 0;
+}
+
+#block-menu-secondary-menu ul,
+ul.secondary-links,
+#block-menu-menu-external-links ul,
+div[ id$=terms-and-privacy] ul,
+#block-menu-menu-footer-links ul {
+  display: inline;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+ul.links.secondary-links /* Fix for IE7,have to float inline li elements,so need to postion uls absolute */
+{
+  left: 325px;
+  position: absolute;
+  top: 20px;
+}
+
+ul.secondary-links li, li.leaf {
+  margin: 0;
+  padding: 0;
+}
+
+/**This code makes the page title invisible and moves the content up **/
+.primary-links-about-healthcare-it-inc h1.title {
+  color: #FFFFFF;
+}
+
+.primary-links-about-healthcare-it-inc #content-content {
+  position: relative;
+  top: -54px;
+}
+
+/** End page title and content code **/
+.diabetes .diabetes-slideshow-widget {
+  position: relative;
+  top: -12px;
+}
+
+#block-menu-menu-diabetes-external-links,
+#block-menu-menu-external-links  {
+  float: right;
+  margin: 0;
+  position: relative;
+  top: -15px;
+  width: 500px;
+}
+
+#block-menu-menu-diabetes-external-links h2 {
+  display: none;
+  visibility: collapse;
+}
+
+#block-menu-menu-diabetes-external-links li a {
+  display: block;
+  line-height: 12px;
+  padding: 0 8px;
+}
+
+#block-menu-menu-diabetes-external-links li {
+  display: inline-block;
+  float: right;
+  height: 12px;
+  margin: 0;
+}
+
+#block-menu-menu-diabetes-external-links ul {
+  display: inline;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+ul.sf-vertical li a:link, ul.sf-vertical li a:visited, ul.sf-vertical li .nolink {
+  margin-left: 0;
+  padding: 2px 2px 2px 5px;
+}
+
+#primary-menu ul.menu li ul.menu li a.active,
+ul.sf-vertical li a.active {
+  text-decoration: none;
+}
+
+#block-menu-secondary-menu ul {
+  float: right;
+}
+
+#block-addtoany-addtoany_button li,
+#block-menu-menu-footer-links li,
+#block-menu-menu-diabetes-external-links li,
+#block-menu-secondary-menu li,
+#block-menu-menu-external-links li {
+  display: inline-block;
+  float: left;
+}
+
+#block-menu-secondary-menu .inner,
+#block-menu-menu-external-links .inner,
+#block-menu-menu-diabetes-external-links .inner,
+#block-addtoany-addtoany_button .inner {
+  margin: 0;
+}
+
+a#da2a_1 {
+  padding-left: 8px;
+}
+
+#block-menu-menu-diabetes-external-links ul,
+#block-menu-menu-external-links ul {
+  float: right;
+  padding: 10px 0;
+}
+
+#block-menu-menu-external-links ul li.last a,
+#block-menu-menu-diabetes-external-links ul li.last {
+  border: medium none;
+}
+
+#block-menu-menu-external-links ul.menu li.last a,
+#block-menu-menu-diabetes-external-links ul.menu li.last a {
+border: none;
+padding-right: 4px;
+}
+
+
+
+
+/*MAIN MENU*/
+
+.addtoany_list a span {
+  display: none;
+}
+
+#block-addtoany-addtoany_button{
+  float: right;
+  font-size: 12px;
+  height: 20px;
+  margin-right: 1px;
+  margin-top: 3px;
+  position: relative;
+  right: 0;
+  top: 0px;
+  width: 70px;
+  text-align: right;
+}
+
+#block-block-4 {
+  position: relative;
+  right: 9px;
+  top: 18px;
+}
+
+#block-block-77 {
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+}
+
+#block-menu-menu-footer-links {
+  float: left;
+  margin: auto;
+  width: 61%;
+  display: inline-block;
+}
+
+#footer ul {
+  list-style: none outside none;
+  text-align: center;
+}
+
+#block-menu-menu-external-links {
+  position: relative;
+  right: 0;
+  left: 66px;
+  top: 5px;
+}
+
+.top-user-name{
+  font-size: 160%;
+}
+
+#top-menu .top-user-name a {
+  color: #F97E05;
+}
+
+.top-user-name a:hover{
+  text-decoration: underline;
+}
+
+ul.menu li a {
+  border-left: medium none;
+  border-right: 1px solid #B3B3B7;
+  height: 10px;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+#top_custom {
+  float: left;
+  height: 180px;
+  margin-bottom: 10px;
+  position: relative;
+  width: 100%;
+}
+
+ul.menu {
+  border: medium none;
+  list-style: none outside none;
+  text-align: left;
+  float: right;
+}
+
+.top-user-name {
+  font-size: 160%;
+}
+
+.top-user-name a:hover {
+  text-decoration: underline;
+}
+
+ul.menu li a {
+  border-left: medium none;
+  border-right: 1px solid #B3B3B7;
+  height: 10px;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.sf-menu {
+  float: left;
+  margin-bottom: 0;
+  line-height: 2;
+  z-index: 99;
+}
+
+#block-superfish-12 .sf-menu a {
+  border:0;
+  padding: 0.75em 1em;
+  text-decoration: none;
+}
+
+#block-superfish-12 .sf-menu li {
+  background: -moz-linear-gradient(center top , #7AB0D4, #156AA3 40%) repeat scroll 0 0 transparent;
+  border-radius: 5px 5px 0 0;
+  float: left;
+  margin-right: 5px;
+  padding: 0;
+  position: relative;
+  text-align: left;
+}
+
+#block-superfish-12 .sf-menu li ul {
+  margin-top: 12px;
+}
+
+#block-superfish-12 .sf-menu li ul li ul {
+  margin-top: 0;
+}
+
+#block-superfish-12 .sf-menu li li {
+  background: -moz-linear-gradient(center top , #7AB0D4, #156AA3 40%) repeat scroll 0 0 transparent;
+  border-radius: 0;
+}
+
+#block-superfish-12 .sf-menu li li li {
+  background: -moz-linear-gradient(center top , #7AB0D4, #156AA3 40%) repeat scroll 0 0 transparent;
+  border-radius: 0;
+}
+
+#block-superfish-12 .sf-menu a, #block-superfish-12 .sf-menu a:visited {
+  text-shadow: 2px 3px 3px rgba(10, 10, 10, 0.4);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#block-superfish-12 .sf-menu li:hover,
+#block-superfish-12 .sf-menu li.sfHover, 
+#block-superfish-12 .sf-menu a:focus, 
+#block-superfish-12 .sf-menu a:hover, 
+#block-superfish-12 .sf-menu a:active {
+  background: -moz-linear-gradient(center top , #F4D7BA, #F97E05 40%) repeat scroll 0 0 transparent;
+  outline: 0 none;
+  border-radius: 5px 5px 0 0;
+}
+
+#block-superfish-12 .sf-menu li:hover li:hover,
+#block-superfish-12 .sf-menu li.sfHover li.sfHover {
+  border-radius: 0;
+}
+
+#logo {
+  margin-top: 20px;
+}
+
+#block-superfish-12 .sf-menu a:visited,#block-superfish-12 .sf-menu li a.active {
+  text-decoration: none;
+}
+
+#block-menu-menu-footer-links ul.menu li.last a {
+  border: 0;
+}
+
+#block-block-5 {
+  float: right;
+  margin-bottom: 0;
+  margin-top: 0;
+  overflow: hidden;
+  position: relative;
+  right: 0;
+  width: 75%;
+}
+
+#block-block-4 {
+  float: right;
+  margin-bottom: 0;
+  margin-top: -18px;
+  overflow: hidden;
+  position: relative;
+  right: 0;
+  width: 75%;
+}
+
+#block-superfish-11 {
+  width: 100%;
+}
+
+.container_12 .push_4 {
+  left: 260px;
+}
+
+#block-cacure_change_role-0, #block-switchtheme-switch_form {
+  background-color: white;
+  border: 2px solid #DCDADA;
+  border-radius: 3px 3px 3px 3px;
+  margin-top: 15px;
+  padding: 5px 5px 5px;
+  width: 210px;
+}
+
+.form-submit {
+    margin-top: 5px;
+}
+
+.sidebar h2 {
+  background: -moz-linear-gradient(center top , #F4D7BA, #F97E05 40%) repeat scroll 0 0 transparent;
+  color: #FFFFFF;
+}
+
+.form-submit {
+  margin-top: 0px;
+}
+
+.form-item, .form-actions {
+  margin-bottom: 0;
+  margin-top: 1em;
+}
+
+.sf-menu a,  .sf-menu a:visited {
+  text-shadow: 2px 3px 3px rgba(10, 10, 10, 0.4);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.sf-menu li, .sf-menu li li, .sf-menu li li li, .sf-navbar {
+  background: -moz-linear-gradient(center top , #7AB0D4, #156AA3 40%) repeat scroll 0 0 transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.sf-menu li:hover,  .sf-menu li.sfHover, .sf-menu li.active a, .sf-menu a:focus, .sf-menu a:hover,  .sf-menu a:active, .sf-navbar li li {
+  background: -moz-linear-gradient(center top , #F4D7BA, #F97E05 40%) repeat scroll 0 0 transparent;
+  outline: 0 none;
+  border: 0;
+  border-radius: 0;
+}
+
+.sf-menu a {
+  border: none;
+  text-shadow: 2px 3px 3px rgba(10, 10, 10, 0.4);
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.sf-vertical, .sf-vertical li {
+  width: 15em;
+}
+
+#superfish-11 li ul {
+  margin-top: 0px;
+}
+
+#block-superfish-7 {
+  display: inline-block;
+  overflow-x: visible;
+  width: 100%;
+}
+
+.container_12 .grid_4 {
+  width: 316px;
+}
+
+#edit-theme {
+  width: 80%;
+}
+
+#panels-divider-hor {
+  background: #81c2ea;
+  height: 3px;
+}
+
+#superfish-12 {
+  float: right;
+  margin-right: -4px;
+}
+
+#totalContainer #pageBorder {
+    border-radius: 5px 0 5px 5px;
+}
+
+div#block-print-print-links span {
+  display: block;
+  float: right;
+}
+
+body {
+  text-align: left;
+}
+
+#block-cacure_mgmt-6 div.quest-title  {
+  display: none;
+}
+
+div.faq .field-type-taxonomy-term-reference {
+  display: none;
+}
+div.warning {
+    background-image: none;
+}
+
+

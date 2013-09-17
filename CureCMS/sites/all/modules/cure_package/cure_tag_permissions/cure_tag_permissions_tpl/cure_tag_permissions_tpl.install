@@ -1,0 +1,37 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function cure_tag_permissions_tpl_schema() {
+  $schema = array();
+    
+  $schema['cure_permissions_tpl_single'] = array(
+    'description' => 'Templates.',
+    'fields' => array(      
+      'role_id' => array(
+        'description' => 'Role id', 
+        'type' => 'int',
+        'unsigned' => TRUE, 
+        'not null' => TRUE, 
+      ),
+      'data' => array(
+        'description' => 'The data of template.',
+        'type' => 'text',
+      ),  
+    ),
+    'foreign keys' => array(
+      'role_id' => array(
+        'table' => 'role', 
+        'columns' => array('role_id' => 'rid'),
+      ),
+    ),  
+  );
+    
+  return $schema;
+}

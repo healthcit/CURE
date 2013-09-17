@@ -1,0 +1,550 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+require_once dirname(__FILE__).'/nror_facilities.db.inc';
+
+/**
+ * Implements hook_menu()
+ */
+function nror_facilities_menu() {
+  $items = array();
+
+  $items['facilities'] = array(
+    'title' => t('Practice'),
+    'description' => t('Operations with practices.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_facilities_main_form'),
+    'access callback' => 'nror_facilities_access',
+    'weight' => 1,
+  );
+
+  $items['facilities/new'] = array(
+    'title' => t('Add new practice'),
+    'description' => t('Add new practice.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_facilities_facility_form'),
+    'access callback' => 'nror_facilities_access',
+  );
+
+  $items['facilities/%/edit'] = array(
+    'title' => t('Edit practice'),
+    'description' => t('Operations with practices.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_facilities_facility_form', 1),
+    'access callback' => 'nror_facilities_access',
+  );
+
+  $items['facilities/%/delete'] = array(
+    'title' => t('Delete practice'),
+    'description' => t('Delete practice.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_facilities_delete_facility_form', 1),
+    'access callback' => 'nror_facilities_access',
+  );
+  
+  $items['facilities/multiple'] = array(
+    'title' => t('Delete practice'),
+    'description' => t('Delete practice.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_facilities_delete_multiple'),
+    'access callback' => 'nror_facilities_access',
+  );
+  
+  return $items;
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_facilities_menu()
+ */
+function nror_facilities_main_form($form, $form_state) {
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $fids = $form_state['values']['facilities'];
+    helpers_filter_checkboxes($fids);
+    $_SESSION['fids'] = $fids;
+    drupal_goto('facilities/multiple');
+  }
+
+  global $user;
+
+  $form = array();
+   
+  $header = array(
+    'code' => array('data' => '<p class="header-sort">'. t('Code') . '</p>'),
+    'title' => array('data' => '<p class="header-sort">'. t('Practice') . '</p>'),
+    'status' => array('data' => '<p class="header-sort">'. t('QCP Status') . '</p>'),
+    'operations' => array('data' => t('Actions'), 'class' => 'actions')
+  );
+  
+  $facilities = nror_facilities_get_all();
+
+  $options = array();
+
+  if (!empty($facilities)) {
+    foreach($facilities as $facility) {
+      $status = nror_facilities_get_practice_status($facility->fid);
+      $statusLink = '';
+      if (!(empty($status))) {
+        if (!empty($status->link)) {
+          if (nror_check_is_admin() && $user->uid != 1) {
+            if ($status->status == 'In Progress') {
+              $statusLink = '<a href="' . $status->link . '">' . $status->status . '</a>';
+            } else {
+              $statusLink = $status->status;
+            }
+          } else {
+            $statusLink = '<a href="' . $status->link . '">' . $status->status . '</a>';
+          }
+        } else {
+          $statusLink = $status->status;
+        }
+      }
+      $options[$facility->fid] = array(
+        'code' => $facility->code,
+        'title' => $facility->title,
+        'status' => $statusLink,
+        'operation' => array()
+      );
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'facilities/' . $facility->fid . '/edit',
+      );
+      $operations['delete'] = array(
+        'title' => t('Delete'),
+        'href' => 'facilities/' . $facility->fid . '/delete',
+      );
+      $options[$facility->fid]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );
+    }
+  }
+  
+  $form['find'] = array('#markup' => '<div class="search">Search: <input type="text" class="search-box" ></div>');
+  
+  $form['actions'] = array(
+    '#type' => 'container',
+  );
+  
+  $form['actions']['new_facility'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Add new practice'),
+    '#name' => 'new_facility',
+  );
+
+  $form['facilities'] = array(
+    '#prefix' => '<div class="dashboard-table">',
+    '#suffix' => '</div>',
+    '#type'    => 'tableselect',
+    '#header'  => $header,
+    '#options' => $options,
+    '#empty' => t('No practices found'),
+    '#attributes' => array(
+      'class' => array(
+        'nror_administration',
+        'tablesorter',
+        'facilities_table'
+      ),
+      //'id' => 'facilities_table'
+    ),
+  );
+
+  if (!empty($facilities)) {
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+      '#name' => 'delete',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * nror_facilities_main_form() submit function
+ * @see nror_facilities_main_form()
+ */
+function nror_facilities_main_form_submit($form, &$form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  $fids = $form_state['values']['facilities'];
+  helpers_filter_checkboxes($fids);
+  if ($op == 'new_facility') {
+    drupal_goto('facilities/new');
+  }
+  else if ($op == 'delete') {
+    if (!empty($fids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+}
+
+/**
+ * Alternative form used in nror_facilities_main_form()
+ * @see nror_facilities_main_form()
+ */
+function nror_facilities_delete_multiple($form, &$form_state) {
+  $form = array();
+  
+  $fids = isset($_SESSION['fids']) ? $_SESSION['fids'] : null;
+  
+  $form['warning'] = array('#markup' => "<p style='color: red'>".t('WARNING: All users relating to practices will be also removed.')."</p>");
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete this facilities?').'</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+
+  foreach ($fids as $fid) {
+    $facility = nror_facilities_get($fid);
+    $title = $facility->title;
+    $form['list'][$fid] = array(
+      '#type' => 'hidden',
+      '#value' => $fid,
+      '#prefix' => '<li>',
+      '#suffix' => check_plain($title) . "</li>\n",
+    );
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_facilities_delete_multiple() submit function
+ * @see nror_facilities_delete_multiple()
+ */
+function nror_facilities_delete_multiple_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    foreach ($form_state['values']['list'] as $fid) {
+      $facility = nror_facilities_get($fid);
+      if (nror_facilities_delete_facility($fid)) {
+        drupal_set_message(t('Practice %f and all related users were deleted successfully.', array('%f' => $facility->title)));
+        unset($_SESSION['fids']);     
+      }
+      else {
+        drupal_set_message(t('Error occurred. Practice %f was not deleted.', array('%f' => $facility->title)), 'error');
+      }
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_FACILITIES_TAB_URL);
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_facilities_menu()
+ */
+function nror_facilities_facility_form($form, &$form_state, $fid = null) {
+  $form = array();
+  $title = '';
+
+  if (isset($fid)) {
+    $facility = nror_facilities_get($fid);
+    $title = $facility->title;
+    $code = $facility->code;
+    $form['fid'] = array(
+      '#type' => 'hidden',
+      '#value' => $fid);
+    
+    $form['group_id'] = array(
+      '#type' => 'hidden',
+      '#value' => $facility->group_id);
+
+    $practiceStatus = nror_facilities_get_practice_status($fid);
+  }
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => $title,
+    '#maxlength'=> 255,
+    '#required' => true
+  );
+  
+  $form['code'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Practice code'),
+    '#default_value' => $code,
+    '#maxlength'=> 10,
+    '#required' => true
+  );
+
+
+  $statuses = nror_facilities_prepare_status_list();
+
+  if (isset($practiceStatus) && !empty($practiceStatus)) {
+      $defaultStatus = $practiceStatus->id;
+  } else {
+      $keys = array_keys($statuses);
+      $defaultStatus = $keys[0];
+  }
+
+  $form['status'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Practice status'),
+  );
+
+  $form['status']['status'] = array(
+    '#type' => 'select',
+    '#title' => t('Status'),
+    '#description' => t('Select practice status.'),
+    '#required' => true,
+    '#options' => $statuses,
+    '#default_value' => $defaultStatus,
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_facilities_facility_form_submit')
+
+  );
+
+  return $form;
+}
+
+/**
+ * nror_facilities_facility_form() validate function
+ * @see nror_facilities_facility_form()
+ */
+function nror_facilities_facility_form_validate($form, &$form_state) {
+  if (nror_facilities_facility_title_unique($form_state['values']) == false) {
+    form_set_error('title', t('Practice title should be unique.'));
+  }
+  
+  if (nror_facilities_facility_code_unique($form_state['values']) == false) {
+    form_set_error('code', t('Practice code should be unique.'));
+  }
+  
+  if (!preg_match('/[A-Za-z]/', trim($form_state['values']['code']))) {
+    form_set_error('code', t('Invalid format. Must contain only upper and lower case letters.'));
+  } elseif (strlen($form_state['values']['code']) > 10) {
+    form_set_error('code', t('Maximum length is 10 characters.'));
+  }
+}
+
+/**
+ * nror_facilities_facility_form() submit function
+ * @see nror_facilities_facility_form()
+ */
+function nror_facilities_facility_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'save') {
+    $status = 'status';
+    if (isset($form_state['values']['fid'])) {
+      $success = t('Practice was updated successfully');
+      $error = t('Error occurred while updating practice. Changes was not saved.');
+    }
+    else {
+      $success = t('Practice was created successfully');
+      $error = t('Error occurred while creating practice. Practice was not created.');
+    }
+
+    if (nror_facilities_save_facility($form_state['values'])) {
+        $practiceStatus = $form_state['values']['status'];
+        if (!empty($practiceStatus)) {
+            $facility = nror_facilities_get_by_title($form_state['values']['title']);
+            nror_facilities_save_practice_status($facility->fid, $practiceStatus);
+        }
+      $message = $success;
+    }
+    else {
+      $message = $error;
+      $status = 'error';
+    }
+    drupal_set_message($message, $status);
+  }
+  drupal_goto('dashboard');
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_facilities_menu()
+ */
+function nror_facilities_delete_facility_form($form, &$form_state, $fid = null) {
+  $form = array();
+  $facility = nror_facilities_get($fid);
+  $title = $facility->title;
+  $form['warning'] = array('#markup' => "<p style='color: red'>WARNING: All users relating to the practice will be also removed.</p>");
+  $form['message'] = array('#markup' => "<p>Are you sure you want to delete the practice $title?</p>");
+  $form['fid'] = array(
+    '#type' => 'hidden',
+    '#value' => $fid);
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_facilities_delete_facility_form() submit function
+ * @see nror_facilities_delete_facility_form()
+ */
+function nror_facilities_delete_facility_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    if (nror_facilities_delete_facility($form_state['values']['fid'])) {
+      drupal_set_message(t('Practice and all related users were deleted successfully.'));
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_FACILITIES_TAB_URL);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function nror_facilities_form_user_register_form_alter(&$form, &$form_state) {
+  $path = arg();
+  if ($path[0] != 'admin' && user_is_logged_in()) {
+    global $user;
+
+    $facilities = nror_facilities_prepare_facilities();
+
+    if (arg(0) == 'user' && arg(1) == 'register') {
+      $form['account']['status']['#default_value'] = 0;
+    }
+
+    if (empty($facilities)) {
+      if(nror_check_is_admin()) {
+        drupal_set_message(t('To register users account You should create at least one practice.'), 'error');
+        drupal_goto('dashboard');
+      } else if (user_is_anonymous()) {
+        drupal_set_message(t('Sorry, registration is not available at the moment. Please, try again later.'));
+        drupal_goto('<front>');
+      }
+    }
+
+    $form['account']['facilities'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Practices')
+    );
+
+    $form['account']['facilities']['facility'] = array(
+      '#type' => 'select',
+      '#title' => t('Practice'),
+      '#description' => t('Select the practice.'),
+      '#options' => $facilities,
+      '#required' => true,
+    );
+
+    $keys = array_keys($facilities);
+    $default = $keys[0];
+
+    if ($facility = nror_facilities_get_user_facility($user->uid)) {
+      $default = $facility->fid;
+      $form['account']['facilities']['#attributes'] = array('style' => 'display:none');
+    }
+    elseif (!empty($form['#user']) && !empty($form['#user']->facility)) {
+      $default = $form['#user']->facility;
+    }
+
+    $form['account']['facilities']['facility']['#default_value'] = $default;
+  }
+}
+
+/**
+ * Implements hook_user_load()
+ */
+function nror_facilities_user_load($users) {
+  foreach ($users as $user) {
+    $facility = nror_facilities_get_user_facility($user->uid);
+    if (!empty($facility)) {
+      $user->facility = $facility->fid;
+    }
+  }
+}
+
+/**
+ * Implements hook_user_insert()
+ */
+function nror_facilities_user_insert(&$edit, $account, $category) {
+  nror_facilities_bind_facility_to_user($account->facility, $account->uid);
+}
+
+/**
+ * Implements hook_user_update()
+ */
+function nror_facilities_user_update(&$edit, $account, $category) {
+  nror_facilities_unbind_facility_from_user($account->uid);
+  nror_facilities_bind_facility_to_user($account->facility, $account->uid);
+}
+
+/**
+ * Implements hook_user_delete()
+ */
+function nror_facilities_user_delete($account) {
+  nror_facilities_unbind_facility_from_user($account->uid);
+}
+
+/**
+ * Gets facilities from db table and forms array to be used in select Html form element
+ */
+function nror_facilities_prepare_facilities() {
+  $facilities = nror_facilities_get_all();
+  $result = array();
+  if (!empty($facilities)) {
+    foreach ($facilities as $facility) {
+      $result[$facility->fid] = $facility->title;
+    }
+  }
+  return $result;
+}
+
+function nror_facilities_access() {
+  if (nror_check_is_admin() || nror_check_is_nror_admin()) {
+    return true;
+  }
+  return false;
+}
+
+function nror_facilities_prepare_status_list() {
+    $statuses = nror_facilities_get_all_practice_statuses();
+
+    $result = array();
+    foreach ($statuses as $status) {
+        $result[$status->id] = $status->status;
+    }
+
+    return $result;
+}

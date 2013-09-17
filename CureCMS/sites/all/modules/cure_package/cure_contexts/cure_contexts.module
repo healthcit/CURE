@@ -1,0 +1,501 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+require_once dirname(__FILE__) . '/cure_contexts.db.inc';
+
+define('CURE_CONTEXT_TABLE_LIMIT', 15);
+
+/**
+ * Implements hook_menu()
+ */
+function cure_contexts_menu() {
+  $items = array();
+
+  $items['admin/config/cacure_settings/contexts'] = array(
+    'title' => 'Contexts',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_contexts_main_form'),
+    'access arguments' => array('access cacure settings'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/config/cacure_settings/contexts/new'] = array(
+    'title' => 'Add new context',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_contexts_context_form'),
+    'access arguments' => array('access cacure settings'),
+  );
+
+  $items['admin/config/cacure_settings/contexts/%/edit'] = array(
+    'title' => 'Contexts',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_contexts_context_form', 4),
+    'access arguments' => array('access cacure settings'),
+  );
+
+  $items['admin/config/cacure_settings/contexts/%/delete'] = array(
+    'title' => 'Contexts',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_contexts_delete_form', 4),
+    'access arguments' => array('access cacure settings'),
+  );
+
+  $items['admin/config/cacure_settings/contexts/bind_roles'] = array(
+    'title' => 'Bind roles to contexts',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cure_contexts_bind_roles_form'),
+    'access arguments' => array('access cacure settings'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_user_role_delete()
+ */
+function cure_contexts_user_role_delete($role) {
+  cure_contexts_unbind_role_from_context($role->rid);
+}
+
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see cure_contexts_menu()
+ */
+function cure_contexts_main_form($form, $form_state) {
+
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $context_ids = $form_state['values']['contexts'];
+    helpers_filter_checkboxes($context_ids);
+    return drupal_get_form('cure_contexts_delete_multiple_form', $context_ids);
+  }
+
+  $menu = theme(
+    'links',
+    array(
+      'links' => array(
+        array('title' => t('Add new context'), 'href' => 'admin/config/cacure_settings/contexts/new'),
+        array('title' => t('Bind roles to contexts'), 'href' => 'admin/config/cacure_settings/contexts/bind_roles')
+      ),
+      'attributes' => array(
+        'class' => 'action-links'
+      ),
+    )
+  );
+
+  $form = array();
+  $form['menu'] = array('#markup' => $menu);
+
+  $contexts = cure_contexts_table_get_all();
+
+  $options = array();
+
+  $header = array(
+    'title' => t('Context name'),
+    'role' => t('Corresponding Drupal role'),
+    'description' => t('Description'),
+    'operations' => t('Actions')
+  );
+
+  if (!empty($contexts)) {
+    foreach($contexts as $context) {
+      $role = cure_contexts_get_primary_role($context['context_id']);
+      $options[$context['context_id']] = array(
+        'title' => $context['name'],
+        'role' => !empty($role->name) ? $role->name : '',
+        'description' => $context['description'],
+        'operations' => array()
+      );
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'admin/config/cacure_settings/contexts/' . $context['context_id'] . '/edit',
+      );
+      $operations['delete'] = array(
+        'title' => t('Delete'),
+        'href' => 'admin/config/cacure_settings/contexts/' . $context['context_id'] . '/delete',
+      );
+      $options[$context['context_id']]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );
+    }
+  }
+
+  $form['contexts'] = array(
+    '#type'    => 'tableselect',
+    '#header'  => $header,
+    '#options' => $options,
+    '#empty' => t('No contexts found')
+  );
+
+  $form['pager'] = array('#markup' => theme('pager'));
+
+  if (!empty($contexts)) {
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+      '#name' => 'delete'
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * cure_contexts_main_form() submit function
+ * @see cure_contexts_main_form()
+ */
+function cure_contexts_main_form_submit($form, &$form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'delete') {
+    $context_ids = $form_state['values']['contexts'];
+    helpers_filter_checkboxes($context_ids);
+    if (!empty($context_ids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+}
+
+/**
+ * Alternative form used in cure_contexts_main_form()
+ * @see drupal_get_form()
+ * @see cure_contexts_main_form()
+ */
+function cure_contexts_delete_multiple_form($form, $form_state, $contexts) {
+  $form = array();
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete this contexts?').'</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+
+  foreach ($contexts as $cid) {
+    $context = cure_contexts_get($cid);
+    if (!empty($context)) {
+      $title = $context->name;
+      $form['list'][$cid] = array(
+        '#type' => 'hidden',
+        '#value' => $cid,
+        '#prefix' => '<li>',
+        '#suffix' => check_plain($title) . "</li>\n",
+      );
+    }
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * cure_contexts_delete_multiple_form() submit function.
+ * @see cure_contexts_delete_multiple_form()
+ */
+function cure_contexts_delete_multiple_form_submit($form, $form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    foreach ($form_state['values']['list'] as $cid) {
+      $context = cure_contexts_get($cid);
+      if (cure_contexts_delete_context($cid)) {
+        drupal_set_message(t('Context %c was deleted successfully.', array('%c' => $context->name)));
+      }
+      else {
+        drupal_set_message(t('Error occurred. Context %c was not deleted.', array('%c' => $context->name)), 'error');
+      }
+    }
+  }
+  drupal_goto('admin/config/cacure_settings/contexts');
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see cure_contexts_menu()
+ */
+function cure_contexts_context_form($form, $form_state, $context_id = null) {
+  $form = array();
+
+  $name = '';
+  $role = '';
+  $description = '';
+
+  if (isset($context_id)) {
+    $context = cure_contexts_get($context_id);
+    $name = $context->name;
+    $role = cure_contexts_get_primary_role($context_id);
+    $description = $context->description;
+
+    $form['context_id'] = array(
+      '#type' => 'value',
+      '#value' => $context->context_id
+    );
+
+  }
+
+  $form['name'] = array(
+    '#title' => 'CURE context',
+    '#type' => 'textfield',
+    '#default_value' => $name,
+    '#required' => true,
+    '#description' => t('CURE context name. Should be unique.')
+  );
+
+  $form['role'] = array(
+    '#title' => 'Drupal role',
+    '#type' => 'textfield',
+    '#default_value' => isset($role->name) ? $role->name : '',
+    '#required' => true,
+    '#description' => t('Drupal role name. Should be unique.')
+  );
+
+  $form['description'] = array(
+    '#title' => 'Short description',
+    '#type' => 'textfield',
+    '#default_value' => $description,
+    '#required' => true,
+    '#description' => t('Short context description')
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back'
+
+  );
+
+  return $form;
+}
+
+/**
+ * cure_contexts_context_form() validation function
+ * @see cure_contexts_context_form()
+ */
+function cure_contexts_context_form_validate($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  $values = $form_state['values'];
+
+  if ($op == 'save') {
+    $name = $values['name'];
+    $role = $values['role'];
+    $context_id = null;
+    if (!empty($values['context_id'])) {
+       $context_id = $values['context_id'];
+    }
+
+    if (!cure_contexts_is_role_unique($role, $context_id)) {
+      form_set_error('role', t('Role is already created'));
+    }
+    if (!cure_contexts_is_unique($name, $context_id)) {
+      form_set_error('name', t('Context name should be unique'));
+    }
+  }
+}
+
+/**
+ * cure_contexts_context_form() submit function
+ * @see cure_contexts_context_form()
+ */
+function cure_contexts_context_form_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+
+  if ($op == 'save') {
+    $values = $form_state['values'];
+    $status = 'status';
+    if (isset($values['context_id'])) {
+      if (cure_contexts_update_context($values)) {
+        $message = t('Context %c was updated successfully', array('%c' => $values['name']));
+      }
+      else {
+        $status = 'error';
+        $message = t('Error occurred. Context was not updated');
+      }
+    }
+    else {
+      if (cure_contexts_save_context($values)) {
+        $message = t('Context %c was saved successfully', array('%c' => $values['name']));
+      }
+      else {
+        $status = 'error';
+        $message = t('Error occurred. Context was not saved');
+      }
+    }
+    drupal_set_message($message, $status);
+  }
+  drupal_goto('admin/config/cacure_settings/contexts');
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see cure_contexts_menu()
+ */
+function cure_contexts_delete_form($form, $form_state, $context_id) {
+  $form = array();
+  $context = cure_contexts_get($context_id);
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete the context %c?', array('%c' => $context->name)).'</p>');
+  $form['context_id'] = array(
+    '#type' => 'hidden',
+    '#value' => $context->context_id);
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * cure_contexts_delete_form() submit function
+ * @see cure_contexts_delete_form()
+ */
+function cure_contexts_delete_form_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'delete') {
+    if (cure_contexts_delete_context($form_state['values']['context_id'])) {
+      drupal_set_message(t('Context was deleted successfully.'));
+    }
+  }
+  drupal_goto('admin/config/cacure_settings/contexts');
+}
+
+/**
+ * Menu callback
+ * @see cure_contexts_menu()
+ */
+function cure_contexts_bind_roles_form($form, $form_state) {
+  $roles = user_roles(true);
+  $contexts = cure_contexts_get_all();
+  unset($roles[2]);
+
+  $form = array();
+  $form['options'] = array();
+
+  foreach ($roles as $rid => $role_name) {
+    if (cure_contexts_is_role_primary($rid)) {
+      continue;
+    }
+    $default = '';
+    $role_context = cure_contexts_get_role_context($rid);
+
+    if ($role_context != false) {
+      $default = array($role_context->context_id);
+    }
+    foreach ($contexts as $context) {
+      $options[$context['context_id']] = $context['name'];
+    }
+
+    $form['options'][$rid] = array(
+      '#title' => $role_name,
+      '#type' => 'select',
+      '#options' => $options,
+      '#default_value' => !empty($default) ? $default : '',
+      '#empty_option' => 'Select'
+    );
+  }
+
+  $form['actions']['save'] = array('#type' => 'submit', '#value' => t('Save'), '#name' => 'save');
+
+  return $form;
+}
+
+/**
+ * cure_contexts_bind_roles_form() submit function
+ * @see cure_contexts_bind_roles_form()
+ */
+function cure_contexts_bind_roles_form_submit($form, $form_state) {
+  $values = $form_state['values'];
+  foreach ($values as $rid => $context_id) {
+    if (is_numeric($rid) && !empty($context_id)) {
+      cure_contexts_bind_role_to_context($rid, $context_id);
+    }
+  }
+}
+
+/**
+ * Returns current user's context to forms.
+ * @return bool|string
+ */
+function cure_contexts_get_user_context($uid = null) {
+  if (!empty($uid)) {
+    $user = user_load($uid);
+  }
+  else {
+    global $user;
+  }
+  $roles = $user->roles;
+  foreach ($roles as $rid => $role_name) {
+    $context = cure_contexts_get_role_context($rid);
+    if ($context != false) {
+      return $context->name;
+    }
+  }
+  return false;
+}
+
+/**
+ * Adds role to autoassign list (dropdown "Area of Interests")
+ * @param int $role_id
+ */
+function _cure_contexts_add_to_autoassign($role_id) {
+  $allowed_roles = variable_get('autoassignrole_user_roles', array());
+  $allowed_roles[$role_id] = $role_id;
+  variable_set('autoassignrole_user_roles', $allowed_roles);
+}
+
+/**
+ * Removes role from autoassign list (dropdown "Area of Interests")
+ * @param int $role_id
+ */
+function _cure_contexts_remove_from_autoassign($role_id) {
+  $allowed_roles = variable_get('autoassignrole_user_roles', array());
+  if (isset($allowed_roles[$role_id])) {
+    unset($allowed_roles[$role_id]);
+    variable_set('autoassignrole_user_roles', $allowed_roles);
+  }
+}
+
+function cure_contexts_get_active_context() {
+  $context = !empty($_SESSION[CURE_ACTIVE_CONTEXT]) ? $_SESSION[CURE_ACTIVE_CONTEXT] : '';
+  if (empty($context) && user_is_logged_in()) {
+    $context = cure_contexts_get_user_context();
+  }
+  return $context;
+}
+
+function cure_contexts_set_active_context($context) {
+  $_SESSION[CURE_ACTIVE_CONTEXT] = $context;
+  return cure_contexts_get_active_context();
+}
+

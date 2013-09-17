@@ -1,0 +1,27 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function cacure_mail_install(){
+  $template = 'Your statement was accepted. Thanks.';
+  variable_set('cacure_mail_template_module_submition', 'Dear [username],<br /> Your statement was accepted. Thanks.');
+  variable_set('cacure_mail_template_module_submition_subject', 'Submit module.');
+  variable_set('cacure_mail_template_submit_reminders', 'Dear [username], <br />  You have not completed your [formname_nocomplite] form. Please click [link_nocomplite] to complete the form.');
+  variable_set('cacure_mail_template_submit_reminders_subject', 'Submit reminder.');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function cacure_mail_uninstall(){
+  variable_del('cacure_mail_template_module_submition');
+  variable_del('cacure_mail_template_module_submition_subject');
+  variable_del('cacure_mail_template_submit_reminders');
+  variable_del('cacure_mail_template_submit_reminders_subject');
+}

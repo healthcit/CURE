@@ -1,0 +1,475 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('NROR_DASHBOARD_PATIENTS_TAB', 'patient_tab');
+define('NROR_DASHBOARD_PHYSICIANS_TAB', 'physician_tab');
+define('NROR_DASHBOARD_FACILITY_FORMS_TAB', 'facility_forms_tab');
+define('NROR_DASHBOARD_RC_TAB', 'rc_tab');
+define('NROR_DASHBOARD_FACILITIES_TAB', 'facilities_tab');
+define('NROR_DASHBOARD_MY_FORMS_TAB', 'my_forms_tab');
+
+define('NROR_DASHBOARD_TAB_DEFAULT_URL', 'dashboard');
+define('NROR_DASHBOARD_PATIENTS_TAB_URL', 'dashboard/patients');
+define('NROR_DASHBOARD_PHYSICIANS_TAB_URL', 'dashboard/physicians');
+define('NROR_DASHBOARD_FACILITY_FORMS_TAB_URL', 'dashboard/facility-forms');
+define('NROR_DASHBOARD_RC_TAB_URL', 'dashboard/registry-coordinators');
+define('NROR_DASHBOARD_FACILITIES_TAB_URL', 'dashboard/facilities');
+define('NROR_DASHBOARD_MY_FORMS_TAB_URL', 'dashboard/user-forms');
+
+
+function nror_dashboard_menu() {
+  $items = array();
+
+  $items[NROR_DASHBOARD_TAB_DEFAULT_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_PATIENTS_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_PATIENTS_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_PHYSICIANS_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_PHYSICIANS_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_FACILITY_FORMS_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_FACILITY_FORMS_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_RC_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_RC_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_FACILITIES_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_FACILITIES_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  $items[NROR_DASHBOARD_MY_FORMS_TAB_URL] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'nror_dashboard_main',
+    'page arguments' => array(NROR_DASHBOARD_MY_FORMS_TAB),
+    'access callback' => 'nror_dashboard_access',
+  );
+
+  return $items;
+}
+
+function nror_dashboard_main($tab = null) {
+  cacure_x_set_redirect('dashboard');
+  cacure_x_set_form_completed_redirect('dashboard');
+  drupal_add_css(drupal_get_path('module', 'nror_dashboard').'/css/nror_dashboard.css', 'file');
+  drupal_add_js(drupal_get_path('module', 'nror_dashboard').'/js/jquery.tablesorter.js');
+  drupal_add_js(drupal_get_path('module', 'nror_dashboard').'/js/nror_dashboard.js');
+
+  global $user;
+
+  $isAjax = isset($_POST['isAjax']) && $_POST['isAjax'] == 1 ? true : false;
+
+  if (nror_rc_is_coordinator($user)) {
+    return _nror_dashboard_rc($tab, $isAjax);
+  }
+  elseif (nror_patients_is_patient($user)) {
+    if ($tab != NROR_DASHBOARD_MY_FORMS_TAB) {
+      drupal_goto(NROR_DASHBOARD_MY_FORMS_TAB_URL);
+    }
+    return _nror_dashboard_patient();
+  }
+  elseif (nror_physicians_is_physician($user)) {
+    return _nror_dashboard_physician($tab, $isAjax);
+  }
+  elseif (nror_check_is_admin()) {
+    return _nror_dashboard_admin($tab, $isAjax);
+  }
+  elseif (nror_check_is_nror_admin()) {
+    return _nror_dashboard_nror_admin($tab, $isAjax);
+  }
+  else {
+    drupal_goto();
+  }
+}
+
+function _nror_dashboard_rc($tab = null, $isAjax = false) {
+  if ($tab == null) {
+    $tab = NROR_DASHBOARD_PATIENTS_TAB;
+  }
+  global $user;
+  $facility = nror_facilities_get_user_facility($user->uid);
+  $facilityName = $facility->title;
+  switch ($tab) {
+    case NROR_DASHBOARD_PATIENTS_TAB :
+      $content = nror_dashboard_patients();
+      break;
+    case NROR_DASHBOARD_PHYSICIANS_TAB :
+      $content = nror_dashboard_physicians();
+      break;
+    case NROR_DASHBOARD_FACILITY_FORMS_TAB :
+      $content = _nror_dashboard_rc_facility_forms($facilityName);
+      break;
+    default :
+      drupal_goto('dashboard');
+  }
+  $output = theme('nror_dashboard_rc',
+    array('active' => $tab, 'content' => $content, 'facilityName' => $facilityName, 'isAjax' => $isAjax));
+  if ($isAjax == true) {
+    echo $output;
+    die;
+  }
+  else {
+    return $output;
+  }
+}
+
+function _nror_dashboard_rc_facility_forms($facilityName) {
+  global $user;
+  $content = '';
+  $entityId = $user->entityId;
+  $groupId = cure_groups_set_active_group($facilityName);
+  cure_contexts_set_active_context(NROR_CONTEXT_FACILITY);
+  $rescall = RestCall::getInstance();
+  $modules = SimpleXmlParser::toArray($rescall->getAllUserModules($entityId, $groupId, NROR_CONTEXT_FACILITY));
+  if (!empty($modules)) {
+    $modules = $modules['module'];
+    if (isset($modules['@attributes'])) {
+      $module = $modules;
+    }
+    else {
+      $module = $modules[0];
+    }
+    //$form = drupal_get_form('nror_dashboard_change_facility_module_status', $module);
+    //$content .= drupal_render($form);
+  }
+
+  $content .= nror_dashboard_facility_forms($facilityName);
+  return $content;
+}
+
+function _nror_dashboard_physician($tab = null, $isAjax = false) {
+  if ($tab == null) {
+    $tab = NROR_DASHBOARD_PATIENTS_TAB;
+  }
+  global $user;
+  $facility = nror_facilities_get_user_facility($user->uid);
+  $facilityName = $facility->title;
+  switch ($tab) {
+    case NROR_DASHBOARD_PATIENTS_TAB :
+      $content = nror_patients_dashboard_table();
+      break;
+    case NROR_DASHBOARD_MY_FORMS_TAB :
+      $context= cure_contexts_get_user_context($user->uid);
+      $content = nror_dashboard_user_forms($user->name, $context);
+      break;
+    default :
+      drupal_goto('dashboard');
+  }
+  $output = theme('nror_dashboard_physician',
+    array('active' => $tab, 'content' => $content, 'facilityName' => $facilityName, 'isAjax' => $isAjax));
+  return $output;
+}
+
+function _nror_dashboard_patient() {
+  global $user;
+  $facility = nror_facilities_get_user_facility($user->uid);
+  $facilityName = $facility->title;
+
+  $block = block_load('nror_patients', NROR_PATIENTS_WELCOME_BLOCK_DELTA);
+  $block_content = _block_render_blocks(array($block));
+  $build = _block_get_renderable_array($block_content);
+  $welcomeBlock = drupal_render($build);
+  $content = nror_dashboard_user_forms_hierarchy($user);
+
+  return theme('nror_dashboard_patient', array('welcomeBlock' => $welcomeBlock, 'content' => $content, 'facilityName' => $facilityName));
+}
+
+function _nror_dashboard_nror_admin($tab = null, $isAjax = false) {
+  if ($tab == null) {
+    $tab = NROR_DASHBOARD_FACILITIES_TAB;
+  }
+  switch ($tab) {
+    case NROR_DASHBOARD_FACILITIES_TAB :
+      $content = nror_dashboard_facilities();
+      break;
+    case NROR_DASHBOARD_RC_TAB :
+      $content = nror_dashboard_registry_coordinators();
+      break;
+    default :
+      drupal_goto('dashboard');
+  }
+  $output = theme('nror_dashboard_nror_admin',
+    array('active' => $tab, 'content' => $content, 'isAjax' => $isAjax));
+  if ($isAjax == true) {
+    echo $output;
+    die;
+  }
+  else {
+    return $output;
+  }
+}
+
+function _nror_dashboard_admin($tab = null, $isAjax = false) {
+  if ($tab == null) {
+    $tab = NROR_DASHBOARD_FACILITIES_TAB;
+  }
+  switch ($tab) {
+    case NROR_DASHBOARD_PATIENTS_TAB :
+      $content = nror_dashboard_patients();
+      break;
+    case NROR_DASHBOARD_PHYSICIANS_TAB :
+      $content = nror_dashboard_physicians();
+      break;
+    case NROR_DASHBOARD_FACILITIES_TAB :
+      $content = nror_dashboard_facilities();
+      break;
+    case NROR_DASHBOARD_RC_TAB :
+      $content = nror_dashboard_registry_coordinators();
+      break;
+    default :
+      drupal_goto('dashboard');
+  }
+  $output = theme('nror_dashboard_admin',
+    array('active' => $tab, 'content' => $content, 'isAjax' => $isAjax));
+  if ($isAjax == true) {
+    echo $output;
+    die;
+  }
+  else {
+    return $output;
+  }
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function nror_dashboard_theme() {
+  $path = drupal_get_path('module', 'nror_dashboard');
+
+  return array(
+    'nror_facility_forms' => array(
+      'template' => 'nror_facility_forms',
+      'variables' => array('message' => null, 'facilityName' => null),
+      'path' => $path . '/xslt',
+    ),
+    'nror_dashboard_rc' => array(
+      'template' => 'nror_dashboard_rc',
+      'variables' => array('isAjax' => false, 'active' => null, 'content' => null, 'facilityName' => null),
+      'path' => $path . '/tpl',
+    ),
+    'nror_dashboard_physician' => array(
+      'template' => 'nror_dashboard_physician',
+      'variables' => array('isAjax' => false, 'active' => null, 'content' => null, 'facilityName' => null),
+      'path' => $path . '/tpl',
+    ),
+    'nror_dashboard_patient' => array(
+      'template' => 'nror_dashboard_patient',
+      'variables' => array('content' => null, 'facilityName' => null),
+      'path' => $path . '/tpl',
+    ),
+    'nror_dashboard_nror_admin' => array(
+      'template' => 'nror_dashboard_nror_admin',
+      'variables' => array('isAjax' => false, 'active' => null, 'content' => null),
+      'path' => $path . '/tpl',
+    ),
+    'nror_dashboard_admin' => array(
+      'template' => 'nror_dashboard_admin',
+      'variables' => array('isAjax' => false, 'active' => null, 'content' => null),
+      'path' => $path . '/tpl',
+    ),
+  );
+}
+
+function nror_dashboard_facility_forms($facilityName) {
+  global $user;
+
+  $groupId = cure_groups_get_active_group($facilityName);
+
+  $restcall = RestCall::getInstance();
+
+  $xml = $restcall->getAllUserModules($user->entityId, $groupId, NROR_CONTEXT_FACILITY);
+
+  // In case of failed REST request
+  if (empty($xml)) {
+    return '';
+  }
+
+  $modules = SimpleXmlParser::toArray($xml);
+
+  $message = '';
+  if (empty($modules)) {
+    $message = '<h4>No questionnaires are available</h4>';
+  }
+
+  $xslt = '<?xml version="1.0" encoding="ISO-8859-1"?>' .
+    theme('nror_facility_forms', array('message' => $message, 'facilityName' => $facilityName));
+  $xml = cacure_mgmt_fix_xmlns($xml);
+  $dom = new DOMDocument();
+  $dom->loadXML($xml);
+  $stylesheet = new DOMDocument;
+  $stylesheet->loadXML((string) $xslt);
+  $proc = new XSLTProcessor;
+  $proc->registerPHPFunctions();
+  $proc->importStylesheet($stylesheet);
+  $dom = $proc->transformToDoc($dom);
+  return $dom->saveHTML();
+}
+
+function nror_dashboard_user_forms_hierarchy($user) {
+  $groupName = $user->name;
+  $context= cure_contexts_get_user_context($user->uid);
+  cure_contexts_set_active_context($context);
+  $block = block_load('cacure_mgmt', CURRENT_QUESTIONNAIRES_BLOCK);
+  $block_content = _block_render_blocks(array($block));
+  $build = _block_get_renderable_array($block_content);
+  $block_rendered = drupal_render($build);
+  return $block_rendered;
+}
+
+function nror_dashboard_facilities() {
+  return drupal_render(drupal_get_form('nror_facilities_main_form'));
+}
+
+function nror_dashboard_registry_coordinators() {
+  cure_contexts_set_active_context(NROR_CONTEXT_FACILITY);
+  return drupal_render(drupal_get_form('nror_rc_main_form'));
+}
+
+function nror_dashboard_physicians() {
+  cacure_mgmt_set_custom_redirect(NROR_DASHBOARD_PHYSICIANS_TAB_URL);
+  cure_contexts_set_active_context(NROR_CONTEXT_PHYSICIAN);
+  return drupal_render(drupal_get_form('nror_physicians_main_form'));
+}
+
+function nror_dashboard_patients() {
+  cacure_mgmt_set_custom_redirect(NROR_DASHBOARD_PATIENTS_TAB_URL);
+  cure_contexts_set_active_context(NROR_CONTEXT_PATIENT);
+  return drupal_render(drupal_get_form('nror_patients_main'));
+}
+
+function nror_dashboard_access() {
+  global $user;  
+  foreach ($user->roles as $rid => $role) {
+    if (cure_contexts_get_role_context($rid)) {
+      $user_role = $rid;
+    }
+  }    
+  if (nror_check_is_admin() || nror_check_is_nror_admin() || isset($user_role)) {
+    return true;
+  } 
+  return false;
+}
+
+function nror_dashboard_user_forms($groupName, $context) {
+  global $user;
+  $entityId = $user->entityId;
+  $groupId = cure_groups_set_active_group($groupName);
+  cure_contexts_set_active_context($context);
+  $output = '';
+  if ($context == NROR_CONTEXT_FACILITY) {
+    $rescall = RestCall::getInstance();
+    $modules = SimpleXmlParser::toArray($rescall->getAllUserModules($entityId, $groupId, $context));
+    if (!empty($modules)) {
+      $modules = $modules['module'];
+      if (isset($modules['@attributes'])) {
+        $module = $modules;
+      }
+      else {
+        $module = $modules[0];
+      }
+      $form = drupal_get_form('nror_dashboard_change_facility_module_status', $module);
+    }
+    $output .= drupal_render($form);
+    $output .= nror_dashboard_facility_forms($groupName);
+  }
+  else {
+    $output .= nror_dashboard_user_forms_hierarchy($groupName);
+  }
+  return $output;
+}
+
+function nror_dashboard_change_facility_module_status($form, $form_state, $module) {
+  $moduleId = $module['@attributes']['id'];
+  $moduleStatus = $module['@attributes']['status'];
+  $groupId = $module['@attributes']['owner'];
+  $form['moduleId'] = array(
+    '#type' => 'hidden',
+    '#value' => $moduleId
+  );
+  $form['groupId'] = array(
+    '#type' => 'hidden',
+    '#value' => $groupId
+  );
+  if ($moduleStatus == CACURE_X_FORMS_STATUS_SUBMITTED) {
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Re-open for editing',
+      '#name' => 're-open',
+    );
+  }
+  else {
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Final submit',
+      '#name' => 'submit',
+    );
+    if (!_nror_forms_completed($module['form'])) {
+      $form['submit']['#attributes'] = array(
+        'disabled' => 'disabled',
+        'class' => array('dashboard-disabled-submit')
+      );
+    }
+  }
+  return $form;
+}
+
+function nror_dashboard_change_facility_module_status_submit($form, $form_state) {
+  $values = $form_state['values'];
+  $groupId = $values['groupId'];
+  $moduleId = $values['moduleId'];
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 're-open') {
+    $status = RestCall::CHANGE_MODULE_STATUS_REOPEN;
+    $message = 'Practice questionnaire was re-opened successfully';
+    $error = 'Practice questionnaire was not re-opened';
+  }
+  elseif ($op == 'submit') {
+    $status = RestCall::CHANGE_MODULE_STATUS_SUBMIT;
+    $message = 'Practice questionnaire was submitted successfully';
+    $error = 'Practice questionnaire was not submitted';
+  }
+  global $user;
+  $restcall = RestCall::getInstance();
+  $response = $restcall->changeModuleStatus($user->entityId, $groupId, $moduleId, $status);
+  if($response == 'OK') {
+    drupal_set_message($message);
+  }
+  else {
+    drupal_set_message($error, 'error');
+  }
+  drupal_goto(NROR_DASHBOARD_FACILITY_FORMS_TAB_URL);
+}

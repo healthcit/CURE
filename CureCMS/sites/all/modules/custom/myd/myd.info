@@ -1,0 +1,4 @@
+name = Debug
+description = Allows to debug easily and fast.
+package = Development
+core = 7.x

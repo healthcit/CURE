@@ -1,0 +1,780 @@
+<?php
+
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_user_update()
+ */
+function nror_rc_user_update($edit, $account, $category) {
+  $facility = $edit['original']->facility;
+  if (isset($edit['facility']) && !empty($facility) && $facility != $edit['facility']) {
+    if (nror_rc_is_coordinator($account)) {
+      _nror_rc_facility_changed($account, $facility, $edit['facility']);
+    } else {
+      $groupId = cure_groups_get_group_id($account->name);
+      $oldCoordinators = nror_rc_get_all($edit['original']->facility);
+      $newCoordinators = nror_rc_get_all($edit['facility']);
+      if (!empty($oldCoordinators)) {
+        foreach ($oldCoordinators as $coordinator) {
+          cure_groups_delete_entity_from_group($coordinator->entityId, $groupId);
+        }
+      }
+      if (!empty($newCoordinators)) {
+        foreach ($newCoordinators as $coordinator) {
+          cure_groups_assign_entity_to_gorup($coordinator->entityId, $groupId);
+        }      
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_delete()
+ */
+function nror_rc_user_delete($account) {
+  $facility = $account->facility;
+  if (!empty($facility)) {
+    if (nror_rc_is_coordinator($account)) {
+      $users = nror_facilities_get_facility_users($facility);
+      foreach ($users as $facilityUser) {
+        $user = user_load($facilityUser->uid);
+        $groupId = cure_groups_get_group_id($user->name);
+        cure_groups_delete_entity_from_group($account->entityId, $groupId);
+      }
+      $facility = nror_facilities_get($facility);
+      cure_groups_delete_entity_from_group($account->entityId, $facility->group_id);
+    }
+    else {
+      $coordinators = nror_rc_get_all($facility);
+      $groupId = cure_groups_get_group_id($account->name);
+      foreach ($coordinators as $coordinator) {
+        cure_groups_delete_entity_from_group($coordinator->entityId, $groupId);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_menu()
+ */
+function nror_rc_menu() {
+  $items = array();
+
+  $items['facility'] = array(
+    'title' => 'Practice',
+    'description' => t('Edit practice info.'),
+    'page callback' => 'nror_rc_facility_form',
+    'access callback' => 'nror_rc_access_to_facility',
+    'weight' => 0
+  );
+
+  $items['rc'] = array(
+    'title' => 'QOPI Administrator',
+    'description' => t('Manage QOPI Administrators accounts'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_rc_main_form'),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+    'weight' => 2
+  );
+
+  $items['rc/new'] = array(
+    'title' => 'Add new QOPI Administrator',
+    'description' => t('Create new QOPI Administrators account'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nror_rc_new'),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+  );
+
+  $items['rc/%user/status'] = array(
+    'title' => 'QOPI Administrator',
+    'page callback' => 'nror_rc_status',
+    'page arguments' =>array(1),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+  );
+
+  $items['rc/%user/delete'] = array(
+    'title' => 'QOPI Administrator',
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_rc_delete_coordinator', 1),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+  );
+  
+  $items['rc/%user/edit'] = array(
+    'title' => 'QOPI Administrator',
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_rc_edit_coordinator', 1),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+  );
+  
+  $items['rc/multiple'] = array(
+    'title' => 'Delete QOPI Administrators',
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('nror_rc_delete_multiple'),
+    'access callback' => nror_check_is_nror_admin() || nror_check_is_admin() ? true : false,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback argument
+ * @see nror_rc_menu()
+ */
+function nror_rc_facility_form() {
+  global $user;
+
+  $facility = nror_facilities_get_user_facility($user->uid);
+
+  $form = drupal_get_form('nror_facilities_facility_form', $facility->fid);
+
+  $form['#redirect'] = false;
+
+  return render($form);
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_rc_menu()
+ */
+function nror_rc_main_form($form, $form_state) {
+  global $user;
+  
+  if ($form_state['submitted'] == true && $form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['coordinators'];
+    helpers_filter_checkboxes($uids);
+    $_SESSION['uids'] = $uids;
+    drupal_goto('rc/multiple');
+  }
+
+  $form = array();
+  $header = array();
+  if (nror_check_is_admin() || nror_check_is_nror_admin()) {
+    $header['facility'] = array('data' => '<p class="header-sort">'. t('Practice') . '</p>');
+  }
+  $header['name'] = array('data' => '<p class="header-sort">' . t('Username') . '</p>');
+  $header['full_name'] = array('data' => '<p class="header-sort">'. t('Name') . '</p>');
+  if (!nror_check_is_nror_admin()) {
+    $header['form_status'] = array('data' => '<p class="header-sort">'. t('Status') . '</p>');
+  }
+  $header['operations'] = array('data' => t('Actions'), 'attributes' => array('colspan' => 2),  'class' => 'actions');
+  
+  $coordinators = nror_rc_get_table_data();
+  
+  $param = 'module_status';
+  $sort = true;
+
+  $users = helpers_sort_two_level_array(nror_prepare_data($coordinators, NROR_DATA_RC), $param, $sort);
+
+  $options = array();
+
+  if (!empty($users)) {
+    foreach($users as $uid => $coordinator) {
+      $options[$uid] = array();
+      
+      $options[$uid] = $coordinator;
+      
+      if (!nror_check_is_nror_admin()) {
+        $links = nror_table_form_action_links($coordinator);
+        $form_status = array_search($coordinator['module_status'], cacure_x_form_statuses());
+        if (empty($form_status) || !isset($coordinator['form_path'])) {
+          $options[$uid]['form_status'] = 'No forms available';
+        }
+        else {
+          $options[$uid]['form_status'] = ucfirst($form_status) . $links;
+        }
+      }      
+      $options[$uid]['operations'] = array();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => t('Edit'),
+        'href' => 'rc/' . $uid . '/edit',
+      );
+      $operations['status'] = array(
+        'title' => strtolower($coordinator['status']) == 'active' ? t('Inactive') : t('Activate'),
+        'href' => 'rc/' . $uid . '/status',
+      );
+      $operations['delete'] = array(
+        'title' => t('Delete'),
+        'href' => 'rc/' . $uid . '/delete',
+      );
+      $options[$uid]['operations'] = array(
+        'data' => array(
+          '#theme' => 'links__node_operations',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
+      );
+    }
+  }
+  
+  $form['find'] = array('#markup' => '<div class="search">Search: <input type="text" class="search-box"></div>');
+  
+  $form['actions'] = array(
+    '#type' => 'container',
+  );
+  
+  $form['actions']['preregister'] = array(
+    '#type' => 'submit', 
+    '#value' => t('Add QOPI Administrator'),
+    '#name' => 'preregister',
+  );
+  
+  $form['coordinators'] = array(
+    '#prefix' => '<div class="dashboard-table">',
+    '#suffix' => '</div>',
+    '#type'    => 'tableselect',
+    '#header'  => $header,
+    '#options' => $options,
+    '#empty' => t('No QOPI Administrators found'),
+    '#attributes' => array(
+      'class' => array(
+        'nror_administration',
+        'tablesorter',
+        'users-table'
+      ),      
+    ),    
+  );
+
+  if (!empty($coordinators)) {
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+      '#name' => 'delete',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+
+    $form['status'] = array(
+      '#type' => 'submit',
+      '#value' => t('Change status'),
+      '#name' => 'status',
+      '#attributes' => array(
+        'class' => array(
+          'nror_button'
+        ),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * nror_rc_main_form() submit function
+ * @see nror_rc_main_form()
+ */
+function nror_rc_main_form_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'preregister') {
+    drupal_goto('rc/new');
+  }
+  else if ($form_state['triggering_element']['#name'] == 'delete') {
+    $uids = $form_state['values']['coordinators'];
+    helpers_filter_checkboxes($uids);
+    if (!empty($uids)) {
+      $form_state['rebuild'] = true;
+    }
+  }
+  else if ($form_state['triggering_element']['#name'] == 'status') {
+    $uids = $form_state['values']['coordinators'];
+    helpers_filter_checkboxes($uids);
+    nror_change_status_multiple($uids);
+    drupal_goto('dashboard');
+  }
+}
+
+/**
+ * Alternative form used in nror_rc_main_form()
+ * @see nror_rc_main_form()
+ */
+function nror_rc_delete_multiple($form, $form_state) {
+  $form = array();
+  
+  $uids = isset($_SESSION['uids']) ? $_SESSION['uids'] : null;
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want delete these users?').'</p>');
+
+  $form['list'] = array('#prefix' => '<ul>', '#suffix' => '</ul>', '#tree' => TRUE);
+  foreach ($uids as $uid) {
+    $user = user_load($uid);
+    $form['list'][$uid] = array(
+      '#type' => 'hidden',
+      '#value' => $uid,
+      '#prefix' => '<li>',
+      '#suffix' => check_plain($user->profile_first_name . ' ' . $user->profile_last_name) . "</li>\n",
+    );
+  }
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_rc_delete_multiple() submit function
+ * @see user_delete_multiple()
+ * @see nror_rc_delete_multiple()
+ */
+function nror_rc_delete_multiple_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    user_delete_multiple($form_state['values']['list']);
+    unset($_SESSION['uids']);
+    drupal_set_message(t('Users were successfully deleted.'));
+  }
+  drupal_goto(NROR_DASHBOARD_RC_TAB_URL);
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_rc_menu()
+ */
+function nror_rc_delete_coordinator($form, &$form_state, $user) {
+  $form = array();
+
+  $form['message'] = array('#markup' => '<p>'.t('Are you sure you want to delete QOPI Administrator %u?', array('%u' => $user->profile_first_name . ' ' . $user->profile_last_name)).'</p>');
+  $form['uid'] = array(
+    '#type' => 'hidden',
+    '#value' => $user->uid
+  );
+
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#name' => 'delete'
+  );
+
+  $form['cancel'] = array(
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel'
+  );
+
+  return $form;
+}
+
+/**
+ * nror_rc_delete_coordinator() submit function
+ * @see user_delete()
+ * @see nror_rc_delete_coordinator()
+ */
+function nror_rc_delete_coordinator_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#name'] == 'delete') {
+    $user = user_load($form_state['values']['uid']);
+    user_delete($form_state['values']['uid']);
+    drupal_set_message(t('QOPI Administrator %u was deleted successfully.', array('%u' => $user->profile_first_name . ' '. $user->profile_last_name)));
+  }
+  drupal_goto(NROR_DASHBOARD_RC_TAB_URL);
+}
+
+/**
+ * Menu callback
+ * Activates or blocks coordinator
+ * @see nror_change_status()
+ * @see nror_rc_menu()
+ */
+function nror_rc_status($user) {
+  nror_change_status($user);
+  drupal_goto(NROR_DASHBOARD_RC_TAB_URL);
+}
+
+function nror_rc_new($form, $form_state) {
+
+  $form= array();
+
+  $form['#user'] = drupal_anonymous_user();
+  
+  $form['name'] = array(
+    '#title' => 'Username',
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#description' => t('QOPI Administrator\'s username'),
+    '#maxlength' => 50,
+  );
+           
+  $form['profile_first_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#description' => t('QOPI Administrator\'s first name'),
+    '#required' => true,
+    '#maxlength' => 50,
+  );
+  
+  $form['profile_last_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Last Name'),
+    '#description' => t('QOPI Administrator\'s last name'),
+    '#required' => true,
+    '#maxlength' => 50,
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#required' => true,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+    $countries = license_agreement_prepare_country_list();
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+    $form['country']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#description' => t('Select the country.'),
+        '#required' => true,
+        '#options' => $countries
+    );
+
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+  autoassignrole_form_user_register_form_alter($form, $form_state);
+
+  $role = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+
+  $form['account']['status'] = array(
+    '#type' => 'value',
+    '#value' => 1
+  );
+
+  $form['autoassignrole_user']['user_roles']['#value'] = $role->rid;
+  $form['autoassignrole_user']['user_roles']['#default_value'][] = $role->rid;
+  $form['autoassignrole_user']['#attributes'] = array(
+    'style' => 'display: none'
+  );
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_rc_new_submit')
+  );
+
+  return $form;
+}
+
+function nror_rc_new_validate($form, $form_state) {
+  $mail = $form_state['values']['mail'];
+  nror_validate_profile_info($form, $form_state);
+  if (!nror_validate_mail($mail)) {
+    form_set_error('mail', t('The e-mail address %m is already taken', array('%m' => $mail)));
+  }
+  
+  if (!nror_user_name_unique($form_state['values']['name'])) {
+    form_set_error('name', t('User with name %i is already registered.', array('%i' => $form_state['values']['name'])));
+  }
+  
+  $mail_validate = user_validate_mail($mail);
+  if(!empty($mail_validate)) {
+    form_set_error('mail', $mail_validate);
+  }
+}
+
+function nror_rc_new_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = $form['#user'];
+    $data = $form_state['values'];
+    nror_trim_values($data);
+    if (user_save($account, $data)) {
+      if (!empty($account->entityId)) {
+        _nror_rc_assign_coordinator_to_existing_group($account);
+      }
+        $country_id = $data['country'];
+        if (!empty($country_id)) {
+            license_agreement_bind_country_to_user($account->uid, $country_id);
+        }
+//      _user_mail_notify('register_admin_created', $account);
+      drupal_set_message(t('QOPI Administrator %p was registered successfully', array('%p' => $form_state['values']['profile_first_name'] . ' ' . $form_state['values']['profile_last_name'] )));
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_RC_TAB_URL);
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_form()
+ * @see nror_rc_menu()
+ */
+function nror_rc_edit_coordinator($form, &$form_state, $user) {
+  if (!nror_rc_is_coordinator($user)) {
+    drupal_set_message(t('User is not QOPI Administrator'));
+    drupal_goto('dashboard');
+  }
+
+  $form = array();
+    
+  $form['#user'] = $user;
+  
+  $form['info'] = array('#markup' => 
+    '<div class="profile">
+      <dl>
+        <dt>Username</dt><dd>' . $user->name . '</dd>
+      </dl>
+    </div>'
+  );
+  
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => !empty($user->name) ? $user->name : '',
+  );
+
+  $form['profile_first_name'] = array(
+    '#title' => 'First name',
+    '#type' => 'textfield',
+    '#required' => true,
+    '#default_value' => !empty($user->profile_first_name) ? $user->profile_first_name : '',
+  );
+
+  $form['profile_last_name'] = array(
+    '#title' => 'Last name',
+    '#type' => 'textfield',
+    '#required' => true,
+    '#default_value' => !empty($user->profile_last_name) ? $user->profile_last_name : '',
+  );
+
+  $form['mail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#required' => true,
+    '#default_value' => $user->mail,
+    '#description' => t('A valid e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+  );
+
+    $countries = license_agreement_prepare_country_list();
+
+    $userCountry = license_agreement_get_user_country($user->uid);
+    $keys = array_keys($countries);
+    $defaultCountry = !empty($userCountry->id) ? $userCountry->id : $keys[0];
+
+  $form['country'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Country'),
+  );
+
+    $form['country']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#description' => t('Select the country.'),
+        '#required' => true,
+        '#options' => $countries,
+        '#default_value' => $defaultCountry,
+    );
+
+
+  nror_facilities_form_user_register_form_alter($form, $form_state);
+
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#name' => 'save'
+  );
+  
+  $form['back'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#name' => 'back',
+    '#limit_validation_errors' => array(),
+    '#submit' => array('nror_rc_edit_coordinator_submit')
+  );
+  
+  return $form;
+}
+
+function nror_rc_edit_coordinator_validate($form, &$form_state) {
+  $mail = $form_state['values']['mail'];
+  
+  if (!nror_validate_mail($mail, $form['#user']->uid)) {
+    form_set_error('mail', t('The e-mail address %m is already taken', array('%m' => $mail)));
+  }
+  $mail_validate = user_validate_mail($mail);
+  if(!empty($mail_validate)) {
+    form_set_error('mail', $mail_validate);
+  }
+}
+
+function nror_rc_edit_coordinator_submit($form, $form_state) {
+  $op = $form_state['triggering_element']['#name'];
+  if ($op == 'save') {
+    $account = clone $form['#user'];
+    $data = $form_state['values'];
+    nror_trim_values($data);
+    if (user_save($form['#user'], $data)) {
+      profile_save_profile($data, $form['#user'], 'Personal Info');
+      if ($data['facility'] != $account->facility) {
+        _nror_rc_facility_changed($account, $account->facility, $data['facility']);
+      }
+
+      $country_id = $data['country'];
+      if (!empty($country_id)) {
+        license_agreement_bind_country_to_user($account->uid, $country_id);
+      }
+//      if ($account->mail != $data['mail']) {
+//        $params['account'] = $form['#user'];
+//        drupal_mail('nror', 'notification', $form['#user']->mail, user_preferred_language($form['#user']), $params);
+//      }
+      
+      drupal_set_message(t('Changes were saved.'));
+    }
+  }
+  drupal_goto(NROR_DASHBOARD_RC_TAB_URL);
+}
+
+/**
+ * Checks if user is registry coordinator
+ * Menu administrators can see item when administering menu.
+ * @return bool
+ */
+function nror_rc_access() {
+  global $user;
+  foreach ($user->roles as $key => $role) {
+    if ($role == NROR_USER_ROLE_COORDINATOR || !empty($GLOBALS['menu_admin']) || nror_check_is_admin()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function nror_rc_access_to_facility() {
+  global $user;
+  foreach ($user->roles as $key => $role) {
+    if ($role == NROR_USER_ROLE_COORDINATOR || !empty($GLOBALS['menu_admin'])) {
+      return true;
+    }
+  }
+  return false;
+}
+/**
+ * Gets all coordinators
+ * @return array
+ */
+function nror_rc_get_table_data($header = array()) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+  return nror_facilities_get_table_data($role->rid, null, $header);
+}
+
+function nror_rc_is_coordinator($user) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+  if (isset($user->roles[$role->rid])) {
+    return true;
+  }
+  return false;
+}
+
+function nror_rc_get_all($fid = null) {
+  $role = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+  $result = nror_get_users_by_role_id($role->rid);
+
+  if (!empty($fid)) {
+    foreach ($result as $uid => $user) {
+      if ($user->facility != $fid) {
+         unset($result[$uid]);
+      }
+    }
+  }
+
+  return $result;
+}
+
+function _nror_rc_facility_changed($rc, $oldFid, $newFid) {
+  $eid = $rc->entityId;
+  $users = nror_facilities_get_facility_users($oldFid);
+  foreach ($users as $facilityUser) {
+    $user = user_load($facilityUser->uid);
+    if (!nror_rc_is_coordinator($user)) {
+      $groupId = cure_groups_get_group_id($user->name);
+      cure_groups_delete_entity_from_group($eid, $groupId);
+    }
+  }
+  $oldFacility = nror_facilities_get($oldFid);
+  $newFacility = nror_facilities_get($newFid);
+  cure_groups_delete_entity_from_group($eid, $oldFacility->group_id);
+  cure_groups_assign_entity_to_gorup($eid, $newFacility->group_id);
+}
+
+function _nror_rc_set_permissions($eid, $group_id) {
+  $role_1 = user_role_load_by_name(NROR_USER_ROLE_COORDINATOR);
+  $role_2 = user_role_load_by_name(NROR_USER_ROLE_FACILITY);
+
+  $perms_tpl = cure_tag_permissions_tpl_get_tpl_data($role_1->rid, $role_2->rid);
+
+  if (!empty($perms_tpl)) {
+    $xml = cure_tag_permissions_prepare_xml_for_entity($eid, $group_id, $perms_tpl);
+    $response = cure_tag_permissions_save_permissions($eid, $xml);
+
+    if ($response->code != '200') {
+      drupal_set_message('Error occurred. Form tags permissions were not assigned. Detailed information was logged.', 'error');
+      $report = 'Tags permissions module.' . "\n"
+        . 'Automatic permission assignment.' . "\n"
+        . 'Response code: ' . $response->code . "\n"
+        . 'Collectors response data: ' . $response->data;
+      watchdog('error', $report, array(), WATCHDOG_ERROR);
+    }
+  }
+}
+
+function nror_rc_assign_coordinator_to_new_group($account) {
+  if (!empty($account->facility)) {
+    $facility = nror_facilities_get($account->facility);
+    if (!empty($facility->group_id)) {
+      $coordinators = nror_rc_get_all($facility->fid);
+      $groupId = cure_groups_get_group_id($account->name);
+      foreach ($coordinators as $uid => $coordinator) {
+        cure_groups_assign_entity_to_gorup($coordinator->entityId, $groupId);
+      }
+    }
+  }
+}
+
+function _nror_rc_assign_coordinator_to_existing_group($account) {
+  if (!empty($account->facility)) {
+    $facility = nror_facilities_get($account->facility);
+    if (!empty($facility->group_id)) {
+      cure_groups_assign_entity_to_gorup($account->entityId, $facility->group_id);
+      $users = nror_facilities_get_facility_users($facility->fid);
+      foreach ($users as $facilityUser) {
+        $user = user_load($facilityUser->uid);
+        if (!nror_rc_is_coordinator($user)) {
+          $groupId = cure_groups_get_group_id($user->name);
+          cure_groups_assign_entity_to_gorup($account->entityId, $groupId);
+        }
+      }
+    }
+  }
+}
+
+function nror_rc_nror_facility_delete_event($fid) {
+  $coordinators = nror_facilities_get_facility_users_by_role($fid, NROR_USER_ROLE_COORDINATOR);
+  if (!empty($coordinators)) {
+    foreach ($coordinators as $user) {
+      user_delete($user);
+    }
+  }    
+}

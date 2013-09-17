@@ -1,0 +1,320 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('CURRENT_QUESTIONNAIRES_BLOCK', 'current_questionnaires_block');
+define('QUESTIONNAIRE_SIDEBAR_BLOCK', 'questionnaire_sidebar_block');
+define('SUBMITTED_QUESTIONNAIRES_BLOCK', 'submitted_questionnaires_block');
+
+/**
+ * Implementration of hook_init().
+ */
+function cacure_mgmt_init() {
+  $path = drupal_get_path('module', 'cacure_mgmt');
+  drupal_add_http_header('CacheControl', 'no-cache');
+  drupal_add_http_header('Pragma', 'no-cache');
+  drupal_add_http_header('Expires', '-1');
+  drupal_add_css($path . '/css/management-default.css', 'file');
+  drupal_add_css($path . '/css/custom.css', 'file');
+  drupal_add_js($path . '/js/cacure_mgmt.js', 'file');
+  drupal_add_js($path . '/js/cookie.js', 'file');
+
+  if (arg(0) == 'form') {
+    drupal_add_js($path.'/js/cacure_mgmt_xf.js', 'file');
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function cacure_mgmt_menu() {
+  $items = array();
+
+  $items['management/submit-module/%'] = array(
+    'title' => '',
+    'page callback' => 'cacure_mgmt_submit_module_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'description' => '',
+    'file' => 'cacure_mgmt.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['management/submit-module/%/%'] = array(
+    'title' => '',
+    'page callback' => 'cacure_mgmt_submit_module_callback',
+    'page arguments' => array(2, 3),
+    'access arguments' => array('access content'),
+    'description' => '',
+    'file' => 'cacure_mgmt.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['management/reopen-module/%'] = array(
+    'title' => '',
+    'page callback' => 'cacure_mgmt_reopen_module_callback',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'description' => '',
+    'file' => 'cacure_mgmt.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['management/reopen-module/%/%'] = array(
+    'title' => '',
+    'page callback' => 'cacure_mgmt_reopen_module_callback',
+    'page arguments' => array(2, 3),
+    'access arguments' => array('access content'),
+    'description' => '',
+    'file' => 'cacure_mgmt.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/config/cacure_settings/submit_path'] = array(
+    'title' => 'Module submit path',
+    'page callback' => 'cacure_mgmt_submit_path_callback',
+    'access arguments' => array('access cacure settings'),
+    'description' => '',
+    'file' => 'cacure_mgmt.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function cacure_mgmt_theme() {
+  $path = drupal_get_path('module', 'cacure_mgmt');
+
+  return array(
+    //  All avaliable modules.
+    'xslt_current_questionnaires' => array(
+      'template' => 'cacure_mgmt-current-questionnaires',
+      'variables' => array(
+        'arg' => NULL,
+        'moduleSubmittable' => false,
+      ),
+      'path' => $path . '/xslt',
+    ),
+      
+    'xslt_questionnaire_sidebar' => array(
+      'template' => 'cacure_mgmt-questionnaire-sidebar',
+      'variables' => array('arg' => NULL),
+      'path' => $path . '/xslt',
+    ),
+
+    'xslt_submitted_questionnaires' => array(
+      'template' => 'cacure_mgmt-submitted-questionnaires',
+      'variables' => array('arg' => NULL),
+      'path' => $path . '/xslt',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function cacure_mgmt_block_info() {
+  $blocks = array();
+  $blocks[CURRENT_QUESTIONNAIRES_BLOCK]['info'] = t('Current Questionnaires');
+  $blocks[CURRENT_QUESTIONNAIRES_BLOCK]['cache'] = DRUPAL_NO_CACHE;
+
+  $blocks[QUESTIONNAIRE_SIDEBAR_BLOCK]['info'] = t('Questionnaire sidebar');
+  $blocks[QUESTIONNAIRE_SIDEBAR_BLOCK]['cache'] = DRUPAL_NO_CACHE;
+
+  $blocks[SUBMITTED_QUESTIONNAIRES_BLOCK]['info'] = t('Submitted Questionnaires');
+  $blocks[SUBMITTED_QUESTIONNAIRES_BLOCK]['cache'] = DRUPAL_NO_CACHE;
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function cacure_mgmt_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case CURRENT_QUESTIONNAIRES_BLOCK:
+    case SUBMITTED_QUESTIONNAIRES_BLOCK:
+    case QUESTIONNAIRE_SIDEBAR_BLOCK:
+      $block['subject'] = '';
+      $block['content'] = 'content';
+      return $block;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK()
+ */
+function cacure_mgmt_preprocess_block(&$vars) {
+  $blcok = $vars['block'];
+  if ($blcok->module == 'cacure_mgmt') {
+    $content = '';
+    if ($blcok->delta == CURRENT_QUESTIONNAIRES_BLOCK) {
+      $content = cacure_mgmt_current_questionnaires_block();
+    }
+    elseif ($blcok->delta == QUESTIONNAIRE_SIDEBAR_BLOCK) {
+      $content = cacure_mgmt_questionnaire_sidebar_block();
+    }
+    elseif ($blcok->delta == SUBMITTED_QUESTIONNAIRES_BLOCK) {
+      $content = cacure_mgmt_submitted_questionnaires_block();
+    }
+    $vars['content'] = $content;
+  }
+}
+
+/**
+ * Block content.
+ */
+function cacure_mgmt_submitted_questionnaires_block() {
+  global $user;
+  $arg = array();
+
+  $groupId = cure_groups_get_active_group($user->name);
+  $context =  cure_contexts_get_active_context();
+
+  if (empty($context)) {
+    $context = cure_contexts_get_user_context($user->uid);
+  }
+
+  $restcall = RestCall::getInstance();
+  $xml = $restcall->getAllUserModules($user->entityId, $groupId, $context);
+  
+  // In case of failed REST request
+  if (empty($xml)) {
+    return '';
+  }
+
+  $modules = SimpleXmlParser::toArray($xml);
+
+  if (!is_array($modules)) {
+    return '';
+  }
+  if ($modules['module']['@attributes']['status'] != 'completed') {
+    $arg['message'] = 'You currently have no submitted questionnaires';
+  }
+
+  if (isset($modules['module']['@attributes']['dateSubmitted'])) {
+    $sbt_date_string = $modules['module']['@attributes']['dateSubmitted'];
+    $arg['submitted_date'] = date('m/d/y', strtotime($sbt_date_string));
+  } 
+  else {
+    $arg['submitted_date'] = 'unknown';
+  }
+
+  $xslt = '<?xml version="1.0" encoding="ISO-8859-1"?>' . theme('xslt_submitted_questionnaires', array('arg' => $arg));
+
+  $xml = cacure_mgmt_fix_xmlns($xml);
+  $dom = new DOMDocument();
+  $dom->loadXML($xml);
+
+  $stylesheet = new DOMDocument;
+  $stylesheet->loadXML((string) $xslt);
+
+  $proc = new XSLTProcessor;
+  $proc->registerPHPFunctions();
+  $proc->importStylesheet($stylesheet);
+
+  $dom = $proc->transformToDoc($dom);
+  return $dom->saveHTML();
+}
+
+function cacure_mgmt_current_questionnaires_block() {
+  drupal_add_js(drupal_get_path('module', 'cacure_mgmt').'/js/cacure_mgmt.sidebar.js', 'file');
+  return _cacure_mgmt_forms_list(CURRENT_QUESTIONNAIRES_BLOCK);
+}
+
+function cacure_mgmt_questionnaire_sidebar_block() {
+  drupal_add_js(drupal_get_path('module', 'cacure_mgmt').'/js/cacure_mgmt.sidebar.js', 'file');
+  return _cacure_mgmt_forms_list(QUESTIONNAIRE_SIDEBAR_BLOCK);
+}
+
+function _cacure_mgmt_forms_list($delta) {
+  global $user;
+  $arg = array();
+
+  $groupId = cure_groups_get_active_group($user->name);
+  $context =  cure_contexts_get_active_context();
+
+  if (empty($context)) {
+    $context = cure_contexts_get_user_context($user->uid);
+  }
+
+  $arg['context'] = $context;
+  $restcall = RestCall::getInstance();
+
+  $xml = $restcall->getAllUserModules($user->entityId, $groupId, $context);
+
+  // In case of failed REST request
+  if (empty($xml)) {
+    return '';
+  }
+
+  $modules = SimpleXmlParser::toArray($xml);
+
+  if (empty($modules)) {
+    $arg['message'] = '<h4>No new questionnaires are available</h4>';
+  }
+
+  if ($delta == QUESTIONNAIRE_SIDEBAR_BLOCK) {
+    $xslt = '<?xml version="1.0" encoding="ISO-8859-1"?>' .
+      theme('xslt_questionnaire_sidebar', array('arg' => $arg));
+  }
+  elseif ($delta == CURRENT_QUESTIONNAIRES_BLOCK) {
+    $xslt = '<?xml version="1.0" encoding="ISO-8859-1"?>' .
+      theme('xslt_current_questionnaires', array(
+        'arg' => $arg,
+      ));
+  }
+
+  $xml = cacure_mgmt_fix_xmlns($xml);
+  $dom = new DOMDocument();
+  $dom->loadXML($xml);
+  $stylesheet = new DOMDocument;
+  $stylesheet->loadXML((string) $xslt);
+  $proc = new XSLTProcessor();
+  $proc->registerPHPFunctions();
+  $proc->importStylesheet($stylesheet);
+  $dom = $proc->transformToDoc($dom);
+  return $dom->saveHTML();
+}
+
+// TODO: Restcall returns broken link in xmlns="http://www.healthcit.com/ModuleMetadata"
+function cacure_mgmt_fix_xmlns($xml) {
+  return str_replace('xmlns="http://www.healthcit.com/ModuleMetadata"', 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', $xml);
+}
+
+function cacure_mgmt_check_module_is_submittable($module) {
+  if (isset($module['form'])) {
+    $forms = $module['form'];
+    if (isset($forms['@attributes'])) {
+      $forms = array($forms);
+    }
+    foreach ($forms as $form) {
+      if ($form['@attributes']['status'] != CACURE_X_FORMS_STATUS_SUBMITTED) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+function cacure_mgmt_set_custom_redirect($path) {
+  $_SESSION['cacure_mgmt_custom_redirect'] = $path;
+}
+
+function cacure_mgmt_get_custom_redirect() {
+  if (isset($_SESSION['cacure_mgmt_custom_redirect'])) {
+    $redirect = $_SESSION['cacure_mgmt_custom_redirect'];
+  }
+  else {
+    $redirect = variable_get('cacure_mgmt_submit_path', '');
+  }
+  return $redirect;
+}

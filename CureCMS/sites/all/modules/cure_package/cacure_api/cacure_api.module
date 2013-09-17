@@ -1,0 +1,167 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+define('CURE_ACTIVE_GROUP', 'cure_active_group');
+define('CURE_ACTIVE_CONTEXT', 'cure_active_context');
+
+module_load_include('php', 'cacure_api', 'RestCall');
+
+/**
+ * Implementation of hook_permission().
+ */
+function cacure_api_permission(){
+  return array(
+    'access cacure settings' => array(
+      'title' => t('Access cacure settings'),
+    ),
+    'access cure users page' => array(
+      'title' => t('Access CURE users page'),
+    ),
+    'access cure reports page' => array(
+      'title' => t('Access CURE reports page'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function cacure_api_menu() {
+  $items = array();
+
+  $items['admin/config/cacure_settings'] = array(
+    'title' => 'CURE settings page',
+    'page callback' => 'cacure_api_settings_page',
+    'access arguments' => array('access cacure settings'),
+    'description' => '',
+  );
+
+  $items['admin/config/cacure_settings/api'] = array(
+    'title' => 'API',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cacure_api_form'),
+    'access arguments' => array('access cacure settings'),
+    'description' => '',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/people/cure'] = array(
+    'title' => 'CURE users page',
+    'page callback' => 'cacure_api_users_page',
+    'access arguments' => array('access cure users page'),
+    'description' => '',
+  );
+
+  $items['admin/reports/CURE'] = array(
+    'title' => 'CURE reports page',
+    'page callback' => 'cacure_api_reports_page',
+    'access arguments' => array('access cure reports page'),
+    'description' => '',
+  );
+
+
+  return $items;
+}
+
+/**
+ * Menu callback.
+ * @see cacure_api_menu()
+ */
+function cacure_api_settings_page() {
+  $item = menu_get_item();
+
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+    return $output;
+  }
+  else {
+    drupal_goto('admin/config/cacure_settings/api');
+  }
+}
+
+/**
+ * Menu callback.
+ * @see cacure_api_menu()
+ */
+function cacure_api_users_page() {
+  $item = menu_get_item();
+
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+    return $output;
+  }
+  else {
+    return 'CURE users page';
+  }
+}
+
+/**
+ * Menu callback.
+ * @see cacure_api_menu()
+ */
+function cacure_api_reports_page() {
+  $item = menu_get_item();
+
+  if ($content = system_admin_menu_block($item)) {
+    $output = theme('admin_block_content', array('content' => $content));
+    return $output;
+  }
+  else {
+    return 'CURE reports page';
+  }
+}
+
+/**
+ * Menu callback argument
+ * @see drupal_get_path()
+ * @see cacure_api_menu()
+ */
+function cacure_api_form($form, $form_state) {
+  $form = array();
+
+  $settings = cacure_api_get_settings();
+
+  $form['cure_api_server'] = array(
+    '#title' => 'API server address',
+    '#type' => 'textfield',
+    '#default_value' => !empty($settings['server']) ? $settings['server'] : ''
+  );
+
+  $form['cure_api_port'] = array(
+    '#title' => 'API server port',
+    '#type' => 'textfield',
+    '#default_value' => !empty($settings['port']) ? $settings['port'] : ''
+  );
+
+  $form['cure_api_context'] = array(
+    '#title' => 'API context',
+    '#type' => 'textfield',
+    '#default_value' => !empty($settings['context']) ? $settings['context'] : ''
+  );
+
+  $form['cure_api_show_errors'] = array(
+    '#title' => 'Show connection errors',
+    '#type' => 'checkbox',
+    '#default_value' => !empty($settings['show_errors']) ? $settings['show_errors'] : ''
+  );
+
+
+  return system_settings_form($form);
+}
+
+/**
+ * Gets settings from drupal variables
+ * @return array 
+ */
+function cacure_api_get_settings() {
+  return array(
+    'show_errors' => variable_get('cure_api_show_errors', false),
+    'server' => variable_get('cure_api_server', ''),
+    'port' => variable_get('cure_api_port', ''),
+    'context' => variable_get('cure_api_context', '')
+  );
+}

@@ -1,0 +1,182 @@
+<?php
+
+/**
+ * Implementation of hook_permission()
+ */
+function refer_a_friend_permission() {
+    return array(
+      'access refer_a_friend' => array('title' => t('Access refer_a_friend module.')),
+      'administer refer_a_friend' => array('title' => t('Administer refer_a_friend module.')),
+    );
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function refer_a_friend_menu() {
+  $items = array();
+	$items['admin/config/refer_a_friend'] = array(
+    'title' => t('Refer A Friend'),
+    'description' => 'The settings page to edit the page, form menu and email settings for Refer A Friend.',
+    'page callback' => 'drupal_get_form',
+		'page arguments' => array('refer_a_friend_settings_form'),
+    'access arguments' => array('administer refer_a_friend'),
+    'file' => 'refer_a_friend.admin.inc',
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['refer_a_friend'] = array(
+    'title' => t('Refer A Friend'),
+    'description' => 'The Refer A Friend page provides a form to send multiple emails to friends refering them to this site.',
+    'page callback' => 'drupal_get_form',
+		'page arguments' => array('refer_a_friend_form'),
+		'access arguments' => array('access refer_a_friend'),
+    'type' => MENU_SUGGESTED_ITEM,
+	);
+    return $items;
+}
+
+/**
+ * Displays the Refer A Friend Form
+ */
+function refer_a_friend_form($form, &$form_state) {
+  global $user;
+  drupal_add_css(drupal_get_path('module', 'refer_a_friend') . '/refer_a_friend.css');
+  $_user = user_load($user->uid);
+  $form = array();
+
+  if($form_state['storage']['successful'] === 1) {
+    $form['#prefix'] .= '<p style="color:#'.variable_get('refer_a_friend_success_color', 'FF0000').'" class="refer-a-friend-success">'.variable_get('refer_a_friend_success_message', '').'</p>';
+  }
+  if($form_state['storage']['successful'] === -1) {
+    $form['#prefix'] .= '<p>There was a problem sending emails. Please try again later.</p>';
+  }
+  $form['#prefix'] .= variable_get('refer_a_friend_description', '');
+  $form['#prefix'] .= '<p><span class="form-required">*</span>Required</p>';
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t(variable_get('refer_a_friend_name', 'Your Name')),
+    '#size' => 60,
+    '#maxlength' => 128,
+    '#default_value' => (empty($_user->profile_first_name) && empty($_user->profile_last_name)) ? '' : $_user->profile_first_name . ' ' . $_user->profile_last_name,
+    '#required' => TRUE,
+  );
+
+	$form['email'] = array(
+		'#type' => 'textfield',
+		'#title' => t(variable_get('refer_a_friend_email', 'Your Email')),
+		'#size' => 60,
+		'#maxlength' => 128,
+    '#default_value' => (empty($user->mail)) ? '' : $user->mail,
+    '#required' => TRUE,
+	);
+
+	$form['emails'] = array(
+		'#type' => 'textfield',
+		'#title' => t(variable_get('refer_a_friend_emails', 'Friend\'s Emails')),
+    '#description' => variable_get('refer_a_friend_emails_help', ''),
+		'#size' => 60,
+		'#maxlength' => 128,
+    '#required' => TRUE,
+	);
+
+	$form['message'] = array(
+		'#type' => 'textarea',
+		'#title' => t(variable_get('refer_a_friend_message', 'Message')),
+    '#default_value' => variable_get('refer_a_friend_default_message', ''),
+    '#required' => TRUE,
+	);
+	
+	$form['#validate'] = array('refer_a_friend_validate_emails');
+	
+	$form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t(variable_get('refer_a_friend_submit', 'Submit')),
+    '#prefix' => '<div class="form-item">',
+    '#suffix' => '</div>'
+	);
+    
+	return $form;
+}
+
+/**
+ * Custom validate function to validate emails()
+ */
+function refer_a_friend_validate_emails($form, &$form_state) {
+  $emails = explode(',', $form_state['values']['emails']);
+  $email = $form_state['values']['email'];
+
+  // check user email
+  $trimmed = ltrim($email);
+  if(!valid_email_address($email)) {
+    form_set_error('email', $trimmed . ' is not a valid email address.');
+  }
+
+  // check emails
+  if(count($emails) == 0) {
+    form_set_error('Friend\'s Emails is required.');
+  }
+  $clean = array();
+  foreach ($emails as $email) {
+    $trimmed = ltrim($email);
+    if(!valid_email_address($trimmed)) {
+      form_set_error('emails', $trimmed . ' is not a valid email address.');
+    }
+    else {
+      $clean[] = $trimmed;
+    }
+  }
+  // if this is valid we can add the clean emails
+  $form_state['values']['emails'] = implode(',', $clean);
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function refer_a_friend_form_submit($form, &$form_state) {
+  global $user;
+  $_user = user_load($user->uid);
+  // get all the token values
+  $tokens = array(
+    '!name' => $form_state['values']['name'],
+    '!email' => $form_state['values']['email'],
+    '!message' => $form_state['values']['message'],
+    '!site' => variable_get('refer_a_friend_token_site', variable_get('site_name', '')),
+    '!site_email' => variable_get('site_mail', ''),
+    '!link' => variable_get('refer_a_friend_token_link', 'http://' . $_SERVER["SERVER_NAME"] . base_path()),
+  );
+
+  $to = $form_state['values']['emails'];
+  $from = t(variable_get('refer_a_friend_from_txt', '%email'), $tokens);
+
+  $params = array(); // add params here and they will be passed to hook_mail
+  $params['subject'] = t(variable_get('refer_a_friend_subject_txt', ''), $tokens);
+  $params['body'] = t(variable_get('refer_a_friend_email_txt', ''), $tokens);
+
+  $mailed = drupal_mail(
+    'refer_a_friend', //module name
+    'refer_a_friend', //key
+    $to, //to
+    user_preferred_language($_user), //lang
+    $params, //optional params
+    $from
+  ); //from
+
+  $form_state['storage']['successful'] = ($mailed) ? 1 : 0;
+}
+
+/**
+ * Implementation of hook_mail()
+ */
+function refer_a_friend_mail($key, &$message, $params) {
+  // TODO make admin setting for this
+  // to use html, uncomment this next line
+  //$message['headers']['Content-Type'] = 'text/html;charset=utf-8';
+  switch($key) {
+    case 'refer_a_friend':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['body'];
+      break;
+	}
+}
+

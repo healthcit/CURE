@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+Proprietary and confidential
+-->
+
+<schema targetNamespace="http://www.healthcit.com/ModuleMetadata" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:hcit="http://www.healthcit.com/ModuleMetadata">
+
+    <complexType name="FormType">
+    	<sequence>
+    		<element name="description" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="skip-rule" type="hcit:SkipRuleType" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="ID" use="required"></attribute>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="author" type="string"></attribute>
+    	<attribute name="status">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="new"></enumeration>
+    				<enumeration value="in-progress"></enumeration>
+    				<enumeration value="submitted"></enumeration>
+    				<enumeration value="completed"></enumeration>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="question-count" type="integer" use="required"></attribute>
+    </complexType>
+
+
+
+    <complexType name="ModuleType">
+        <sequence>
+	    	<sequence>
+	    		<element name="form" type="hcit:FormType"  minOccurs="1" maxOccurs="unbounded"></element>
+	    	</sequence>
+	       	<sequence>
+    			<element name="description" type="string"  minOccurs="0" maxOccurs="1"></element>
+    		</sequence>
+    	</sequence>
+    	<attribute name="id" type="ID" use="required"></attribute>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="status">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="submitted"></enumeration>
+    				<enumeration value="in-progress"></enumeration>
+    				<enumeration value="new"></enumeration>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+
+    </complexType>
+
+
+    <element name="modules" type="hcit:ModuleCollectionType"></element>
+
+    <complexType name="ModuleCollectionType">
+    	<sequence>
+    		<element name="module" type="hcit:ModuleType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="SkipRuleType">
+    	<attribute name="question_id" type="string"></attribute>
+    	<attribute name="value" type="string"></attribute>
+    	<attribute name="rule">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="show"></enumeration>
+    				<enumeration value="hide"></enumeration>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    </complexType>
+</schema>

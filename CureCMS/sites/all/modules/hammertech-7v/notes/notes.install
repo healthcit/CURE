@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function notes_schema() {
+	$schema['notes'] = array(
+		'description' => t('Stores user notes.'),
+		'fields' => array(
+	    'nid' => array(
+        'description' => 'The primary identifier for a note.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+	    ),
+			'uid' => array(
+				'description' => t('Saves the {user}.uid of the user saving this note.'),
+				'type' => 'int',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+			'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+			),
+			'title' => array(
+        'description' => 'Saves the title of this note.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+			),
+			'body' => array(
+				'description' => t('Saves the body of this note.'),
+				'type' => 'text',
+				'size' => 'big',
+			),
+		),
+		'indexes' => array('uid' => array('uid')),
+		'primary key' => array('nid'),
+	);
+	return $schema;
+}

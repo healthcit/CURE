@@ -1,0 +1,149 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+require_once dirname(__FILE__) . '/cure_tag_permissions_tpl.db.inc';
+require_once dirname(__FILE__) . '/cure_tag_permissions_tpl.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function cure_tag_permissions_tpl_menu() {
+  $items = array();
+
+  $items['admin/people/cure/cure_tags_permissions/templates'] = array(
+    'title' => 'Templates for assigning permissions on tags',
+    'description' => t('Templates for assigning permissions on tags'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('cure_tag_permissions_tpl_single_main'),
+    'access arguments' => array('administer tags permissions'),
+    'file' => 'cure_tag_permissions_tpl.inc',
+    'weight' => 7, 
+    'type' => MENU_LOCAL_TASK,
+  );
+      
+  $items['admin/people/cure/cure_tags_permissions/templates/add'] = array(
+    'title' => 'Add new single template',
+    'description' => t('Add new single template.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('cure_tag_permissions_tpl_single_form'),
+    'access arguments' => array('administer tags permissions'),
+    'file' => 'cure_tag_permissions_tpl.inc'
+  );
+
+  $items['admin/people/cure/cure_tags_permissions/templates/%/edit'] = array(
+    'title' => 'Edit template',
+    'description' => t('Edit template.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('cure_tag_permissions_tpl_single_form', 5),
+    'access arguments' => array('administer tags permissions'),
+    'file' => 'cure_tag_permissions_tpl.inc'
+  );
+
+  $items['admin/people/cure/cure_tags_permissions/templates/%/delete'] = array(
+    'title' => 'Delete template',
+    'description' => t('Delete template.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>array('cure_tag_permissions_tpl_delete_single_form', 5),
+    'access arguments' => array('administer tags permissions'),
+    'file' => 'cure_tag_permissions_tpl.inc'
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_cure_users_create_event()
+ */
+function cure_tag_permissions_tpl_cure_users_create_event($user, $edit) {
+  $user_role = null;
+  
+  $entityId = cure_users_get_entity_id($user->uid);
+  if (!empty($edit['roles'])) {
+    foreach ($edit['roles'] as $rid => $role) {
+      if (cure_contexts_get_role_context($rid)) {
+        $user_role = $rid;
+      }
+    }
+
+    if (!empty($user_role)) {
+      $perms_tpl = cure_tag_permissions_tpl_get_tpl_single($user_role);
+      if (!empty($perms_tpl)) {
+        $call = RestCall::getInstance();
+        $xml = cure_tag_permissions_prepare_xml_for_entity($entityId, $perms_tpl);
+        $response = $call->savePermissions($entityId, $xml);
+        if ($response->code != 200) {
+          drupal_set_message('Error occurred. Form tags permissions were not assigned. Detailed information was logged.', 'error');
+          $report = 'Tags permissions module.' . "\n"
+            . 'Automatic permission assignment.' . "\n"
+            . 'Response code: ' . $response->code . "\n"
+            . 'Collectors response data: ' . $response->data;
+          watchdog('error', $report, array(), WATCHDOG_ERROR);
+        }
+      }
+    }
+  }
+}
+
+function theme_cure_tag_permissions_tpl_checkboxes_form(&$vars) {
+  $checks = $vars['checkboxes'];
+  $output = '';
+  $settings = cure_tag_permissions_get_settings();
+
+  $tag_perms = element_children($checks['#tag_permission']);
+
+  if (!empty($tag_perms)) {
+    foreach ($tag_perms as $key) {
+      if (is_array($checks['#tag_permission'][$key])) {
+        $row = array();
+        if (is_numeric($key)) {
+          $tag_id = $checks['#tag_permission'][$key]['#value'];
+          $row[] = array('data' => $tag_id, 'id' => 'tag_'.$tag_id, 'class' => 'cacure_tags_permissions_tag_id');
+          foreach ($settings as $perm) {
+            if (is_array($checks[$tag_id.':'.$perm])) {
+              if (isset($checks['#default_value'][$tag_id.':'.$perm])) {
+                $checks[$tag_id.':'.$perm]['#checked'] = true;
+              } else {
+                $checks[$tag_id.':'.$perm]['#checked'] = false;
+              }
+              $row[] = array('data' => drupal_render($checks[$tag_id.':'.$perm]), 'class' => 'cacure_tags_permissions_tag_table_checkbox', 'title' => t($tag_id).' : '.$perm);
+            }
+          }
+        }
+        $rows[] = $row;
+      }
+    }
+
+    $header[] = array('data' => t('Tags'));
+
+    foreach ($settings as $permission) {
+      $header[] = array('data' => t($permission), 'class' => 'cacure_tags_permissions_tag_table_header');
+    }
+
+    $output .= theme_table(array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array('id' => 'tag_permissions'),
+      'empty' => t('No tags found')
+    ));
+
+    $output .= $checks['#miltiple_choice'];
+  }
+
+  return $output;
+}
+
+/**
+ * Implementation of hook_theme().
+ * @return type
+ */
+function cure_tag_permissions_tpl_theme($existing, $type, $theme, $path) {
+  return array(
+    'cure_tag_permissions_tpl_checkboxes_form' => array(
+      'render element' => 'checkboxes'
+    )
+  );
+}

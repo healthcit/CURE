@@ -1,0 +1,10 @@
+#print_content_link {
+  margin-right: 15px;
+  float: right;
+  width: auto;
+}
+
+a#print-content-print-link {
+  cursor: pointer;
+}
+

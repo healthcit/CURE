@@ -1,0 +1,80 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function cure_forms_logs_schema() {
+  $schema = array();
+  
+  $schema['cure_forms'] = array(
+    'description' => 'CURE Froms.',
+    'fields' => array(      
+      'fid' => array(
+        'description' => 'The primary identifier of a form',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      
+      'name' => array(
+        'description' => 'The form name',
+        'type' => 'varchar',
+        'length' => 255,
+      ),      
+    ), 
+    'primary key' => array('fid'),
+  );
+  
+  $schema['cure_forms_logs'] = array(
+    'description' => 'CURE Froms logs.',
+    'fields' => array(      
+      'flid' => array(
+        'description' => 'The primary identifier of a record',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      
+      'form_id' => array(
+        'description' => 'The primary identifier of a form',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+        
+      'owner_id' => array(
+        'description' => 'The primary identifier of form owner',
+        'type' => 'varchar',
+        'length' => 255,
+      ),        
+        
+      'user_id' => array(
+        'description' => 'The primary identifier of user that accesses the form',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+        
+      'date' => array(
+        'description' => 'Date of access to the form',
+        'mysql_type' => 'datetime'        
+      ),
+    ), 
+    'primary key' => array('flid'),
+    'foreign keys' => array(
+      'fk_user' => array(
+        'table' => 'users',
+        'columns' => array('user_id' => 'uid'),
+      ),
+      'fk_form' => array(
+        'table' => 'cure_forms',
+        'columns' => array('form_id' => 'fid'),
+      ),
+    ),
+  );  
+  
+  return $schema;
+}

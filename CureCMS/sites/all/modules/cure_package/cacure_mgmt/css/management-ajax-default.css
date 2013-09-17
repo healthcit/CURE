@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+div#block-cacure_mgmt-1 div.status-help {
+
+}
+
+div#block-cacure_mgmt-1 div.status-help div.status-progress {
+
+}
+
+div#block-cacure_mgmt-1 div.status-help div.status-finished {
+
+}
+
+div#block-cacure_mgmt-1 div.element-header {
+
+}
+
+div#block-cacure_mgmt-1 div.element-header div.module-name{
+
+}
+
+div#block-cacure_mgmt-1 div.element-header div.status-help{
+}
+
+
+
+
+@import "management-ajax-custom.css";

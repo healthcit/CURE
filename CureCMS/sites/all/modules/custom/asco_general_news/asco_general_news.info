@@ -1,0 +1,12 @@
+; Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+; Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+; Proprietary and confidential
+
+; $Id $
+name = "ASCO General News"
+description = "ASCO General News module"
+
+version = "7.x-2.6"
+core = "7.x"
+
+package = "CURE custom modules"

@@ -1,0 +1,37 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function nror_physicians_schema() {
+  $schema = array();
+  
+  $schema['nror_physician_degree'] = array(
+    'description' => 'Physician degree.',
+    'fields' => array(      
+      'uid' => array(
+        'description' => 'The user ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'degree' => array(
+        'description' => 'Physician degree',
+        'type' => 'varchar',
+        'length' => 60,
+      ),
+    ), 
+    'foreign keys' => array(
+      'users' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ), 
+    ), 
+  ); 
+  
+  return $schema;
+}

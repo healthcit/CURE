@@ -1,0 +1,138 @@
+<?php
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function nror_facilities_schema() {
+  $schema = array();
+  
+  $schema['nror_facilities'] = array(
+    'description' => 'Facilities.',
+    'fields' => array(      
+      'fid' => array(
+        'description' => 'The primary identifier of a facility',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The title of this facility',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'code' => array(
+        'description' => 'The facility code',
+        'type' => 'varchar',
+        'length' => 3,
+      ),
+      'group_id' => array(
+        'description' => 'ID of CURE group for this facility',
+        'type' => 'varchar',
+        'length' => 128,
+      ),
+    ), 
+    'primary key' => array('fid'),
+  );
+
+  $schema['nror_facility_users'] = array(
+    'description' => 'Facilities.',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'The user ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'fid' => array(
+        'description' => 'The primary identifier of a facility',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('uid'),
+  );
+
+  $schema['cure_practice_statuses'] = array(
+    'fields' => array(
+      'id' => array(
+        'description' => 'Id',
+        'type' => 'serial',
+        'length' => 11,
+      ),
+      'status' => array(
+        'description' => 'The practice status',
+        'type' => 'varchar',
+        'length' => 50,
+      ),
+      'link' => array(
+        'type' => 'varchar',
+        'description' => "A link to the content page",
+        'length' => 100,
+        'not null' => FALSE,
+      ),
+      'type' => array(
+        'type' => 'int',
+        'description' => "Entity type",
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['cure_practice_status_relation'] = array(
+    'fields' => array(
+      'id' => array(
+        'description' => 'Id',
+        'type' => 'serial',
+        'length' => 11,
+      ),
+      'practice_id' => array(
+        'description' => 'Practice Id',
+        'type' => 'int',
+        'length' => 11,
+      ),
+      'status_id' => array(
+        'description' => 'Status Id',
+        'type' => 'int',
+        'length' => 11,
+        ),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'practice' => array(
+        'table' => 'nror_facilities',
+        'columns' => array('practice_id' => 'fid'),
+      ),
+      'status' => array(
+        'table' => 'cure_practice_statuses',
+        'columns' => array('status_id' => 'id'),
+      ),
+    ),
+  );
+  
+  return $schema;
+}
+
+function nror_facilities_update_7101() {
+  $link = array(
+    'type' => 'varchar',
+    'description' => "A link to the content page",
+    'length' => 100,
+    'not null' => FALSE,
+  );
+
+  $type = array(
+    'type' => 'int',
+    'description' => "Entity type",
+    'not null' => TRUE,
+    'default' => 0,
+  );
+
+  db_add_field('cure_practice_statuses', 'link', $link);
+  db_add_field('cure_practice_statuses', 'type', $type);
+}

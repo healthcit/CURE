@@ -1,0 +1,5 @@
+name = "Refer A Friend"
+description = "Will add a refer a friend form to drupal with optional menu item."
+package = "Hammertech (7 version)"
+version = "7.x-1.x.beta"
+core = "7.x"

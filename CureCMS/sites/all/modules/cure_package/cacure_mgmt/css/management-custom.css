@@ -1,0 +1,102 @@
+/*
+ * Copyright (C) 2013, HealthCare IT, Inc. - All Rights Reserved
+ * Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+div#block-cacure_mgmt-0 {
+    width:200px;
+}
+div#block-cacure_mgmt-0 div.health-title {
+    background-color: #9999dd;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: black;
+}
+div#block-cacure_mgmt-0 div.health-title p {
+    font-size: 12px;
+    font-style: italic;
+}
+
+div#block-cacure_mgmt-0 ui.health-element li {
+    background-color:#eeeeff;
+    border-bottom:1px solid white;
+    height:40px;
+    line-height:20px;
+    text-align:center;
+    color: #000000;
+}
+div#block-cacure_mgmt-0 ui.health-element li a {
+    color: black;
+    font-size:12px;
+}
+div#block-cacure_mgmt-0 ui.health-element li div.health-progress {
+    margin-top:5px;
+}
+
+div#block-cacure_mgmt-1 {
+    width:630px;
+}
+div#block-cacure_mgmt-1 div.content {
+    background-color:#eeeeff;
+}
+div#block-cacure_mgmt-1 div.quest-title {
+    height:40px;
+    line-height:40px;
+    background-color:#9999dd;
+    color:black;
+}
+div#block-cacure_mgmt-1 div.quest-title p {
+    font-size:16px;
+}
+
+div#block-cacure_mgmt-1 div.quest-title div.image {
+    margin-top:5px;
+    margin-right:10px;
+}
+div#block-cacure_mgmt-1 div.quest-help {
+    font-style:italic;
+    margin-left:8px;
+    margin-right:8px;
+}
+div#block-cacure_mgmt-1 div.health-element div.element-header {
+    border-bottom:3px solid #596e7a;
+}
+
+div#block-cacure_mgmt-1 div.health-element div.module-name,
+div#block-cacure_mgmt-1 div.health-element div.status-help {
+    margin-left:10px;
+    margin-right:10px;
+}
+
+div#block-cacure_mgmt-2 {
+    width:630px;
+}
+div#block-cacure_mgmt-2 div.health-title {
+    background-color:#9999dd;
+    color:black;
+    height:40px;
+    line-height:40px;
+    padding-left:40px;
+}
+div#block-cacure_mgmt-2 div.health-title p {
+    font-size:16px;
+}
+div#block-cacure_mgmt-2 div.quest-help {
+    font-style:italic;
+    margin-left:8px;
+    margin-right:8px;
+}
+
+div#block-cacure_mgmt-2 ui.health-element li {
+    border-bottom:1px solid #596E7A;
+    height:30px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:#eeeeff;
+    line-height:30px;
+}
+div#block-cacure_mgmt-2 div.help {
+    border-bottom:3px solid #667983;
+}

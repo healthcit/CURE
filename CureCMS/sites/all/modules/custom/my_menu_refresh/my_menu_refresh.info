@@ -1,0 +1,4 @@
+name = Menu refresh
+description = Refreshes menu.
+package = Development
+core = 7.x
