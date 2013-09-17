@@ -1,0 +1,444 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<project name="CureDataLoaderWeb" default="build-war">
+
+	<!-- Allows for local developer to override settings in a non-versioned file -->
+	<property file="${basedir}/configuration/${user.name}.properties" />
+	
+	<!-- Sets up defaults, including target.context -->
+	<property file="build.properties" />
+
+	<!-- Allows for environment-specific properties -->
+	<property file="${target.context}-build.properties" />
+
+    <target name="set-properties" unless="webapp.name">
+        <!-- lib names -->
+        <property name="log4j.name" value="log4j-1.2.14.jar" />
+
+    	<!-- general directories -->
+        <property name="build.dir" value="${basedir}/build" />
+        <property name="build.classes.dir" value="${build.dir}/classes" />
+        <property name="build.war.dir" value="${build.dir}/wars" />
+       
+    	<property name="src.dir" value="${basedir}/src/main" />
+    	<property name="webroot.dir" value="${src.dir}/webapp" />
+    	<property name="java.src.dir" value="${src.dir}/java" />
+    	<property name="resources.src.dir" value="${src.dir}/resources" />
+
+    	<property name="test.src.dir" value="${basedir}/src/test" />
+    	<property name="test.java.src.dir" value="${test.src.dir}/java" />
+    	<property name="test.resources.src.dir" value="${test.src.dir}/resources" />
+
+    	<property name="lib.dir" value="${basedir}/lib" />
+
+        <!-- war stuff -->
+        <property name="webapp.name" value="CureDataLoader" />
+        <property name="war.name" value="${webapp.name}.war" />
+        <property name="javascript.dir" value="scripts" />
+<!--        <property name="css.dir" value="styles" />
+        <property name="images.dir" value="images" />
+-->
+        <path id="jsp.files" >
+            <fileset dir="${webroot.dir}/WEB-INF" >
+            	<include name="includes/**"/>
+            	<include name="layouts/**"/>
+	        	<include name="tiles/**"/>
+	        	<include name="views/**"/>
+	        </fileset>
+        </path>
+        <property name="deploy.dir" value="${tomcat.home}/${tomcat.deploy.dir}"/>
+        <property name="build.war.unzipped.dir" value="${build.war.dir}/unzipped"/>
+
+         <!-- Classpaths for compilation -->
+        <fileset id="war.libs" dir="${lib.dir}" >
+        	<include name="*.jar" />
+        	<include name="dwr/*.jar"/>
+        	<include name="cadsr/*.jar"/>
+        	<include name="spring/*.jar"/>
+        	<include name="servlet-apis/*.jar"/>
+        </fileset>
+        <path id="main.compile.classpath">
+        	<fileset refid="war.libs"/>
+        </path>
+
+        <path id="test.extra.compile.classpath">
+            <fileset dir="${lib.dir}/easymock/" includes="*.jar"/>
+            <fileset dir="${lib.dir}/junit/" includes="*.jar"/>
+            <fileset dir="${lib.dir}/spring-test/" includes="*.jar"/>
+        </path>
+        
+        <path id="svntask.classpath">
+            <fileset dir="${lib.dir}/svnant/" includes="*.jar"/>
+        </path>
+
+		<taskdef resource="svntask.properties" classpathref="svntask.classpath"/>
+    	
+    	<!--
+    	<path id="tomcat.classpath">
+    	  <pathelement location="${lib.dir}/catalina-jars/catalina-ant.jar"/>
+    		 <pathelement location="${lib.dir}/catalina-jars/jasper.jar"/>
+    		<pathelement location="${lib.dir}/catalina-jars/servlet-api.jar"/>
+    		<pathelement location="${lib.dir}/catalina-jars/juli-6.0.20.jar"/>
+    		<pathelement location="${lib.dir}/commons-logging.jar"/>
+    	</path>
+    	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="tomcat.classpath"/>
+-->
+    	<path id="hcitAnt.classpath">
+    		<fileset dir="${lib.dir}">
+    			<include name="hcit-ant.jar"/>
+    	   	</fileset>
+    	</path>
+    	<taskdef name="mergeProperties" classname="com.healthcit.cacure.ant.MergeProperties" classpathref="hcitAnt.classpath"/>
+    	
+    </target>
+
+
+
+
+    <!-- Test directories -->
+    <property name="test"           value="${src}/test" />
+    <property name="test.java"      value="${test}/java" />
+    <property name="junit.style.dir" value="${test}"/>
+
+    <!-- tomcat webapp directories to use local build dir as catalina base -->
+    <property name="container.instance"  value="${dist}/srv/how-${target.context}/www" />
+    <property name="deploy.container.instance" value="/srv/how-${target.context}/www" />
+    <property name="tomcat.webapp.dir"   value="${container.instance}/webapps" />
+    <property name="build.classes"  value="${container.instance}/webapps/ROOT/WEB-INF/classes" />
+	<property name="war.dir" value="${container.instance}/webapps" />
+    <property name="war.file" value="${container.instance}/webapps/${ant.project.name}.war" />
+    <property name="tomcat.conf.dir"     value="${container.instance}/conf" />
+    <property name="tomcat.temp.dir"     value="${container.instance}/temp" />
+    <property name="tomcat.logs.dir"     value="${container.instance}/logs" />
+    <property name="tomcat.work.dir"     value="${container.instance}/work" />
+    <property name="tomcat.startup.delay" value="15" />
+
+
+    <property name="webapp.dist"    value="${tomcat.webapp.dir}/ROOT" />
+
+	<path id="master-classpath" description="Master CLASSPATH for this script">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+        <pathelement location="${tomcat.webapp.dir}/ROOT/WEB-INF/classes/" />
+    </path>
+
+    <!-- configuration directories -->
+    <property name="conf.dir"       value="${basedir}/configuration" />
+    <!--<property name="cocoon.web.inf" value="${conf.dir}/cocoon/WEB-INF" /> -->
+    <property name="tomcat.conf"    value="${conf.dir}/tomcat/conf" />
+    <property name="manifest.dest"  value="${build}/manifest.dest" />
+
+    <property name="application.base.url"
+        value="http://localhost:${tomcat.http.port}/" />
+
+
+    <!-- classpath elements -->
+    <path id="axis.classpath">
+        <fileset dir="lib" id="axis.jars">
+            <include name="axis*/**/*.jar" />
+        </fileset>
+    </path>
+
+    <path id="build.class.path">
+        <fileset dir="${basedir}/lib" includes="**/*.jar" />
+    </path>
+
+    <path id="class.path">
+        <path refid="build.class.path" />
+        <fileset dir="${build.lib}" includes="**/*.jar" />
+    </path>
+
+	<filterset id="how.base.filter">
+	        <filter token="base" value="${how.base}"/>
+	        <filter token="webserver" value="${webserver.name}" />
+	    </filterset>
+	
+	
+    <target name="project-build-help"
+        description="Prints to the console build help">
+        <echo level="info"><![CDATA[
+This Ant build is for the How Form Builder project.
+
+    Prequisites:
+        Ant 1.6.1 or greater
+        Additional libraries in ant_home/lib directory
+        Task dependency     Library
+        <junit>             Junit3.8.1 - junit.jar
+        <replaceregexp>     OROMatcher jar
+        <JUnitReport>       Xalan2.x jar
+        <jdepend>           JDepend 2.6 jar
+        <clover>            Clover 1.1.1
+        <java2html>         j2h.jar 1.3
+
+The application should be built with JDK1.6.0.
+
+]]>
+        </echo>
+    </target>
+
+    <!-- prerequisite checks -->
+
+    <target name="checkPreconditions" depends="warn.fast.build">
+    </target>
+
+    <target name="warn.fast.build" if="fast.build">
+        <echo level="error"
+            message="DANGER, , fast build selected; no tests will be run! Use judiciously." />
+    </target>
+
+
+    <!-- write svn revision version to the file -->
+    <target name="svnrev" depends="set-properties" description="write svn revision version to the file">
+    	<svn javahl="false">
+			<status path="${basedir}" revisionProperty="svn.revision" />
+		</svn>
+        <echo file="${build.dir}/svn.rev">${svn.revision}</echo>
+     </target>
+      
+    <!-- clean targets -->
+    <target name="clean" depends="set-properties" description="remove all generated project files">
+        <echo level="info">Deleting all from the ${build.dir} directory.</echo>
+        <delete failonerror="false" dir="${build.war.dir}" />
+        <delete failonerror="false" dir="${build.classes.dir}" />
+      </target>
+
+    <!-- initialization -->
+    <target name="mkdirs" depends="checkPreconditions"
+        description="Creating all necessary directories for deployment">
+
+        <mkdir dir="${build.dir}" />
+    	<mkdir dir="${build.classes.dir}"/>
+    	<mkdir dir="${build.war.dir}"/>
+    </target>
+
+    <!-- build the application -->
+    <target name="compile" depends="set-properties,mkdirs"
+        description="Compiles all .java files in the ${src.java} dir.">
+
+    	<javac srcdir="${java.src.dir}" destdir="${build.classes.dir}"
+               debug="on" deprecation="yes">
+            <classpath refid="main.compile.classpath" />
+        </javac>
+        <!-- <copy todir="${build.classes.dir}">
+            <fileset dir="${resources.src.dir}">
+            	<include name="*/**"/>
+            </fileset>
+            <fileset dir="${java.src.dir}" excludes="**/*.java"/>
+        </copy>
+-->
+    </target>
+
+    <target name="jar" depends="compile, manifest"
+        description="Creates a .jar file named ${ant.project.name}.jar">
+        <jar jarfile="${build}/lib/${ant.project.name}.jar"
+            manifest="${manifest.dest}" >
+            <fileset dir="${build.classes}" />
+        </jar>
+    </target>
+
+    <target name="manifest">
+        <tstamp />
+        <manifest file="${manifest.dest}" >
+            <attribute name="Specification-Title"
+                value="caCURE Form Builder" />
+            <attribute name="Specification-Version"
+                value="${service.version}" />
+            <attribute name="Specification-Vendor"
+                value="Business Elite" />
+            <attribute name="Implementation-Title"
+                value="com.businesselite" />
+            <attribute name="Implementation-Vendor"
+                value="Business Elite" />
+            <attribute name="Implementation-Version"
+                value="${target.context} ${DSTAMP}.${TSTAMP} $Name:  $" />
+        </manifest>
+    </target>
+
+
+    <target name="make-build-war-dir">
+		<mkdir dir="${build.war.dir}"/>
+	</target>
+	
+	<target name="get-prop-file-name" description="prompts for command line arguments if necessary">
+					<input message="Please enter the server's name for this build" addproperty="overrideFile" />
+		</target>
+		<target name="build-for-remote-deployment" depends="set-properties,compile,  get-prop-file-name">
+		<!--		 <taskdef name="mergeProperties"
+				             classname="com.healthcit.cacure.ant.MergeProperties"
+				             classpath="hcitAnt.classpath" /> -->
+			<copy todir="${build.classes.dir}">
+				<fileset dir="${resources.src.dir}">
+						 <include name="*/**"/>
+				</fileset>
+			</copy>
+			<mergeProperties baseFile="${resources.src.dir}/cureDataLoader.properties" overrideFile="${resources.src.dir}/${overrideFile}.properties" destFile="${build.classes.dir}/cureDataLoader.properties"/>
+			<fixcrlf srcdir="${build.classes.dir}" includes="**/*.sh" eol="lf"/>
+				<antcall target="build-war" />
+		</target>
+	
+	<target name="build-local-war" depends="set-properties, compile">
+		<copy todir="${build.classes.dir}">
+			 <fileset dir="${resources.src.dir}">
+			       <include name="*/**"/>
+			 </fileset>		
+			<fileset dir="${java.src.dir}" excludes="**/*.java"/>
+		</copy>
+		<!--<exec executable="C:\cygwin\bin\dos2unix">
+						<arg value="${build.classes.dir}/invoke_pentaho.sh"/>
+					</exec>
+					-->
+		
+		<fixcrlf srcdir="${build.classes.dir}" includes="**/*.sh" eol="lf"/>
+	<antcall target="build-war" />
+		</target>
+
+    <!-- Build the war -->
+    <target name="build-war" depends="set-properties, compile" description="builds the war file">
+        <delete file="${build.war.dir}/${war.name}" />
+
+        <war destfile="${build.war.dir}/${war.name}" webxml="${webroot.dir}/WEB-INF/web.xml" update="false">
+        	<classes dir="${build.classes.dir}"/>
+
+            <!-- All the libs -->
+            <lib dir="${lib.dir}" includes="*.jar"/>
+        	<lib dir="${lib.dir}/spring" includes="*.jar"/>
+        	<!-- lib dir="${lib.dir}/servlet-apis/" includes="*.jar"/ -->
+
+            <zipfileset dir="${build.dir}">
+                <include name="*.rev"/>
+            </zipfileset>
+            
+             <!-- html, static jsps/* -->
+            <zipfileset dir="${webroot.dir}" >
+                <include name="*.html"/>
+                <include name="*.jsp"/>
+            	<exclude name="**/classes/**"/>
+            </zipfileset>
+
+            <!-- favicon.ico -->
+            <zipfileset dir="${webroot.dir}" >
+                <include name="favicon.ico"/>
+            </zipfileset>
+
+            <!-- properties from WEB-INF - duplicate then into both classpath and WEB-INF dir -->
+            <zipfileset dir="${webroot.dir}/WEB-INF" prefix="WEB-INF/classes" >
+                <include name="*.properties"/>
+            </zipfileset>
+        	
+        	
+        	<!-- WEB-INF/* copy all except properties and classes -->
+			<zipfileset dir="${webroot.dir}/WEB-INF" prefix="WEB-INF">
+            	<exclude name="**/classes/**"/>
+            </zipfileset>
+            
+		</war>
+    </target>
+
+	<target name="local-clean-deployment" depends="set-properties">
+		<!-- remove file from local tomcat -->
+		<delete includeemptydirs="true">
+			<fileset dir="${tomcat.home}/webapps">
+				<include name="**/${webapp.name}/"/>
+				<include name="${war.name}"/>
+			</fileset>
+		</delete>
+
+		<delete includeemptydirs="true">
+			<fileset dir="${tomcat.home}/webapps">
+				<include name="**/${webapp.name}/"/>
+			</fileset>
+		</delete>
+	</target>
+
+	
+	<target name="deploy-remote-input-server-address" unless="server.address" description="prompts for command line arguments if necessary">
+		<input message="Please enter server name (i.e. cure-test):" addproperty="server.address" />
+	</target>
+
+	<target name="deploy-remote-input-server-password" unless="server.password" description="prompts for command line arguments if necessary">
+			<input message="Please enter password for tomcat user:" addproperty="server.password" />
+		</target>
+	<target name="deploy-remote-input-server-port" unless="server.port" description="prompts for command line arguments if necessary">
+				<input message="Please enter port for tomcat user:" addproperty="server.port" />
+			</target>
+	
+	<!-- Use deploy-remote-as-war to deploy application to tomcat using tomcat manager
+	it assumes that user "tomcat" with role "manager" is enabled on the remote server
+	you will be prompted for tomcat manager user password, port, and a server to deploy to or those parameters can be specified as a command line argument -->
+	<target name="deploy-remote-as-war" depends="build-war, deploy-remote-input-server-address, deploy-remote-input-server-password, deploy-remote-input-server-port" 
+		description="Deployes WAR file to a remote server">
+       <!-- <echo message="Server is: ${server.address}"/>
+		<echo message="Tomcat Password is: ${server.password}"/>
+		<echo message="Tomcat Port is: ${server.port}"/>
+		-->
+		<property name="tomcat.manager.url" value="http://${server.address}:${server.port}/manager"/>
+		<undeploy url="${tomcat.manager.url}"
+			username="tomcat"
+            password="${server.password}"
+	        path="/${webapp.name}"/>
+		<sleep seconds="30"/>
+		<deploy url="${tomcat.manager.url}"
+		            username="tomcat"
+		            password="${server.password}"
+			        path="/${webapp.name}"
+		            war="file:${build.war.dir}/${war.name}"/>
+	
+	</target>
+	
+<!-- This targets were created for deploying application remotely via ssh
+     ideally deploy-remote-as-war should be used.
+     in case if tomcat restart is needed use deploy-via-ssh target
+     -->
+	<target name="load-remote-properties" depends="deploy-remote-input-server-address">
+		<loadproperties srcfile="${server.address}.properties"/>
+	</target>
+	<target name="deploy-via-ssh" depends="build-war, load-remote-properties, deploy-remote-input-server-password" 
+			description="Deployes WAR file to a remote server via ssh" >
+	    <echo message="Server is: ${server.address}"/>
+<!--	    <echo message="User's Password is: ${server.password}"/>
+		<echo message="User's home is: ${server.user.home}"/>
+-->		
+		<scp todir="${server.user}@${server.address}:${server.user.home}" file="${build.war.dir}/${war.name}" password="${server.password}" trust="yes"/>
+		<sshexec host="${server.address}" username="${server.user}" command="${deploy.root}/bin/restartAndDeploy.sh ${war.name}" password="${server.password}" trust="yes"/>
+		
+	</target>
+	
+	<target name="deploy-local-as-war" depends="set-properties,build-war,local-clean-deployment"
+			description="Cleans local tomcat and redeploys WAR file">
+			<!-- copy war file to local tomcat -->
+			<copy todir="${jboss.home}/standalone/deployments" file="${build.war.dir}/${war.name}"/>
+		</target>
+
+	<target name="deploy-local-web-resources" depends="set-properties"
+		description="Deploys non-compilable resourses - HTML, CSS, JS, IMAGES, JSPs">
+		<!-- unwar war file to local tomcat -->
+        <!-- css/* -->
+		<property name="webapp.local.dir" value="${tomcat.home}/webapps/${webapp.name}"/>
+
+		<copy todir="${webapp.local.dir}/" description="Copying static resources" >
+			<fileset dir="${webroot.dir}" >
+<!--				<include name="${css.dir}/**"/> 
+				<include name="${javascript.dir}/**"/>
+				<include name="${images.dir}/**"/>
+				<include name="xsltforms/**"/>-->
+				<include name="*.html"/>
+			</fileset>
+		</copy>
+		<!--copy todir="${webapp.local.dir}/images" file="${images.dir}/**"/ -->
+		<copy todir="${webapp.local.dir}/WEB-INF" description="Copying WEB-INF resources">
+			<fileset dir="${webroot.dir}/WEB-INF" >
+	            <include name="**/*.html"/>
+	            <include name="**/*.jsp"/>
+	            <include name="forms/**"/>
+			</fileset>
+		</copy>
+
+	</target>
+	
+	
+</project>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+ 		http://www.directwebremoting.org/schema/spring-dwr 
+ 		http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd">
+
+	<context:component-scan base-package="com.healthcit.cacure.web"/>
+
+    <!-- Used for file uploads -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<!--  http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/web/multipart/commons/CommonsFileUploadSupport.html#setMaxInMemorySize%28int%29 -->
+		<!--   <property name="maxUploadSize" value="1000000" /> 
+		<property name="maxInMemorySize" value="1000" />
+	-->
+	</bean>
+	
+	
+	<!--  map URLs to controllers -->
+	<bean name="staticViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	    <property name="urlMap">
+	        <map>
+	        	<entry key="*.page" value="staticViewController"/>
+	        </map>
+	    </property>
+	</bean>
+	
+	
+	<!--   End URLS mapping  -->
+	<bean name="appVer" class="com.healthcit.cure.dataloader.utils.AppVersionResolver">
+		<property name="appVersion"><value>${cureDataLoader.version}</value></property>
+	</bean>
+
+	<bean id="webContentInterceptor"
+		  class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+		  <property name="cacheSeconds" value="0"/>
+	</bean>
+
+ <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    	<property name="alwaysUseFullPath" value="true"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <property name="alwaysUseFullPath" value = "true" />
+    </bean>
+
+	<!-- The following view resolver is needed is we have a mix of tiles and non-tiles views
+		 the definition file is views.properties and located on a classpath in resources directory (src/main/resources)-->
+ <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver" >
+   	   <property name="basename" value="views"/>
+	   <property name="defaultParentView" value="tilesTemplateView"/>
+	   <property name="order" value="1"/>
+   </bean>
+
+
+<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions" value=" /WEB-INF/tiles-defs.xml"></property>
+	</bean>
+
+	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/tiles directory -->
+   <!-- bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"   value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/WEB-INF/tiles/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean -->
+
+   <!-- bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass"   value="org.springframework.web.servlet.view.tiles.TilesJstlView"/>
+        <property name="order" value="1"/>
+		<property name="prefix" value="/WEB-INF/tiles/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean -->
+
+
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+</beans>

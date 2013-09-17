@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+     <bean name="dataLoaderController" class="com.healthcit.cure.dataloader.controller.DataLoaderController"/>
+     <bean name="gatewayEtlController" class="com.healthcit.cure.dataloader.controller.GatewayEtlController"/>
+	 <bean name="accountEditController" class="com.healthcit.cure.dataloader.controller.AccountEditController"/>
+	 <bean name="accountListController" class="com.healthcit.cure.dataloader.controller.AccountListController"/>
+	 <bean name="userCredentialsManager" class="com.healthcit.cure.dataloader.businessdelegates.UserCredentialsManager"/>
+	 <bean name="gatewayEtlManager" class="com.healthcit.cure.dataloader.businessdelegates.GatewayEtlManager"/>
+	 <bean name="userCredentialsDao" class="com.healthcit.cure.dataloader.dao.UserCredentialsDao">
+	 	<property name="jdbcDataSource" ref="dataSource"/>
+	 </bean>
+	 <bean name="gatewayEtlDao" class="com.healthcit.cure.dataloader.dao.GatewayEtlDao">
+	 	<property name="jdbcDataSource" ref="etlDataSource"/>
+	 </bean>
+	
+
+</beans>

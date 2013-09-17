@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+<!-- Main Page Layout -->
+	<definition name=".root" template="/WEB-INF/tiles/layout.jsp">
+		<put-attribute name="header" value=""/>
+		<put-attribute name="footer" value=""/>
+		<put-attribute name="title" value=""/>
+		<put-attribute name="body" value=""/>
+	</definition>
+
+	<!-- Main Page Layout -->
+	<definition name="accountCreate" extends=".root">
+		<put-attribute name="title" value="Create Account"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/accountCreate.jsp"/>
+	</definition>
+	
+	<definition name="login" extends=".root">
+		<put-attribute name="title" value="Login"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/loginForm.jsp"/>
+	</definition>
+	
+	<definition name="listAccounts" extends=".root">
+		<put-attribute name="title" value="Existing Account"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/listAccounts.jsp"/>
+	</definition>
+	
+	<definition name="main" extends=".root">
+		<put-attribute name="title" value="Login"/>
+		<put-attribute name="body" value="/WEB-INF/tiles/main.jsp"/>
+	</definition>
+
+<!-- 
+     <definition name="login" extends=".root">
+		<put-attribute name="title" value="Cure Collector Login"/>
+		<put-attribute name="body" value="login-content"/>
+	</definition>
+	
+	<definition name="login-content" extends="questionnaire-content">
+		<put-attribute name="content" value="/WEB-INF/tiles/loginForm.jsp"/>
+		<put-attribute name="content-menu" value=""/>
+		<put-attribute name="content-sidebar" value=""/>
+		<put-attribute name="activePage" value="LoginPage"/>
+	</definition>
+	
+	-->
+</tiles-definitions>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2013 HealthCare IT, Inc. - All Rights Reserved
+  Unauthorized copying or redistribution of this file in source and binary forms via any medium is strictly prohibited
+  Proprietary and confidential
+-->
+<project name="CureDataLoader">
+	<property name="project.name" value="CureDataLoader" />
+	<property name="webapp.dir" value="../CureDataLoaderWeb"/>
+	<property name="war.dir" value="../CureDataLoaderWeb/build/wars"/>
+	<property name="ear.file" value="${project.name}.ear"/>
+	<property name="dist.dir" value="build" />
+	<target name="compile-local" description="Compiles all Java code">
+		<!-- <echo message="##### Building common #####" />
+		<ant dir="${common.dir}" target="all" >
+		<property name="jar.name" value="${common.jar.name}"/>
+		</ant> -->
+		<echo message="##### Building webapp #####" />
+		<ant dir="${webapp.dir}" target="build-local-war" >
+<!--		<property name="war.name" value="${webapp.war.name}"/>
+		<property name="common.jar.dir" value="${basedir}/${common.jar.dir}"/> -->
+		</ant>
+	</target>
+	
+	<target name="compile-remote" description="Compiles all Java code">
+			<!-- <echo message="##### Building common #####" />
+			<ant dir="${common.dir}" target="all" >
+			<property name="jar.name" value="${common.jar.name}"/>
+			</ant> -->
+			<echo message="##### Building webapp #####" />
+			<ant dir="${webapp.dir}" target="build-for-remote-deployment" >
+	<!--		<property name="war.name" value="${webapp.war.name}"/>
+			<property name="common.jar.dir" value="${basedir}/${common.jar.dir}"/> -->
+			</ant>
+		</target>
+	
+	<target name="build-ear" depends="compile-local">
+         <ear destfile="${dist.dir}/${ear.file}" 
+              appxml="EarContent/application.xml">
+              <!-- <metainf dir="${build.dir/META-INF}"/> -->
+              <fileset dir="${war.dir}" includes="*.war"/>
+         </ear>
+		</target> 
+	<target name="build-ear-for-remote-deployment" depends="compile-remote">
+	         <ear destfile="${dist.dir}/${ear.file}" 
+	              appxml="EarContent/application.xml">
+	              <!-- <metainf dir="${build.dir/META-INF}"/> -->
+	              <fileset dir="${war.dir}" includes="*.war"/>
+	         </ear>
+			</target> 
+	
+</project>

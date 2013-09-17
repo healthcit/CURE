@@ -1,0 +1,13 @@
+CTVD95=CTVD95
+CTVD90=CTVD90
+CTVMaxDose=CTVMaxDose
+CTVMinDose=CTVMinDose
+CTVMeanDose=CTVMeanDose
+BladderV70cc=Bladder70cc
+BladderV70=BladderV40
+BladderV40=BladderV40
+BladderV40cc=BladderV40cc
+RectumV70cc=RectumV70cc
+RectumV70=RectumV70
+RectumV40cc=RectumV40cc
+RectumV40=RectumV40
